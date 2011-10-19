@@ -1,0 +1,37 @@
+# ====== Settings for DeathControl ======
+# IMPORTANT: Do NOT use tabs in this file! Only use spaces!
+#
+#
+# Make sure to check the server log after editing this file! Detailed warnings will show up when you made a mistake.
+
+
+# Set to true to use native bukkit permissions (recommended)
+# Set to false if you want to use the old permissions plugin or the op system
+use-bukkit-permissions: true
+
+
+# Set to 0 if you don't want any console-log at all when a death is handled.
+# Set to 1 if you want a short notification in the console when a death is handled. 
+# Set to 2 if you want a detailed report in the console when a death is handled.
+logging-level: 1
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# FOR A DESCRIPTION ON HOW TO CONFIGURE THIS SECTION (which is the main part of the plugin), LOOK AT help.txt!
+# If you are upgrading from an earlier version, make sure to read the help as well, alot has changed!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 
+# The death causes that are configured by default are just usage examples, they will probably not fit your needs
+DeathCauses:
+    VOID:
+        keep-inventory: true
+    PLAYER:
+        keep-inventory: true
+        cost: 300
+        method: command
+        timeout: 10
+        loss-percentage: 12.5
+    LAVA:
+        keep-inventory: true
+        whitelist:
+        - valuables

@@ -1,0 +1,167 @@
+Help file on how to setup the DeathCauses-section of config.yml.
+
+Note: This file only contains help information and changes to it don't affect the plugin.
+
+Formatting looks like that (general placeholders):
+   {CAUSE}:
+       keep-inventory: false/true
+       cost: NUMBER/PERCENTAGE
+       method: auto/command
+       timeout: NUMBER
+       loss-percentage: NUMBER
+       whitelist:
+       - listname
+       - anotherlistname
+       blacklist:
+       - evillistname
+       - ...
+
+
+
+For {CAUSE}, insert one of the following cause names:
+ - CACTUS
+        when died from a cactus
+ - SUFFOCATION
+        when died because player was stuck in a block
+ - FALL
+        when died due to fall damage
+ - VOID
+        when died in the void
+ - SUICIDE
+        when died from a command like /kill
+ - STARVATION
+        when starved
+ - LIGHTNING
+        when struck by lightning
+ - DROWNING
+        when died because player drowned in water
+ - LAVA
+        when died in lava
+ - FIRE
+        when died of fire
+ - FIRE|tick
+        when died because player was burning, but didn't still stand in a fire
+        -> This is a child of the FIRE cause. More about childs after this section.
+ - EXPLOSION
+        when an explosion killed the player (for example TNT, Ghast's fireball)
+        Note: does not refer to creeper explosions. See MOB-creeper for that.
+ - MOB
+        when player was killed by any mob
+ - MOB|creeper
+        when player was killed by a creeper
+        -> This is a child of the MOB cause. More about childs after this section.
+ - MOB|wolf
+        when player was killed by a wolf
+        -> This is a child of the MOB cause. More about childs after this section.
+ - PLAYER
+        when player was killed by another player (pvp)
+ - UNKNOWN
+        when the death matches no other listed death cause
+        should only occur when there are damage causes added/modified with bukkit updates
+
+(cause names are case-insensitive)
+
+======= What are child causes? =======
+A child cause automatically inherits the settings from its parent.
+You can override those settings, but you don't need to do anything if you don't want special treatment for that specific thing.
+Childs can be easily recognized by the '|' character that seperates their "meta" from the main cause name (which is their parent).
+
+
+
+       
+Each cause CAN have the listed properties.
+You DO NOT always need to define every property!
+When not defined, the default will be used (see below).
+
+Possible properties of a death cause:
+   
+   keep-inventory
+     values: true or false
+     default: false
+     description: specifies if items should be kept on death.
+   
+   cost
+     values: any number; may be a decimal if you're economy plugin supports decimals; may be a percentage marked by a '%'-sign to subtract a percentage of the player's current money.
+     default: 0
+     description: the cost that the player pays to keep their items (if keep-inventory = true); no items will be kept if they don't have enough money; if keep-inventory equals false, the money will still be claimed if possible
+   
+   method
+     values: auto or command
+     default: auto
+     description: if set to "command", players need to use a command (/death back) to get back their items.
+                  if set to "auto" (default), players get them back automatically when they respawn
+   
+   timeout
+     values: any integer
+     default: 15
+     description: ONLY USE WHEN USING THE "command" METHOD!
+                  sets the time in second the player has to perform the "/death back"-command.
+                  after the time has passed, the saved items will be dropped at the death location.
+   
+   loss-percentage
+     values: any number between 0 and 100
+     default: 0
+     description: specifies what percentage of the player's items will still be dropped upon death
+                  0 keeps all items (default), 100 would drop all items, 50 would drop half of the items and so on
+   
+   whitelist
+     values: a list of list-names specified in lists.txt
+     default: none
+     description: if set, only items that are in one of the given lists will be kept - the rest will drop
+                  more information about lists in lists.txt
+   
+   blacklist
+     values: a list of list-names specified in lists.txt
+     default: none
+     description: same as whitelist, but reversed. any item that is in one of the given lists will always drop (overrides whitelists)
+
+
+AGAIN: When you don't define an option for a cause, the default one will be used!
+
+
+
+============= EXAMPLES ================
+
+
+Easy Example:
+   VOID:
+       keep-inventory: true
+       method: command
+       timeout: 30
+
+Explanation: When the player falls in the void (below bedrock), all of his items will be saved. He will still respawn with an empty inventory, but he can get back his items within 30 seconds via a command.
+
+
+
+
+Other Example:
+   PLAYER:
+       keep-inventory: true
+       cost: 40%
+       loss-percentage: 25
+       whitelist:
+       - valuables
+       - diamondtools
+
+Explanation: When a player is killed by another player, 75% of his valuables and diamond tools will be kept & saved and he pays 300 of his money. He will get back the kept items when he respawns.
+
+
+
+
+
+Example including childs:
+    MOB:
+        keep-inventory: true
+        loss-percentage: 50
+        method: command
+        timeout: 60
+    MOB|creeper:
+        loss-percentage: 0
+        method: auto
+
+Explanation: When a player is killed by a regular mob, he will keep 50% of his items and can get them back within 60 seconds via command.
+             When a player is killed by a creeper, all of his items will be kept and automatically given back on respawn.
+    
+If nothing would be defined for MOB|creeper, a death caused by a creeper would be handled the same way as by a regular MOB.
+
+

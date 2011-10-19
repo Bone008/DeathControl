@@ -1,0 +1,54 @@
+# ======= FILE INFORMATION =======
+# Lines starting with # and empty lines will be ignored.
+# 
+# This file contains every item/block list that you want to use in config.yml.
+# Every new list starts with $list, followed by its name.
+# Below that line, you put every item/block that belongs to the list.
+#
+# Allowed are the block/item IDs or their names.
+# List of IDs: http://www.minecraftwiki.net/wiki/Data_values
+# List of names: http://jd.bukkit.org/apidocs/org/bukkit/Material.html#enum_constant_summary
+# If you are not sure about a name, just use the ID.
+# You can also specify a data value by attaching it with a colon (:)
+# For example, 351:15 would only match bone meal.
+# 
+# Only put ONE entry per line!
+# 
+# Make sure you check the server log after editing this file. It will warn you if it didn't find something. 
+
+
+
+$list armor
+DIAMOND_CHESTPLATE
+DIAMOND_HELMET
+DIAMOND_LEGGINGS
+DIAMOND_BOOTS
+IRON_CHESTPLATE
+IRON_HELMET
+IRON_LEGGINGS
+IRON_BOOTS
+LEATHER_CHESTPLATE
+LEATHER_HELMET
+LEATHER_LEGGINGS
+LEATHER_BOOTS
+CHAINMAIL_CHESTPLATE
+CHAINMAIL_HELMET
+CHAINMAIL_LEGGINGS
+CHAINMAIL_BOOTS
+
+
+$list diamondtools
+DIAMOND_AXE
+DIAMOND_HOE
+DIAMOND_PICKAXE
+DIAMOND_SPADE
+DIAMOND_SWORD
+
+
+$list valuables
+DIAMOND
+IRON_ORE
+IRON_INGOT
+COAL
+GOLD_ORE
+GOLD_INGOT
