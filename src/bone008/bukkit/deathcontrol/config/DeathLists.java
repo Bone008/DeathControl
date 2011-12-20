@@ -21,12 +21,16 @@ public class DeathLists {
 	
 	public DeathLists(DeathControl plugin, File f) {
 		this.plugin = plugin;
-		renderFile(f);
+		parseFile(f);
 	}
 	
 	
 	
-	// gets a list by its name
+	/**
+	 * gets a list by its name
+	 * @param name the name of the list
+	 * @return a list of {@code ListItem}s
+	 */
 	public List<ListItem> getList(String name){
 		return lists.get(name);
 	}
@@ -37,8 +41,10 @@ public class DeathLists {
 	
 	
 	
-	// renders lists.txt and writes the entries to "lists"-member
-	private void renderFile(File f){
+	/**
+	 * parses lists.txt and writes the entries to "lists"-member
+	 */
+	private void parseFile(File f){
 		try{
 			BufferedReader reader = new BufferedReader(new FileReader(f));
 			

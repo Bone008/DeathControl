@@ -7,16 +7,3 @@
 
 use-bukkit-permissions: true
 logging-level: 1
-DeathCauses:
-    VOID:
-        keep-inventory: true
-    PLAYER:
-        keep-inventory: true
-        cost: 300
-        method: command
-        timeout: 10
-        loss-percentage: 12.5
-    LAVA:
-        keep-inventory: true
-        whitelist:
-        - valuables

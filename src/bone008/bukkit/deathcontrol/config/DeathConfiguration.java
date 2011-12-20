@@ -2,12 +2,16 @@ package bone008.bukkit.deathcontrol.config;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.Utilities;
@@ -72,24 +76,29 @@ public class DeathConfiguration {
 		// parse causes
 		ConfigurationSection causesSection = config.getConfigurationSection("DeathCauses");
 		if(causesSection != null){
-			Set<String> causes = causesSection.getKeys(false);
-			for(String rawCause: causes){
-				ConfigurationSection theCause = causesSection.getConfigurationSection(rawCause);
-				
-				DeathCause cause = DeathCause.parseCause(getCauseNameFromValue(rawCause), getCauseMetaFromValue(rawCause));
+			Map<String, ConfigurationSection> causes = new HashMap<String, ConfigurationSection>();
+			
+			Set<String> cfgEntries = causesSection.getKeys(false);
+			for(String rawEntry: cfgEntries){
+				for(String splittedEntry: rawEntry.split(",")){
+					causes.put(splittedEntry.trim(), causesSection.getConfigurationSection(rawEntry));
+				}
+			}
+			
+			for(Entry<String, ConfigurationSection> causeEntry: causes.entrySet()){
+				String causeEntryName = causeEntry.getKey();
+				DeathCause cause = DeathCause.parseCause(getCauseNameFromValue(causeEntryName), getCauseMetaFromValue(causeEntryName));
 				
 				if(cause == null){
-					errors.add("invalid cause: "+rawCause);
+					errors.add("invalid cause: "+causeEntryName);
 				}
 				else{
-					//String causeRoot = "DeathCauses."+rawCause+".";
-					
 					try{
-						handlings.put(cause, new CauseData(plugin, new RawOptions(theCause)));
+						handlings.put(cause, new CauseData(plugin, new RawOptions(causeEntry.getValue())));
 					} catch(IllegalPropertyException e){
-						errors.add("invalid property '"+e.propertyName+"' in "+rawCause+": "+e.propertyValue);
+						errors.add("invalid property '"+e.propertyName+"' in "+causeEntryName+": "+e.propertyValue);
 					} catch (ListNotFoundException e) {
-						errors.add("invalid list in "+rawCause+": "+e.getListName());
+						errors.add("invalid list in "+causeEntryName+": "+e.getListName());
 					}
 				}
 			}

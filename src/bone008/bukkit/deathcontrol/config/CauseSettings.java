@@ -128,6 +128,48 @@ public class CauseSettings {
 			ret.addAll(data.blacklist);
 		return ret;
 	}
+	
+	/**
+	 * Returns a Set of all whitelist-listnames that are applied to these settings, including those inherited from parents.
+	 * @return always a valid Set<String>. May be empty if there are no whitelists.
+	 */
+	public Set<String> getRawWhitelist(){
+		Set<String> ret = new HashSet<String>();
+		if(cause.parent != null){
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null) {
+				Set<String> rawParentList = s.getRawWhitelist();
+				if(rawParentList != null)
+					ret.addAll(rawParentList);
+			}
+		}
+		
+		if(data.raw.whitelist != null){
+			ret.addAll(data.raw.whitelist);
+		}
+		return ret;
+	}
+	
+	/**
+	 * Returns a Set of all blacklist-listnames that are applied to these settings, including those inherited from parents.
+	 * @return always a valid Set<String>. May be empty if there are no blacklists.
+	 */
+	public Set<String> getRawBlacklist(){
+		Set<String> ret = new HashSet<String>();
+		if(cause.parent != null){
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null) {
+				Set<String> rawParentList = s.getRawBlacklist();
+				if(rawParentList != null)
+					ret.addAll(rawParentList);
+			}
+		}
+		
+		if(data.raw.blacklist != null){
+			ret.addAll(data.raw.blacklist);
+		}
+		return ret;
+	}
 
 	/**
 	 * Checks if the given item may be kept. Combines whitelists and blacklists

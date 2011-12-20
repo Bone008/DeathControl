@@ -85,7 +85,12 @@ public final class Utilities {
 	}
 	
 	
-
+	/**
+	 * Joins the elements of a given Collection with a delimiter.
+	 * @param delimiter The delimiter to separate the elements.
+	 * @param collection The Collection to take the elements from.
+	 * @return A String with the joined elements, or null if the Collection was null. Returns an empty String if the Collection was empty.
+	 */
 	public static String joinCollection(String delimiter, Collection<?> collection) {
 		if(collection == null)
 			return null;
@@ -99,7 +104,18 @@ public final class Utilities {
 		return ret.toString();
 	}
 	
-	
+
+	/**
+	 * If {@code obj} equals {@code search}, {@code repl} is returned. Otherwise obj will be returned unchanged.
+	 * @param obj The object to validate.
+	 * @param search The condition to replace {@code obj}
+	 * @param repl The value to replace {@code obj} with if {@code search} matched
+	 */
+	public static <T> T replaceValue(T obj, T search, T repl) {
+		if(obj.equals(search))
+			return repl;
+		return obj;
+	}
 	
 	// dump is only used for developing purposes
 	
@@ -126,5 +142,6 @@ public final class Utilities {
 				logger.info("\t" + entry.getValue().toString());
 		}
 	}
+
 	
 }

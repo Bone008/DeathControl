@@ -28,7 +28,6 @@ public class CauseData {
 	
 	public RawOptions raw;
 	
-	//public RootCauseSettings(DeathControl plugin, Boolean keepInventory, Double cost, String method, int timeout, double loss, List<String> whitelist, List<String> blacklist) throws ListNotFoundException, IllegalPropertyException{
 	public CauseData(DeathControl plugin, RawOptions raw) throws ListNotFoundException, IllegalPropertyException{
 		this.raw = raw;
 		

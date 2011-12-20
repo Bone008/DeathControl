@@ -9,20 +9,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.ServerOperator;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.nijikokun.register.payment.Method;
 import com.nijikokun.register.payment.Methods;
 
@@ -38,7 +34,6 @@ public class DeathControl extends JavaPlugin {
 	private final DeathControlEntityListener entityListener = new DeathControlEntityListener(this);
 	private final DeathControlPlayerListener playerListener = new DeathControlPlayerListener(this);
 
-	private File configFile = null;
 	private File helpFile = null;
 	
 	public DeathConfiguration config;
@@ -48,12 +43,11 @@ public class DeathControl extends JavaPlugin {
 
 	public HashMap<Player, DeathManager> managers = new HashMap<Player, DeathManager>();
 	
-	public PermissionHandler permissionHandler;
-	
-	public static final long helpSize = 5981;
-	public static final DeathPermission PERMISSION_USE		= new DeathPermission("deathcontrol.use", false);
-	public static final DeathPermission PERMISSION_FREE		= new DeathPermission("deathcontrol.free", true);
-	public static final DeathPermission PERMISSION_ADMIN	= new DeathPermission("deathcontrol.admin", true);
+	public static final long helpSize = 227;
+	public static final DeathPermission PERMISSION_USE      = new DeathPermission("deathcontrol.use", false);
+	public static final DeathPermission PERMISSION_FREE     = new DeathPermission("deathcontrol.free", true);
+	public static final DeathPermission PERMISSION_INFO     = new DeathPermission("deathcontrol.info", true);
+	public static final DeathPermission PERMISSION_ADMIN    = new DeathPermission("deathcontrol.admin", true);
 	
 	
 	
@@ -65,13 +59,12 @@ public class DeathControl extends JavaPlugin {
 			}
 		}
 		
-		log("Plugin was disabled!");
+		log("is disabled!");
 	}
 	
 	
 	@Override
 	public void onEnable() {
-		configFile = new File(getDataFolder(), "config.yml");
 		helpFile = new File(getDataFolder(), "help.txt");
 		pdfFile = getDescription();
 		prefix = "["+pdfFile.getName()+"] ";
@@ -98,33 +91,28 @@ public class DeathControl extends JavaPlugin {
 	 * Loads or reloads the config files and generates the default files if necessary.
 	 */
 	public void loadConfig(){
+		// create the default files
+		writeDefault("config.yml", "config.yml", false); // only write the default if no file exists
+		writeDefault("lists.txt", "lists.txt", false);
+		
+		// now load the config, otherwise it would be created before the exists check
 		reloadConfig();
 		FileConfiguration cfg = getConfig();
-		
-		boolean forceConfig = false;
-		// check for an outdated config.yml
-		if(checkConfigUpdate()){
-			log(Level.WARNING, "Outdated config file detected! Writing an updated one ...");
-			boolean updateSuccess = backupConfig();
-			forceConfig = true;
-			if(updateSuccess)
-				log("Your old config.yml was saved to config.old.yml to copy your settings!");
-			else
-				log(Level.SEVERE, "Unable to backup your old config.yml! It was overwritten!");
+		cfg.options().copyDefaults(true);
+		cfg.options().copyHeader(true);
+		saveConfig();
+				
+		// only update the help file if there currently is one, as it is deprecated.
+		if(helpFile.exists() && helpFile.isFile()){
+			System.out.println("check: "+checkHelpUpdate());
+			writeDefault("help.txt", "help.txt", checkHelpUpdate());
 		}
 		
-		// create the default files
-		writeDefault("config.yml", "config.yml", forceConfig);
-		writeDefault("lists.txt", "lists.txt", false);
-		writeDefault("help.txt", "help.txt", checkHelpUpdate());
 		// parse the config & lists files
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new DeathConfiguration(this, cfg);
 		
-		if(!config.bukkitPerms)
-			setupPermissions();
-		
-		log( "is now using " + (config.bukkitPerms ? "bukkit permissions" : (permissionHandler==null ? "the OP-system" : "the Permissions plugin") ) +"!" );
+		log( "is now using " + (config.bukkitPerms ? "bukkit permissions" : "the OP-system") +"!" );
 	}
 	
 	
@@ -191,53 +179,19 @@ public class DeathControl extends JavaPlugin {
 		return helpFile.length() != helpSize;
 	}
 	
-	/**
-	 * Checks if the config file is outdated.
-	 * Currently checks for changes implemented in v1.3.<br>
-	 * <u><i>Note: Must be called before reading from the config!</i></u>
-	 * @return true, if the config needs to be updated, otherwise false
-	 */
-	private boolean checkConfigUpdate(){
-		if(new File(getDataFolder(), "config.yml").exists())
-			//return (getConfiguration().getProperty("use-bukkit-permissions") == null || getConfiguration().getProperty("logging-level") == null);
-			return !(getConfig().isSet("use-bukkit-permissions") || getConfig().isSet("logging-level"));
-		else
-			return false;
-	}
-	
-	/**
-	 * Backups the current config.yml to config.old.yml
-	 * @return if the renaming succeeded
-	 */
-	private boolean backupConfig(){
-		File backup = new File(getDataFolder(), "config.old.yml");
-		return configFile.renameTo(backup);
-	}
-	
-	
 	public boolean hasPermission(Permissible who, DeathPermission perm){
 		if(config.bukkitPerms)
 			return who.hasPermission(perm.node);
-		else if(permissionHandler == null){
+		else{
 			if(!perm.opOnly)
 				return true;
 			if(who instanceof ServerOperator){
 				return ((ServerOperator)who).isOp();
 			}
 			else{
-				log(Level.WARNING, "Could not check permissions for "+who.toString()+": unsupported type! Denying access ...");
+				log(Level.WARNING, "Could not check permission "+perm.node+" for "+who.toString()+": unsupported type! Denying access ...");
 				return false;
 			}
-		}
-		else if(who instanceof Player){
-			return permissionHandler.has((Player)who, perm.node);
-		}
-		else if(who instanceof ConsoleCommandSender){
-			return true;
-		}
-		else{
-			log(Level.WARNING, "Could not check permissions for "+who.toString()+": unsupported type! Denying access ...");
-			return false;
 		}
 	}
 	
@@ -252,16 +206,6 @@ public class DeathControl extends JavaPlugin {
 		} catch(NoClassDefFoundError err){
 		} // ugly solution, I know ...
 		return null;
-	}
-	
-	private void setupPermissions(){
-		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-		
-		if(this.permissionHandler == null){
-			if(permissionsPlugin != null){
-				this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-			}
-		}
 	}
 	
 	

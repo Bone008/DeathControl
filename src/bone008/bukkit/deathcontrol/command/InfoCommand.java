@@ -1,6 +1,8 @@
 package bone008.bukkit.deathcontrol.command;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +15,7 @@ import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
+import bone008.bukkit.deathcontrol.config.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 
 public class InfoCommand extends SubCommand {
@@ -51,8 +54,8 @@ public class InfoCommand extends SubCommand {
 				if(settings.getMethod() == HandlingMethod.COMMAND)
 					sender.sendMessage(pre + ChatColor.WHITE + "timeout: " + ChatColor.YELLOW + settings.getTimeout());
 				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage: " + ChatColor.YELLOW + settings.getLoss()+"%");
-				sender.sendMessage(pre + ChatColor.WHITE + "whitelist: " + ChatColor.YELLOW + Utilities.joinCollection(", ", settings.getWhitelist()));
-				sender.sendMessage(pre + ChatColor.WHITE + "blacklist: " + ChatColor.YELLOW + Utilities.joinCollection(", ", settings.getBlacklist()));
+				sender.sendMessage(pre + ChatColor.WHITE + "whitelist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
+				sender.sendMessage(pre + ChatColor.WHITE + "blacklist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
 				return;
 			}
 
@@ -64,8 +67,33 @@ public class InfoCommand extends SubCommand {
 				}
 				return;
 			}
+			
+			else if(args[0].equalsIgnoreCase("list") && args.length >= 2){
+				List<ListItem> list = manager.plugin.deathLists.getList(args[1].toLowerCase());
+				if (list == null) {
+					sender.sendMessage(ChatColor.RED + "There is no list called " + ChatColor.DARK_RED + args[1]);
+					sender.sendMessage(ChatColor.RED + "Use " + ChatColor.BLUE + "/" + mainLabel + " info causes" + ChatColor.RED + " for a list of all causes.");
+					return;
+				}
+				
+				Collections.sort(list, ListItem.getComparator());
+				
+				sender.sendMessage(ChatColor.GRAY + "Current entries for list "+ChatColor.YELLOW+args[1].toLowerCase()+ChatColor.GRAY+":");
+				StringBuilder sb = new StringBuilder();
+				for(ListItem item: list){
+					if(sb.length() > 0){
+						sb.append(", ");
+					}
+					sb.append(item.toHumanString());
+				}
+				sender.sendMessage(sb.toString());
+				sender.sendMessage(ChatColor.GRAY + "==========================");
+				return;
+			}
 		}
 
+		
+		
 		// get here when no valid command was captured above
 		sender.sendMessage(ChatColor.GRAY + "==== DeathControl configuration ====");
 		sender.sendMessage(pre + ChatColor.WHITE + "registered valid death causes: " + ChatColor.YELLOW + manager.plugin.config.handlings.size());
@@ -88,7 +116,7 @@ public class InfoCommand extends SubCommand {
 		sender.sendMessage(pre + ChatColor.WHITE + "Use " + ChatColor.BLUE + "/" + mainLabel + " info causes" + ChatColor.WHITE + " for details about causes");
 		sender.sendMessage(pre + ChatColor.WHITE + "Use " + ChatColor.BLUE + "/" + mainLabel + " info cause <causename>" + ChatColor.WHITE + " for a specific cause");
 		sender.sendMessage(pre + ChatColor.WHITE + "Use " + ChatColor.BLUE + "/" + mainLabel + " info lists" + ChatColor.WHITE + " for details about lists");
-		sender.sendMessage(pre + ChatColor.WHITE + "Use " + ChatColor.BLUE + "/" + mainLabel + " info list <listname>" + ChatColor.WHITE + " for a specific cause");
+		sender.sendMessage(pre + ChatColor.WHITE + "Use " + ChatColor.BLUE + "/" + mainLabel + " info list <listname>" + ChatColor.WHITE + " for a specific list");
 
 	}
 
@@ -99,7 +127,7 @@ public class InfoCommand extends SubCommand {
 
 	@Override
 	public DeathPermission getPermission() {
-		return DeathControl.PERMISSION_ADMIN;
+		return DeathControl.PERMISSION_INFO;
 	}
 
 }
