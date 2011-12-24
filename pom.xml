@@ -78,13 +78,29 @@
         </includes>
       </resource>
       <resource>
-        <targetPath>.</targetPath>
+        <targetPath>resources/</targetPath>
         <filtering>true</filtering>
         <directory>${basedir}/src/main/resources/</directory>
         <includes>
           <include>config.yml</include>
         </includes>
       </resource>
+        <resource>
+            <targetPath>resources/</targetPath>
+            <filtering>true</filtering>
+            <directory>${basedir}/src/main/resources/</directory>
+            <includes>
+                <include>lists.txt</include>
+            </includes>
+        </resource>
+        <resource>
+            <targetPath>resources/</targetPath>
+            <filtering>true</filtering>
+            <directory>${basedir}/src/main/resources/</directory>
+            <includes>
+                <include>help.txt</include>
+            </includes>
+        </resource>
     </resources>
 
     <!-- Plugins -->
