@@ -1,23 +1,17 @@
 package bone008.bukkit.deathcontrol.config;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Level;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
 public class DeathConfiguration {
 
@@ -44,6 +38,7 @@ public class DeathConfiguration {
 	public EnumMap<DeathCause, CauseData> handlings = new EnumMap<DeathCause, CauseData>(DeathCause.class);
 	public boolean bukkitPerms;
 	public int loggingLevel;
+    public List<String> worlds = new ArrayList<String>();
 	
 	// a list of errors that occurred while parsing
 	public List<String> errors = new ArrayList<String>();
@@ -72,7 +67,10 @@ public class DeathConfiguration {
 		loggingLevel = config.getInt("logging-level", default_loggingLevel);
 		if(loggingLevel > 2 || loggingLevel < 0)
 			errors.add("invalid logging-level: "+loggingLevel);
-		
+
+        // parse worlds to use deathcause in
+        worlds = config.getStringList("worlds");
+
 		// parse causes
 		ConfigurationSection causesSection = config.getConfigurationSection("DeathCauses");
 		if(causesSection != null){
@@ -141,10 +139,13 @@ public class DeathConfiguration {
 			return null;
 		}
 	}
-	
-	
-	
-	public class RawOptions {
+
+    public List<String> getWorlds() {
+        return worlds;
+    }
+
+
+    public class RawOptions {
 
 		public static final String NODE_KEEP_INVENTORY = "keep-inventory";
 		public static final String NODE_COST = "cost";

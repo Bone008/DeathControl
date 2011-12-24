@@ -1,13 +1,11 @@
 package bone008.bukkit.deathcontrol;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import bone008.bukkit.deathcontrol.command.CommandManager;
+import bone008.bukkit.deathcontrol.config.DeathConfiguration;
+import bone008.bukkit.deathcontrol.config.DeathLists;
+import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
+import com.nijikokun.register.payment.Method;
+import com.nijikokun.register.payment.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -19,13 +17,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Methods;
-
-import bone008.bukkit.deathcontrol.command.CommandManager;
-import bone008.bukkit.deathcontrol.config.DeathConfiguration;
-import bone008.bukkit.deathcontrol.config.DeathLists;
-import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class DeathControl extends JavaPlugin {

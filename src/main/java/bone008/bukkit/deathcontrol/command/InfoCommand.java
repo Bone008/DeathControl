@@ -1,13 +1,5 @@
 package bone008.bukkit.deathcontrol.command;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.DeathPermission;
@@ -17,6 +9,13 @@ import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class InfoCommand extends SubCommand {
 

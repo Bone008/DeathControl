@@ -1,18 +1,14 @@
 package bone008.bukkit.deathcontrol.config;
 
+import bone008.bukkit.deathcontrol.DeathControl;
+import org.bukkit.Material;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
-
-import org.bukkit.Material;
-import bone008.bukkit.deathcontrol.DeathControl;
 
 public class DeathLists {
 

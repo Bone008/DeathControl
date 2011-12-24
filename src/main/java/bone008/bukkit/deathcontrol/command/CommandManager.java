@@ -1,16 +1,15 @@
 package bone008.bukkit.deathcontrol.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import bone008.bukkit.deathcontrol.DeathControl;
+import bone008.bukkit.deathcontrol.exceptions.CommandException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandManager implements CommandExecutor {
 
