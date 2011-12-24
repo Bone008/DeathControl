@@ -1,12 +1,11 @@
 package bone008.bukkit.deathcontrol.command;
 
-import java.util.Map.Entry;
-
+import bone008.bukkit.deathcontrol.exceptions.CommandException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import java.util.Map.Entry;
 
 public class HelpCommand extends SubCommand {
 

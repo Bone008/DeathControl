@@ -70,6 +70,12 @@ public class DeathManager {
 			return new Response();
 		}
 
+        // check if the player is in a world that has deathcause enabled
+        if (!plugin.config.getWorlds().contains(ply.getWorld().getName())) {
+            unregister();
+            return new Response();
+        }
+
 		// get the CauseHandling for the cause
 		CauseSettings settings = plugin.config.getSettings(deathCause);
 

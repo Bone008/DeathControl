@@ -1,9 +1,9 @@
 package bone008.bukkit.deathcontrol.config;
 
-import java.util.Comparator;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Comparator;
 
 public class ListItem {
 	

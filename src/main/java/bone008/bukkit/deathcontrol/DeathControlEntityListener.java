@@ -1,7 +1,6 @@
 package bone008.bukkit.deathcontrol;
 
-import java.util.logging.Level;
-
+import bone008.bukkit.deathcontrol.DeathManager.Response;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -9,7 +8,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import bone008.bukkit.deathcontrol.DeathManager.Response;
+import java.util.logging.Level;
 
 public class DeathControlEntityListener extends EntityListener{
 	

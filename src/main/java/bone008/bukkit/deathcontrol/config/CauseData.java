@@ -1,14 +1,14 @@
 package bone008.bukkit.deathcontrol.config;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.inventory.ItemStack;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration.RawOptions;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *  stores configured data about how to deal with a specific cause
