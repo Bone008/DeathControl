@@ -69,7 +69,7 @@ public class CauseData {
 		
 		if(raw.isDefined(RawOptions.NODE_WHITELIST)){
 			this.whitelist = new HashSet<ListItem>();
-			if(whitelist != null){
+			if(raw.whitelist != null){
 				for(String listEntry: raw.whitelist){
 					List<ListItem> currList = plugin.deathLists.getList(listEntry.toLowerCase());
 					if(currList == null){
@@ -78,14 +78,15 @@ public class CauseData {
 						this.whitelist.addAll(currList);
 					}
 				}
-			}
+			} else
+				throw new IllegalPropertyException("whitelist", "NOT A LIST");
 		} else
 			this.whitelist = null;
 
 		
 		if(raw.isDefined(RawOptions.NODE_BLACKLIST)){
 			this.blacklist = new HashSet<ListItem>();
-			if(blacklist != null){
+			if(raw.blacklist != null){
 				for(String listEntry: raw.blacklist){
 					List<ListItem> currList = plugin.deathLists.getList(listEntry.toLowerCase());
 					if(currList == null){
@@ -94,7 +95,8 @@ public class CauseData {
 						this.blacklist.addAll(currList);
 					}
 				}
-			}
+			} else
+				throw new IllegalPropertyException("blacklist", "NOT A LIST");
 		} else
 			this.blacklist = null;
 		
