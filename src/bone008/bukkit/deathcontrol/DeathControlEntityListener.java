@@ -43,7 +43,7 @@ public class DeathControlEntityListener extends EntityListener{
 			StringBuilder	log1Builder = new StringBuilder(),
 							log2Builder = new StringBuilder();
 			
-			log1Builder.append(ply.getName()).append(" died (cause: ").append(deathCause.toMsgString()).append(")");
+			log1Builder.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
 			
 			log2Builder
 			.append("Handling death:\n")
