@@ -2,13 +2,11 @@ package bone008.bukkit.deathcontrol;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 public final class Utilities {
@@ -41,48 +39,6 @@ public final class Utilities {
 		dropItems(l, items.values(), naturally);
 	}
 	
-	
-	
-	/**
-	 * Gets a list from the given {@code ConfigurationSection} with a special type given through the formal type parameter.
-	 * @param <T> The type which the list is expected to be. <u>Note: Must be explicitly declared in the method call!</u>
-	 * @param sec The ConfigurationSection to use
-	 * @param node The node to use
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> List<T> getConfigList(ConfigurationSection sec, String node){
-		return (List<T>)sec.getList(node);
-	}
-
-
-	public static int getConfigInt(ConfigurationSection sec, String node, int def){
-		Object o = sec.get(node, def);
-		if(o == null)
-			return def;
-		try{
-			return Integer.valueOf(o.toString());
-		} catch(NumberFormatException ex){
-			return 0;
-		}
-	}
-	public static double getConfigDouble(ConfigurationSection sec, String node, double def){
-		Object o = sec.get(node, def);
-		if(o == null)
-			return def;
-		try{
-			return Double.valueOf(o.toString());
-		} catch(NumberFormatException ex){
-			return 0;
-		}
-	}
-	
-	public static String getConfigString(ConfigurationSection sec, String node, String def){
-		Object o = sec.get(node, def);
-		if(o == null)
-			return def;
-		return o.toString();
-	}
 	
 	
 	/**

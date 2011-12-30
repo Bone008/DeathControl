@@ -14,7 +14,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
@@ -164,19 +163,17 @@ public class DeathConfiguration {
 		
 		private final ConfigurationSection sec;
 		
-		//private final Map<String, Boolean> defined = new HashMap<String, Boolean>();
-		
 		public RawOptions(ConfigurationSection sec){
 			this.sec = sec;
 			
 			// now store config options, defaults should not be actually used as of 1.3
 			keepInventory	= sec.getBoolean(NODE_KEEP_INVENTORY,	default_keepInventory);
-			rawCost			= Utilities.getConfigString(sec, NODE_COST, default_cost_raw);
+			rawCost			= sec.getString(NODE_COST, default_cost_raw);
 			method			= sec.getString(NODE_METHOD); // don't provide default, because that's not raw
-			timeout			= Utilities.getConfigInt(sec, NODE_TIMEOUT, default_timeout);
-			loss			= Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE, default_loss);
-			whitelist		= Utilities.<String>getConfigList(sec, NODE_WHITELIST);
-			blacklist		= Utilities.<String>getConfigList(sec, NODE_BLACKLIST);
+			timeout			= sec.getInt(NODE_TIMEOUT, default_timeout);
+			loss			= sec.getDouble(NODE_LOSS_PERCENTAGE, default_loss);
+			whitelist		= sec.getStringList(NODE_WHITELIST);
+			blacklist		= sec.getStringList(NODE_BLACKLIST);
 		}
 		
 		public boolean isDefined(String node){
