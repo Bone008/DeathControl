@@ -267,14 +267,17 @@ public class DeathManager {
 
 	public boolean commandIssued() {
 		if (method == HandlingMethod.COMMAND && this.valid) {
-			if (cost > 0 && acc != null && !acc.hasEnough(cost)) {
-				plugin.display(ply, ChatColor.RED+"You don't have enough money for that!");
-			} else {
-				acc.subtract(cost);
-				restore();
-				plugin.display(ply, "You got your items back!");
-				plugin.log(ply.getName() + " got back their items via command.");
+			if (cost > 0 && acc != null) {
+				if (!acc.hasEnough(cost)) {
+					plugin.display(ply, ChatColor.RED + "You don't have enough money for that!");
+					return true;
+				} else {
+					acc.subtract(cost);
+				}
 			}
+			restore();
+			plugin.display(ply, "You got your items back!");
+			plugin.log(ply.getName() + " got back their items via command.");
 			return true;
 		}
 		return false;

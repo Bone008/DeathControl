@@ -175,8 +175,8 @@ public class DeathConfiguration {
 			method			= sec.getString(NODE_METHOD); // don't provide default, because that's not raw
 			timeout			= Utilities.getConfigInt(sec, NODE_TIMEOUT, default_timeout);
 			loss			= Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE, default_loss);
-			whitelist		= Utilities.<String>getConfigList(sec, NODE_WHITELIST);
-			blacklist		= Utilities.<String>getConfigList(sec, NODE_BLACKLIST);
+			whitelist		= sec.getStringList(NODE_WHITELIST);
+			blacklist		= sec.getStringList(NODE_BLACKLIST);
 		}
 		
 		public boolean isDefined(String node){
