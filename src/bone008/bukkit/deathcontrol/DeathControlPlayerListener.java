@@ -15,12 +15,19 @@ public class DeathControlPlayerListener extends PlayerListener {
 	
 	@Override
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		Player ply = event.getPlayer();
+		final Player ply = event.getPlayer();
 		
-		DeathManager m = plugin.managers.get(ply);
-		if(m != null){
-			m.respawned();
-		}
+		// delay this for the next tick to make sure the player fully respawned to get the correct location
+		// don't use getRespawnLocation(), because it might still be changed by another plugin - this way is safer
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			@Override
+			public void run() {
+				DeathManager m = plugin.managers.get(ply);
+				if(m != null){
+					m.respawned();
+				}
+			}
+		});
 	}
 	
 	
