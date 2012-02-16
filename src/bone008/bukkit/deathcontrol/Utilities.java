@@ -26,14 +26,14 @@ public final class Utilities {
 	
 	public static void dropItems(Location l, ItemStack[] items, boolean naturally){
 		if(items == null) return;
-		for(ItemStack i: items){
+		for(ItemStack i: items)
 			dropItem(l, i, naturally);
-		}
 	}
 	
 	public static void dropItems(Location l, Collection<ItemStack> items, boolean naturally){
 		if(items == null) return;
-		dropItems(l, items.toArray(new ItemStack[items.size()]), naturally);
+		for(ItemStack i: items)
+			dropItem(l, i, naturally);
 	}
 	
 	public static void dropItems(Location l, Map<?, ItemStack> items, boolean naturally){

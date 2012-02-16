@@ -16,12 +16,12 @@ public class BackCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandSender sender, Command mainCmd, String mainLabel, String[] args) throws CommandException {
-		
+
 		Player ply = getPlayer(sender);
-		DeathManager m = manager.plugin.managers.get(ply);
-		if(m != null && m.commandIssued())
+		DeathManager m = manager.plugin.getManager(ply.getName());
+		if (m != null && m.commandIssued())
 			return;
-		ply.sendMessage(ChatColor.RED+"You don't have any items to get back!");
+		manager.plugin.display(ply, ChatColor.RED + "You don't have any items to get back!");
 	}
 
 	@Override

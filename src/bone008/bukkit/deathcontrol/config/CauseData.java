@@ -114,6 +114,10 @@ public class CauseData {
 		return cost + (costIsPercentage ? "%" : "");
 	}
 	
+	public boolean hasPotentialCost(){
+		return (cost != null && cost > 0);
+	}
+	
 
 	/**
 	 * Checks if the given item may be kept. Combines whitelists and blacklists to match the result.

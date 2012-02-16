@@ -25,6 +25,17 @@ public class CauseSettings {
 		data = d;
 	}
 
+	public boolean hasPotentialCost() {
+		if (data.hasPotentialCost())
+			return true;
+		else if (cause.parent != null) {
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null)
+				return s.hasPotentialCost();
+		}
+		return (DeathConfiguration.default_cost > 0);
+	}
+
 	public double getCost(double currentMoney) {
 		if (data.getCost(currentMoney) != null)
 			return data.getCost(currentMoney);
@@ -45,7 +56,7 @@ public class CauseSettings {
 			if (s != null)
 				return s.getRawCost();
 		}
-		
+
 		return Double.toString(DeathConfiguration.default_cost);
 	}
 
@@ -128,44 +139,50 @@ public class CauseSettings {
 			ret.addAll(data.blacklist);
 		return ret;
 	}
-	
+
 	/**
-	 * Returns a Set of all whitelist-listnames that are applied to these settings, including those inherited from parents.
-	 * @return always a valid Set<String>. May be empty if there are no whitelists.
+	 * Returns a Set of all whitelist-listnames that are applied to these
+	 * settings, including those inherited from parents.
+	 * 
+	 * @return always a valid Set&lt;String&gt;. May be empty if there are no
+	 *         whitelists.
 	 */
-	public Set<String> getRawWhitelist(){
+	public Set<String> getRawWhitelist() {
 		Set<String> ret = new HashSet<String>();
-		if(cause.parent != null){
+		if (cause.parent != null) {
 			CauseSettings s = config.getSettings(cause.parent);
 			if (s != null) {
 				Set<String> rawParentList = s.getRawWhitelist();
-				if(rawParentList != null)
+				if (rawParentList != null)
 					ret.addAll(rawParentList);
 			}
 		}
-		
-		if(data.raw.whitelist != null){
+
+		if (data.raw.whitelist != null) {
 			ret.addAll(data.raw.whitelist);
 		}
 		return ret;
 	}
-	
+
 	/**
-	 * Returns a Set of all blacklist-listnames that are applied to these settings, including those inherited from parents.
-	 * @return always a valid Set<String>. May be empty if there are no blacklists.
+	 * Returns a Set of all blacklist-listnames that are applied to these
+	 * settings, including those inherited from parents.
+	 * 
+	 * @return always a valid Set&lt;String&gt;. May be empty if there are no
+	 *         blacklists.
 	 */
-	public Set<String> getRawBlacklist(){
+	public Set<String> getRawBlacklist() {
 		Set<String> ret = new HashSet<String>();
-		if(cause.parent != null){
+		if (cause.parent != null) {
 			CauseSettings s = config.getSettings(cause.parent);
 			if (s != null) {
 				Set<String> rawParentList = s.getRawBlacklist();
-				if(rawParentList != null)
+				if (rawParentList != null)
 					ret.addAll(rawParentList);
 			}
 		}
-		
-		if(data.raw.blacklist != null){
+
+		if (data.raw.blacklist != null) {
 			ret.addAll(data.raw.blacklist);
 		}
 		return ret;

@@ -29,7 +29,8 @@ import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 
 
 public class DeathControl extends JavaPlugin {
-	static final Logger logger = Logger.getLogger("Minecraft");
+	public static final Logger logger = Logger.getLogger("Minecraft");
+	public static DeathControl instance;
 	
 	private final DeathControlEntityListener entityListener = new DeathControlEntityListener(this);
 	private final DeathControlPlayerListener playerListener = new DeathControlPlayerListener(this);
@@ -39,9 +40,9 @@ public class DeathControl extends JavaPlugin {
 	public DeathConfiguration config;
 	public DeathLists deathLists;
 	public PluginDescriptionFile pdfFile;
-	String prefix;
+	private String prefix;
 
-	public HashMap<Player, DeathManager> managers = new HashMap<Player, DeathManager>();
+	private HashMap<String, DeathManager> managers = new HashMap<String, DeathManager>();
 	
 	public static final long helpSize = 227;
 	public static final DeathPermission PERMISSION_USE      = new DeathPermission("deathcontrol.use", false);
@@ -50,6 +51,9 @@ public class DeathControl extends JavaPlugin {
 	public static final DeathPermission PERMISSION_ADMIN    = new DeathPermission("deathcontrol.admin", true);
 	
 	
+	public DeathControl() {
+		instance = this;
+	}
 	
 	@Override
 	public void onDisable() {
@@ -178,6 +182,27 @@ public class DeathControl extends JavaPlugin {
 			return true;
 		return helpFile.length() != helpSize;
 	}
+	
+	
+	public void addManager(String name, DeathManager m){
+		managers.put(name, m);
+	}
+	public DeathManager getManager(String name){
+		return managers.get(name);
+	}
+	public void removeManager(String name){
+		managers.remove(name);
+	}
+	
+	public void expireManager(String name){
+		DeathManager m = managers.get(name);
+		if(m != null){
+			m.expire(true);
+			removeManager(name);
+		}
+	}
+	
+	
 	
 	public boolean hasPermission(Permissible who, DeathPermission perm){
 		if(config.bukkitPerms)
