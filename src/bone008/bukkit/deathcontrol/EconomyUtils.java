@@ -2,14 +2,13 @@ package bone008.bukkit.deathcontrol;
 
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Methods;
-import com.nijikokun.register.payment.Method.MethodAccount;
-
 import bone008.bukkit.deathcontrol.config.CauseSettings;
+
+import com.nijikokun.register.payment.Method;
+import com.nijikokun.register.payment.Method.MethodAccount;
+import com.nijikokun.register.payment.Methods;
 
 public final class EconomyUtils {
 	

@@ -1,7 +1,6 @@
 package bone008.bukkit.deathcontrol;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.ChatColor;
