@@ -72,6 +72,18 @@ public class CauseSettings {
 		return DeathConfiguration.default_loss;
 	}
 
+	public double getLossExp() {
+		if (data.lossExp != null)
+			return data.lossExp;
+		else if (cause.parent != null) {
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null)
+				return s.getLossExp();
+		}
+
+		return getLoss();
+	}
+
 	public HandlingMethod getMethod() {
 		if (data.method != null)
 			return data.method;
@@ -103,6 +115,18 @@ public class CauseSettings {
 			CauseSettings s = config.getSettings(cause.parent);
 			if (s != null)
 				return s.keepInventory();
+		}
+
+		return DeathConfiguration.default_keepInventory;
+	}
+
+	public boolean keepExperience() {
+		if (data.keepExperience != null)
+			return data.keepExperience;
+		else if (cause.parent != null) {
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null)
+				return s.keepExperience();
 		}
 
 		return DeathConfiguration.default_keepInventory;

@@ -7,8 +7,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import net.minecraft.server.EntityExperienceOrb;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 
 public final class Utilities {
@@ -41,6 +45,24 @@ public final class Utilities {
 		dropItems(l, items.values(), naturally);
 	}
 	
+	
+	public static void dropExp(Location l, int amount, boolean native_) {
+		if(native_){
+			// This splits up the experience into multiple orbs, just like it is natively done upon death.
+			net.minecraft.server.World w = ((CraftWorld)l.getWorld()).getHandle();
+			while(amount > 0){
+				int orbSize = EntityExperienceOrb.getOrbValue(amount);
+				amount -= orbSize;
+				w.addEntity(new EntityExperienceOrb(w, l.getBlockX(), l.getBlockY(),l.getBlockZ(), orbSize));
+			}
+		} else {
+			// This spawns a single orb containing all the experience.
+			// As of 1.1, there is a bug that changing the experience won't send a notification packet to the client
+			// so the orb size will always be displayed very small.
+			ExperienceOrb orb = l.getWorld().spawn(l, ExperienceOrb.class);
+			orb.setExperience(amount);
+		}
+	}
 	
 	
 	/**

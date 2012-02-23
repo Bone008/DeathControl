@@ -50,15 +50,22 @@ public class DeathControlEntityListener implements Listener {
 			return;
 
 		List<ItemStack> drops = e.getDrops();
+		final int totalExp = ply.getTotalExperience();
+		
 		List<ItemStack> keptItems = null;
 		int keptExp = 0;
+		int droppedExp = 0;
 
 		if (causeSettings.keepInventory()) {
 			keptItems = calculateItems(drops, causeSettings);
 			if (keptItems.isEmpty())
 				keptItems = null;
 		}
-		// TODO: do the same for experience
+
+		if (causeSettings.keepExperience()) {
+			keptExp = (int) Math.round(((100 - causeSettings.getLossExp()) / 100) * totalExp);
+			droppedExp = e.getDroppedExp();
+		}
 
 		if (keptItems == null && keptExp <= 0)
 			return;
@@ -82,14 +89,15 @@ public class DeathControlEntityListener implements Listener {
 									// ItemStack
 			}
 		}
+
 		if (keptExp > 0) {
-			// TODO: experience handling
+			e.setDroppedExp(0);
 		}
 
 		HandlingMethod method = causeSettings.getMethod();
 		int timeout = causeSettings.getTimeout();
 
-		final DeathManager dm = new DeathManager(plugin, ply, keptItems, method, cost);
+		final DeathManager dm = new DeathManager(plugin, ply, keptItems, keptExp, droppedExp, method, cost);
 		plugin.addManager(ply.getName(), dm);
 
 		if (method == HandlingMethod.COMMAND && timeout > 0) {
@@ -104,14 +112,21 @@ public class DeathControlEntityListener implements Listener {
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
 		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
-		log2.append("Handling death:\n").append("| Player: ").append(ply.getName()).append('\n').append("| Death cause: ").append(deathCause.toHumanString()).append('\n').append("| Kept items: ");
+		
+		log2.append("Handling death:\n");
+		log2.append("| Player: ").append(ply.getName()).append('\n');
+		log2.append("| Death cause: ").append(deathCause.toHumanString()).append('\n');
+		log2.append("| Kept items: ");
 		if (keptItems == null)
 			log2.append("none");
 		else if (drops.isEmpty())
 			log2.append("all");
 		else
 			log2.append("some");
-		log2.append('\n').append("| Method: ").append(method).append("\n");
+		log2.append('\n');
+		if(keptExp > 0)
+			log2.append("| Kept experience: ").append(keptExp).append(" of ").append(totalExp).append('\n');
+		log2.append("| Method: ").append(method).append("\n");
 		if (method == HandlingMethod.COMMAND)
 			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");
 
@@ -131,69 +146,6 @@ public class DeathControlEntityListener implements Listener {
 
 		if (cost > 0)
 			plugin.display(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
-		/*
-		 * DeathManager manager = new DeathManager(plugin, ply, deathCause, e);
-		 * Response ret = manager.handle();
-		 * 
-		 * 
-		 * 
-		 * if(ret.didSomething){ // build the logs to the console StringBuilder
-		 * log1Builder = new StringBuilder(), log2Builder = new StringBuilder();
-		 * 
-		 * log1Builder.append(ply.getName()).append(" died (cause: ").append(
-		 * deathCause.toHumanString()).append(")");
-		 * 
-		 * log2Builder .append("Handling death:\n")
-		 * .append("| Player: ").append(ply.getName()).append('\n')
-		 * .append("| Death cause: "
-		 * ).append(deathCause.toHumanString()).append('\n')
-		 * .append("| Kept items: "); switch(ret.keptItems){ case
-		 * Response.KEPT_NONE: log2Builder.append("none"); break; case
-		 * Response.KEPT_SOME: log2Builder.append("some"); break; case
-		 * Response.KEPT_ALL: log2Builder.append("all"); break; }
-		 * log2Builder.append("\n") .append("| Method: ").append(ret.isCommand ?
-		 * "command" : "auto").append("\n");
-		 * 
-		 * 
-		 * if(ret.success){ if(ret.keptItems != Response.KEPT_NONE){
-		 * plugin.display(ply, ChatColor.YELLOW+"You keep "+ ChatColor.WHITE +
-		 * (ret.keptItems==Response.KEPT_ALL ? "all":"some") +
-		 * ChatColor.YELLOW+" of your items"); plugin.display(ply,
-		 * ChatColor.YELLOW+"because you "+ deathCause.toMsgString()+".");
-		 * if(ret.isCommand){ plugin.display(ply,
-		 * ChatColor.YELLOW+"You can get them back with "
-		 * +ChatColor.GREEN+"/death back"); if(manager.getTimeout() > 0){
-		 * log2Builder
-		 * .append("| Expires in ").append(manager.getTimeout()).append
-		 * (" seconds!\n"); plugin.display(ply,
-		 * ChatColor.RED+"This will expire in "
-		 * +manager.getTimeout()+" seconds!"); } } } if(ret.money > 0 &&
-		 * plugin.getRegisterMethod()!=null){ String moneyStr =
-		 * plugin.getRegisterMethod().format(ret.money);
-		 * log1Builder.append("; paid ").append(moneyStr);
-		 * log2Builder.append("| Paid money: ").append(moneyStr).append("\n");
-		 * plugin.display(ply, ChatColor.GOLD+"This "+(ret.isCommand ?
-		 * "will cost" :
-		 * "costs")+" you "+ChatColor.WHITE+moneyStr+ChatColor.GOLD+"!"); } }
-		 * else if(ret.money == null){ log1Builder.append("; not enough money");
-		 * log2Builder.append("| Not enough money!\n"); plugin.display(ply,
-		 * ChatColor.RED+"You couldn't keep your items"); plugin.display(ply,
-		 * ChatColor.RED+"because you didn't have enough money!"); } else{
-		 * plugin.display(ply, ChatColor.RED+"A disruption in space-time!");
-		 * plugin.display(ply,
-		 * ChatColor.RED+"In other words: A bug in this plugin!");
-		 * plugin.display(ply,
-		 * ChatColor.RED+"This was not supposed to happen.");
-		 * plugin.log(Level.SEVERE,
-		 * "The manager returned an invalid response! Please report this bug!");
-		 * }
-		 * 
-		 * if(plugin.config.loggingLevel == 1)
-		 * plugin.log(log1Builder.toString().trim()); else
-		 * if(plugin.config.loggingLevel == 2)
-		 * plugin.log(log2Builder.toString().trim()); // else do nothing -> no
-		 * logging }
-		 */
 	}
 
 	/**

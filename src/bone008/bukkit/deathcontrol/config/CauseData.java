@@ -17,9 +17,11 @@ public class CauseData {
 	
 	// auto-boxed types to allow null values
 	public final Boolean keepInventory;
+	public final Boolean keepExperience;
 	public final HandlingMethod method;
 	public final Integer timeout;
 	public final Double loss;
+	public final Double lossExp;
 	public final Set<ListItem> whitelist;
 	public final Set<ListItem> blacklist;
 
@@ -30,8 +32,9 @@ public class CauseData {
 	
 	public CauseData(DeathControl plugin, RawOptions raw) throws ListNotFoundException, IllegalPropertyException{
 		this.raw = raw;
-		
+
 		this.keepInventory = (raw.isDefined(RawOptions.NODE_KEEP_INVENTORY) ? raw.keepInventory : null);
+		this.keepExperience = (raw.isDefined(RawOptions.NODE_KEEP_EXPERIENCE) ? raw.keepExperience : null);
 		
 		if(raw.isDefined(RawOptions.NODE_COST)){
 			try{
@@ -45,7 +48,7 @@ public class CauseData {
 					this.costIsPercentage = false;
 				}
 			} catch(NumberFormatException ex){
-				throw new IllegalPropertyException("cost", raw.rawCost);
+				throw new IllegalPropertyException(RawOptions.NODE_COST, raw.rawCost);
 			}
 		} else {
 			this.cost = null;
@@ -55,16 +58,22 @@ public class CauseData {
 		try{
 			this.method = (raw.isDefined(RawOptions.NODE_METHOD) ? HandlingMethod.valueOf(raw.method.toUpperCase()) : null);
 		} catch(IllegalArgumentException e){
-			throw new IllegalPropertyException("method", raw.method);
+			throw new IllegalPropertyException(RawOptions.NODE_METHOD, raw.method);
 		}
 		
 		this.timeout = (raw.isDefined(RawOptions.NODE_TIMEOUT) ? raw.timeout : null);
-		
+
 		if(raw.isDefined(RawOptions.NODE_LOSS_PERCENTAGE)){
 			if(raw.loss < 0 || raw.loss >= 100)
-				throw new IllegalPropertyException("loss", Double.toString(raw.loss));
+				throw new IllegalPropertyException(RawOptions.NODE_LOSS_PERCENTAGE, Double.toString(raw.loss));
 			this.loss = raw.loss;
 		} else this.loss = null;
+
+		if(raw.isDefined(RawOptions.NODE_LOSS_PERCENTAGE_EXP)){
+			if(raw.lossExp < 0 || raw.lossExp >= 100)
+				throw new IllegalPropertyException(RawOptions.NODE_LOSS_PERCENTAGE_EXP, Double.toString(raw.loss));
+			this.lossExp = raw.lossExp;
+		} else this.lossExp = null;
 		
 		
 		if(raw.isDefined(RawOptions.NODE_WHITELIST)){
@@ -79,7 +88,7 @@ public class CauseData {
 					}
 				}
 			} else
-				throw new IllegalPropertyException("whitelist", "NOT A LIST");
+				throw new IllegalPropertyException(RawOptions.NODE_WHITELIST, "NOT A LIST");
 		} else
 			this.whitelist = null;
 
@@ -96,7 +105,7 @@ public class CauseData {
 					}
 				}
 			} else
-				throw new IllegalPropertyException("blacklist", "NOT A LIST");
+				throw new IllegalPropertyException(RawOptions.NODE_BLACKLIST, "NOT A LIST");
 		} else
 			this.blacklist = null;
 		

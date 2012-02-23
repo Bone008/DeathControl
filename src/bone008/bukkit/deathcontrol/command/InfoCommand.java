@@ -49,11 +49,13 @@ public class InfoCommand extends SubCommand {
 				}
 				sender.sendMessage(ChatColor.GRAY + "Current settings for "+ChatColor.YELLOW+dc.toHumanString()+ChatColor.GRAY+":");
 				sender.sendMessage(pre + ChatColor.WHITE + "keep-inventory: " + ChatColor.YELLOW + settings.keepInventory());
+				sender.sendMessage(pre + ChatColor.WHITE + "keep-experience: " + ChatColor.YELLOW + settings.keepExperience());
 				sender.sendMessage(pre + ChatColor.WHITE + "cost: " + ChatColor.YELLOW + settings.getRawCost());
 				sender.sendMessage(pre + ChatColor.WHITE + "method: " + ChatColor.YELLOW + settings.getMethod().toString());
 				if(settings.getMethod() == HandlingMethod.COMMAND)
 					sender.sendMessage(pre + ChatColor.WHITE + "timeout: " + ChatColor.YELLOW + settings.getTimeout());
 				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage: " + ChatColor.YELLOW + settings.getLoss()+"%");
+				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage-experience: " + ChatColor.YELLOW + settings.getLossExp()+"%");
 				sender.sendMessage(pre + ChatColor.WHITE + "whitelist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
 				sender.sendMessage(pre + ChatColor.WHITE + "blacklist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
 				return;

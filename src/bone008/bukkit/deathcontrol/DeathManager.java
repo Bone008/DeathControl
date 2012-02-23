@@ -14,18 +14,22 @@ public class DeathManager {
 
 	private boolean valid = true;
 
-	private DeathControl plugin;
-	private Player ply;
-	private Location deathLocation;
-	private List<ItemStack> keptItems;
-	private HandlingMethod method;
-	private double cost;
+	private final DeathControl plugin;
+	private final Player ply;
+	private final Location deathLocation;
+	private final List<ItemStack> keptItems;
+	private final int keptExp;
+	private final int droppedExp;
+	private final HandlingMethod method;
+	private final double cost;
 
-	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, HandlingMethod method, double cost) {
+	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost) {
 		this.plugin = plugin;
 		this.ply = ply;
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
+		this.keptExp = keptExp;
+		this.droppedExp = keptExp;
 		this.method = method;
 		this.cost = cost;
 	}
@@ -36,6 +40,8 @@ public class DeathManager {
 
 		// drops items
 		Utilities.dropItems(deathLocation, keptItems, true);
+		// drops experience orbs
+		Utilities.dropExp(deathLocation, droppedExp, true);
 
 		// sends notification to the player
 		if (showMessage) {
@@ -85,6 +91,11 @@ public class DeathManager {
 				if (leftovers.size() > 0) {
 					Utilities.dropItems(ply.getLocation(), leftovers, false);
 				}
+				success = true;
+			}
+			
+			if(keptExp > 0){
+				ply.giveExp(keptExp);
 				success = true;
 			}
 		}
