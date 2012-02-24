@@ -108,6 +108,18 @@ public class CauseSettings {
 		return DeathConfiguration.default_timeout;
 	}
 
+	public int getTimeoutOnQuit() {
+		if (data.timeoutOnQuit != null)
+			return data.timeoutOnQuit;
+		else if (cause.parent != null) {
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null)
+				return s.getTimeoutOnQuit();
+		}
+
+		return DeathConfiguration.default_timeoutOnQuit;
+	}
+
 	public boolean keepInventory() {
 		if (data.keepInventory != null)
 			return data.keepInventory;

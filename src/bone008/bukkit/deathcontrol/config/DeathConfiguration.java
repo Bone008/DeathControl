@@ -29,9 +29,10 @@ public class DeathConfiguration {
 	public static final boolean			default_keepInventory = false;
 	public static final boolean			default_keepExperience = false;
 	public static final double			default_cost = 0;
-	public static final String			default_cost_raw = "0";
+	public static final String			default_cost_raw = String.valueOf(default_cost);
 	public static final HandlingMethod	default_method = HandlingMethod.AUTO;
 	public static final int				default_timeout = 15;
+	public static final int				default_timeoutOnQuit = 30;
 	public static final double			default_loss = 0;
 	public static final double			default_lossExp = default_loss;
 	
@@ -151,8 +152,9 @@ public class DeathConfiguration {
 		public static final String NODE_KEEP_INVENTORY = "keep-inventory";
 		public static final String NODE_KEEP_EXPERIENCE = "keep-experience";
 		public static final String NODE_COST = "cost";
-		public static final String NODE_METHOD= "method";
-		public static final String NODE_TIMEOUT= "timeout";
+		public static final String NODE_METHOD = "method";
+		public static final String NODE_TIMEOUT = "timeout";
+		public static final String NODE_TIMEOUT_ON_QUIT = "timeout-on-quit";
 		public static final String NODE_LOSS_PERCENTAGE = "loss-percentage";
 		public static final String NODE_LOSS_PERCENTAGE_EXP = "loss-percentage-experience";
 		public static final String NODE_WHITELIST = "whitelist";
@@ -163,6 +165,7 @@ public class DeathConfiguration {
 		public final String rawCost;
 		public final String method;
 		public final int timeout;
+		public final int timeoutOnQuit;
 		public final double loss;
 		public final double lossExp;
 		public final List<String> whitelist;
@@ -179,6 +182,7 @@ public class DeathConfiguration {
 			rawCost			= Utilities.getConfigString(sec, NODE_COST, default_cost_raw);
 			method			= sec.getString(NODE_METHOD); // don't provide default, because that's not raw
 			timeout			= Utilities.getConfigInt(sec, NODE_TIMEOUT, default_timeout);
+			timeoutOnQuit	= Utilities.getConfigInt(sec, NODE_TIMEOUT_ON_QUIT, default_timeoutOnQuit);
 			loss			= Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE, default_loss);
 			lossExp			= Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE_EXP, default_lossExp);
 			whitelist		= sec.getStringList(NODE_WHITELIST);

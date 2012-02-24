@@ -20,6 +20,7 @@ public class CauseData {
 	public final Boolean keepExperience;
 	public final HandlingMethod method;
 	public final Integer timeout;
+	public final Integer timeoutOnQuit;
 	public final Double loss;
 	public final Double lossExp;
 	public final Set<ListItem> whitelist;
@@ -60,8 +61,9 @@ public class CauseData {
 		} catch(IllegalArgumentException e){
 			throw new IllegalPropertyException(RawOptions.NODE_METHOD, raw.method);
 		}
-		
+
 		this.timeout = (raw.isDefined(RawOptions.NODE_TIMEOUT) ? raw.timeout : null);
+		this.timeoutOnQuit = (raw.isDefined(RawOptions.NODE_TIMEOUT_ON_QUIT) ? raw.timeoutOnQuit : null);
 
 		if(raw.isDefined(RawOptions.NODE_LOSS_PERCENTAGE)){
 			if(raw.loss < 0 || raw.loss >= 100)

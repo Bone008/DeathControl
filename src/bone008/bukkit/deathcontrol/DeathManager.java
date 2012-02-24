@@ -22,8 +22,9 @@ public class DeathManager {
 	private final int droppedExp;
 	private final HandlingMethod method;
 	private final double cost;
+	private final int timeoutOnQuit;
 
-	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost) {
+	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
 		this.plugin = plugin;
 		this.ply = ply;
 		this.deathLocation = ply.getLocation();
@@ -32,6 +33,7 @@ public class DeathManager {
 		this.droppedExp = keptExp;
 		this.method = method;
 		this.cost = cost;
+		this.timeoutOnQuit = timeoutOnQuit;
 	}
 
 	public void expire(boolean showMessage) {
@@ -47,10 +49,9 @@ public class DeathManager {
 		if (showMessage) {
 			plugin.display(ply, ChatColor.DARK_RED + "Time is up.");
 			plugin.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
+			// logs to console
+			plugin.log("Timer for " + ply.getName() + " expired! Items dropped.");
 		}
-
-		// logs to console
-		plugin.log("Timer for " + ply.getName() + " expired! Items dropped.");
 
 		unregister();
 	}
@@ -93,8 +94,8 @@ public class DeathManager {
 				}
 				success = true;
 			}
-			
-			if(keptExp > 0){
+
+			if (keptExp > 0) {
 				ply.giveExp(keptExp);
 				success = true;
 			}
@@ -108,6 +109,10 @@ public class DeathManager {
 			return;
 		plugin.removeManager(ply.getName());
 		valid = false;
+	}
+
+	public int getTimeoutOnQuit() {
+		return timeoutOnQuit;
 	}
 
 }

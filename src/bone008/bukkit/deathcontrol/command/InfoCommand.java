@@ -54,6 +54,7 @@ public class InfoCommand extends SubCommand {
 				sender.sendMessage(pre + ChatColor.WHITE + "method: " + ChatColor.YELLOW + settings.getMethod().toString());
 				if(settings.getMethod() == HandlingMethod.COMMAND)
 					sender.sendMessage(pre + ChatColor.WHITE + "timeout: " + ChatColor.YELLOW + settings.getTimeout());
+				sender.sendMessage(pre + ChatColor.WHITE + "timeout-on-quit: " + ChatColor.YELLOW + settings.getTimeoutOnQuit());
 				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage: " + ChatColor.YELLOW + settings.getLoss()+"%");
 				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage-experience: " + ChatColor.YELLOW + settings.getLossExp()+"%");
 				sender.sendMessage(pre + ChatColor.WHITE + "whitelist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));

@@ -97,7 +97,7 @@ public class DeathControlEntityListener implements Listener {
 		HandlingMethod method = causeSettings.getMethod();
 		int timeout = causeSettings.getTimeout();
 
-		final DeathManager dm = new DeathManager(plugin, ply, keptItems, keptExp, droppedExp, method, cost);
+		final DeathManager dm = new DeathManager(plugin, ply, keptItems, keptExp, droppedExp, method, cost, causeSettings.getTimeoutOnQuit());
 		plugin.addManager(ply.getName(), dm);
 
 		if (method == HandlingMethod.COMMAND && timeout > 0) {
