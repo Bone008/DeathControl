@@ -36,9 +36,9 @@ public class DeathManager {
 		this.timeoutOnQuit = timeoutOnQuit;
 	}
 
-	public void expire(boolean showMessage) {
+	public boolean expire(boolean showMessage) {
 		if (!valid)
-			return;
+			return false;
 
 		// drops items
 		Utilities.dropItems(deathLocation, keptItems, true);
@@ -54,6 +54,7 @@ public class DeathManager {
 		}
 
 		unregister();
+		return true;
 	}
 
 	public void respawned() {

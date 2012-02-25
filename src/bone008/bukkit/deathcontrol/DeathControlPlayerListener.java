@@ -60,7 +60,8 @@ public class DeathControlPlayerListener implements Listener {
 		if(logoffExpireTimers.containsKey(plyName)){
 			plugin.getServer().getScheduler().cancelTask(logoffExpireTimers.get(plyName));
 			logoffExpireTimers.remove(plyName);
-			plugin.log(plyName + " rejoined. Expiration timer stopped.");
+			if(plugin.getManager(plyName) != null)
+				plugin.log(plyName + " rejoined. Expiration timer stopped.");
 		}
 	}
 
@@ -75,8 +76,8 @@ public class DeathControlPlayerListener implements Listener {
 
 		@Override
 		public void run() {
-			manager.expire(false);
-			plugin.log("Saved items for disconnected player " + plyName + " were dropped!");
+			if(manager.expire(false))
+				plugin.log("Saved items for disconnected player " + plyName + " were dropped!");
 		}
 	}
 
