@@ -47,16 +47,16 @@ public class InfoCommand extends SubCommand {
 					sender.sendMessage(ChatColor.RED + "Use " + ChatColor.BLUE + "/" + mainLabel + " info causes" + ChatColor.RED + " for a list of all causes.");
 					return;
 				}
-				sender.sendMessage(ChatColor.GRAY + "Current settings for "+ChatColor.YELLOW+dc.toHumanString()+ChatColor.GRAY+":");
+				sender.sendMessage(ChatColor.GRAY + "Current settings for " + ChatColor.YELLOW + dc.toHumanString() + ChatColor.GRAY + ":");
 				sender.sendMessage(pre + ChatColor.WHITE + "keep-inventory: " + ChatColor.YELLOW + settings.keepInventory());
 				sender.sendMessage(pre + ChatColor.WHITE + "keep-experience: " + ChatColor.YELLOW + settings.keepExperience());
 				sender.sendMessage(pre + ChatColor.WHITE + "cost: " + ChatColor.YELLOW + settings.getRawCost());
 				sender.sendMessage(pre + ChatColor.WHITE + "method: " + ChatColor.YELLOW + settings.getMethod().toString());
-				if(settings.getMethod() == HandlingMethod.COMMAND)
+				if (settings.getMethod() == HandlingMethod.COMMAND)
 					sender.sendMessage(pre + ChatColor.WHITE + "timeout: " + ChatColor.YELLOW + settings.getTimeout());
 				sender.sendMessage(pre + ChatColor.WHITE + "timeout-on-quit: " + ChatColor.YELLOW + settings.getTimeoutOnQuit());
-				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage: " + ChatColor.YELLOW + settings.getLoss()+"%");
-				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage-experience: " + ChatColor.YELLOW + settings.getLossExp()+"%");
+				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage: " + ChatColor.YELLOW + settings.getLoss() + "%");
+				sender.sendMessage(pre + ChatColor.WHITE + "loss-percentage-experience: " + ChatColor.YELLOW + settings.getLossExp() + "%");
 				sender.sendMessage(pre + ChatColor.WHITE + "whitelist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
 				sender.sendMessage(pre + ChatColor.WHITE + "blacklist: " + ChatColor.YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
 				return;
@@ -70,21 +70,21 @@ public class InfoCommand extends SubCommand {
 				}
 				return;
 			}
-			
-			else if(args[0].equalsIgnoreCase("list") && args.length >= 2){
+
+			else if (args[0].equalsIgnoreCase("list") && args.length >= 2) {
 				List<ListItem> list = manager.plugin.deathLists.getList(args[1].toLowerCase());
 				if (list == null) {
 					sender.sendMessage(ChatColor.RED + "There is no list called " + ChatColor.DARK_RED + args[1]);
 					sender.sendMessage(ChatColor.RED + "Use " + ChatColor.BLUE + "/" + mainLabel + " info causes" + ChatColor.RED + " for a list of all causes.");
 					return;
 				}
-				
+
 				Collections.sort(list, ListItem.getComparator());
-				
-				sender.sendMessage(ChatColor.GRAY + "Current entries for list "+ChatColor.YELLOW+args[1].toLowerCase()+ChatColor.GRAY+":");
+
+				sender.sendMessage(ChatColor.GRAY + "Current entries for list " + ChatColor.YELLOW + args[1].toLowerCase() + ChatColor.GRAY + ":");
 				StringBuilder sb = new StringBuilder();
-				for(ListItem item: list){
-					if(sb.length() > 0){
+				for (ListItem item : list) {
+					if (sb.length() > 0) {
 						sb.append(", ");
 					}
 					sb.append(item.toHumanString());
@@ -95,8 +95,6 @@ public class InfoCommand extends SubCommand {
 			}
 		}
 
-		
-		
 		// get here when no valid command was captured above
 		sender.sendMessage(ChatColor.GRAY + "==== DeathControl configuration ====");
 		sender.sendMessage(pre + ChatColor.WHITE + "registered valid death causes: " + ChatColor.YELLOW + manager.plugin.config.handlings.size());

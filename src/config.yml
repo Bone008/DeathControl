@@ -6,4 +6,4 @@
 
 
 use-bukkit-permissions: true
-logging-level: 1
+logging-level: standard

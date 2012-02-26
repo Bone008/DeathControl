@@ -14,9 +14,7 @@ public class ReloadCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, Command mainCmd, String mainLabel, String[] args)
-	throws CommandException {
-		
+	public void execute(CommandSender sender, Command mainCmd, String mainLabel, String[] args) throws CommandException {
 		checkPermission(sender, DeathControl.PERMISSION_ADMIN);
 		manager.plugin.loadConfig();
 		sender.sendMessage(ChatColor.GREEN + "Reloaded config files!");

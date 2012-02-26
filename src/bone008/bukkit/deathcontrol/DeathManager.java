@@ -2,6 +2,7 @@ package bone008.bukkit.deathcontrol;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -50,7 +51,7 @@ public class DeathManager {
 			plugin.display(ply, ChatColor.DARK_RED + "Time is up.");
 			plugin.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
 			// logs to console
-			plugin.log("Timer for " + ply.getName() + " expired! Items dropped.");
+			plugin.log(Level.FINE, "Timer for " + ply.getName() + " expired! Items dropped.");
 		}
 
 		unregister();
@@ -62,7 +63,7 @@ public class DeathManager {
 			return;
 		if (method == HandlingMethod.AUTO) {
 			if (restore())
-				plugin.log(ply.getName() + " respawned and got back their items.");
+				plugin.log(Level.FINE, ply.getName() + " respawned and got back their items.");
 			unregister();
 		}
 	}
@@ -71,7 +72,7 @@ public class DeathManager {
 		if (method == HandlingMethod.COMMAND && this.valid) {
 			if (restore()) {
 				plugin.display(ply, "You got your items back!");
-				plugin.log(ply.getName() + " got back their items via command.");
+				plugin.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			} else {
 				plugin.display(ply, ChatColor.RED + "You don't have enough money for that!");

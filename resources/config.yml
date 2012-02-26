@@ -6,10 +6,12 @@
 
 
 use-bukkit-permissions: true
-logging-level: 1
+logging-level: standard
+
 DeathCauses:
-    VOID:
+    VOID, LAVA:
         keep-inventory: true
+        keep-experience: true
     PLAYER:
         keep-inventory: true
         cost: 300

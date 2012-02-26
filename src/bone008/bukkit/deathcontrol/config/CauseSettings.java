@@ -9,8 +9,7 @@ import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 
 /**
- * General interface that represents the settings for a specific death cause.
- * Has some general methods implemented that are valid for every sub-class.
+ * General interface that represents the settings for a specific death cause. Has some general methods implemented that are valid for every sub-class.
  * 
  * @see RootCauseSettings, ParentedCauseSettings
  */
@@ -177,11 +176,9 @@ public class CauseSettings {
 	}
 
 	/**
-	 * Returns a Set of all whitelist-listnames that are applied to these
-	 * settings, including those inherited from parents.
+	 * Returns a Set of all whitelist-listnames that are applied to these settings, including those inherited from parents.
 	 * 
-	 * @return always a valid Set&lt;String&gt;. May be empty if there are no
-	 *         whitelists.
+	 * @return always a valid Set&lt;String&gt;. May be empty if there are no whitelists.
 	 */
 	public Set<String> getRawWhitelist() {
 		Set<String> ret = new HashSet<String>();
@@ -201,11 +198,9 @@ public class CauseSettings {
 	}
 
 	/**
-	 * Returns a Set of all blacklist-listnames that are applied to these
-	 * settings, including those inherited from parents.
+	 * Returns a Set of all blacklist-listnames that are applied to these settings, including those inherited from parents.
 	 * 
-	 * @return always a valid Set&lt;String&gt;. May be empty if there are no
-	 *         blacklists.
+	 * @return always a valid Set&lt;String&gt;. May be empty if there are no blacklists.
 	 */
 	public Set<String> getRawBlacklist() {
 		Set<String> ret = new HashSet<String>();
@@ -225,8 +220,7 @@ public class CauseSettings {
 	}
 
 	/**
-	 * Checks if the given item may be kept. Combines whitelists and blacklists
-	 * to match the result.
+	 * Checks if the given item may be kept. Combines whitelists and blacklists to match the result.
 	 * 
 	 * @param itemStack
 	 *            the item stack to check for

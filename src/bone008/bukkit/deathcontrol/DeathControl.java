@@ -22,236 +22,222 @@ import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Methods;
-
-
 public class DeathControl extends JavaPlugin {
-	public static final Logger logger = Logger.getLogger("Minecraft");
+	private static final Logger logger = Logger.getLogger("Minecraft");
 	public static DeathControl instance;
-	
+
 	private final DeathControlEntityListener entityListener = new DeathControlEntityListener(this);
 	private final DeathControlPlayerListener playerListener = new DeathControlPlayerListener(this);
 
 	private File helpFile = null;
-	
+
 	public DeathConfiguration config;
 	public DeathLists deathLists;
 	public PluginDescriptionFile pdfFile;
 	private String prefix;
 
 	private HashMap<String, DeathManager> managers = new HashMap<String, DeathManager>();
-	
+
 	public static final long helpSize = 227;
-	public static final DeathPermission PERMISSION_USE      = new DeathPermission("deathcontrol.use", false);
-	public static final DeathPermission PERMISSION_FREE     = new DeathPermission("deathcontrol.free", true);
-	public static final DeathPermission PERMISSION_INFO     = new DeathPermission("deathcontrol.info", true);
-	public static final DeathPermission PERMISSION_ADMIN    = new DeathPermission("deathcontrol.admin", true);
-	
-	
+	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
+	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
+	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
+	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
+
 	public DeathControl() {
 		instance = this;
 	}
-	
+
 	@Override
 	public void onDisable() {
-		if(this.managers.size() > 0){
-			for(DeathManager m: managers.values()){
+		if (this.managers.size() > 0) {
+			for (DeathManager m : managers.values()) {
 				m.expire(true);
 			}
 		}
-		
-		log("is disabled!");
+		log(Level.INFO, "is disabled!", true);
 	}
-	
-	
+
 	@Override
 	public void onEnable() {
 		helpFile = new File(getDataFolder(), "help.txt");
 		pdfFile = getDescription();
-		prefix = "["+pdfFile.getName()+"] ";
-		
+		prefix = "[" + pdfFile.getName() + "] ";
+
 		// load/generate the configurations and setup permissions if needed
 		loadConfig();
-		
+
 		// register events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(entityListener, this);
 		pm.registerEvents(playerListener, this);
-		
+
 		getCommand("death").setExecutor(new CommandManager(this));
-		
-		log("version "+pdfFile.getVersion()+" is enabled!");
+
+		log(Level.INFO, "version " + pdfFile.getVersion() + " is enabled!", true);
 	}
-
-	
-
 
 	/**
 	 * Loads or reloads the config files and generates the default files if necessary.
 	 */
-	public void loadConfig(){
+	public void loadConfig() {
 		// create the default files
 		writeDefault("config.yml", "config.yml", false); // only write the default if no file exists
 		writeDefault("lists.txt", "lists.txt", false);
-		
+
 		// now load the config, otherwise it would be created before the exists check
 		reloadConfig();
 		FileConfiguration cfg = getConfig();
 		cfg.options().copyDefaults(true);
 		cfg.options().copyHeader(true);
-		saveConfig();
-				
+
 		// only update the help file if there currently is one, as it is deprecated.
-		if(helpFile.exists() && helpFile.isFile()){
-			System.out.println("check: "+checkHelpUpdate());
+		if (helpFile.exists() && helpFile.isFile()) {
+			System.out.println("check: " + checkHelpUpdate());
 			writeDefault("help.txt", "help.txt", checkHelpUpdate());
 		}
-		
+
 		// parse the config & lists files
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new DeathConfiguration(this, cfg);
-		
-		log( "is now using " + (config.bukkitPerms ? "bukkit permissions" : "the OP-system") +"!" );
+		saveConfig();
+
+		log(Level.CONFIG, "is now using " + (config.bukkitPerms ? "bukkit permissions" : "the OP-system") + "!");
 	}
-	
-	
+
 	/**
 	 * Writes a resource contained in the jar to a specified destination.
 	 * 
-	 * @param resourceName The name of the resource in the jar
-	 * @param destination The destination path, relative to the plugin's data folder
-	 * @param force Specifies if the file should be overwritten when already existing
+	 * @param resourceName
+	 *            The name of the resource in the jar
+	 * @param destination
+	 *            The destination path, relative to the plugin's data folder
+	 * @param force
+	 *            Specifies if the file should be overwritten when already existing
 	 * @return true, if and only if the file was successfully written
 	 */
-	public boolean writeDefault(String resourceName, String destination, boolean force){
+	public boolean writeDefault(String resourceName, String destination, boolean force) {
 		boolean ret = false;
 		File file = new File(getDataFolder(), destination);
-		
-		if(!force && file.exists())
+
+		if (!force && file.exists())
 			return false;
-		
-		InputStream in = getClass().getResourceAsStream("/resources/"+resourceName);
-		if(in == null){
+
+		InputStream in = getClass().getResourceAsStream("/resources/" + resourceName);
+		if (in == null) {
 			throw new ResourceNotFoundError(resourceName);
 		}
-		
+
 		FileOutputStream out = null;
-		try{
-			
+		try {
+
 			getDataFolder().mkdirs();
 			file.delete();
 			file.createNewFile();
-			
+
 			out = new FileOutputStream(file);
 			byte[] buffer = new byte[8192];
 			int remaining = 0;
-			while( (remaining = in.read(buffer)) > 0 ) {
+			while ((remaining = in.read(buffer)) > 0) {
 				out.write(buffer, 0, remaining);
 			}
-			
-			log("default file "+resourceName+" created/updated!");
+
+			log(Level.INFO, "default file " + resourceName + " created/updated!", true);
 			ret = true;
-			
-		}
-		catch(IOException e){
+
+		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (in != null)
+					in.close();
+			} catch (IOException e) {
+			}
+			try {
+				if (out != null)
+					out.close();
+			} catch (IOException e) {
+			}
 		}
-		finally{
-			try{ if(in != null) in.close(); }
-			catch(IOException e){}
-			try{ if(out != null) out.close(); }
-			catch(IOException e){}
-		}
-		
+
 		return ret;
 	}
-	
-	
-	
+
 	/**
 	 * Checks if the help file is outdated by comparing its length with the internal resource.
+	 * 
 	 * @return true, if help.txt needs to be updated, otherwise false
 	 */
-	private boolean checkHelpUpdate(){
-		if(!helpFile.exists() || !helpFile.isFile())
+	private boolean checkHelpUpdate() {
+		if (!helpFile.exists() || !helpFile.isFile())
 			return true;
 		return helpFile.length() != helpSize;
 	}
-	
-	
-	public void addManager(String name, DeathManager m){
+
+	public void addManager(String name, DeathManager m) {
 		managers.put(name, m);
 	}
-	public DeathManager getManager(String name){
+
+	public DeathManager getManager(String name) {
 		return managers.get(name);
 	}
-	public void removeManager(String name){
+
+	public void removeManager(String name) {
 		managers.remove(name);
 	}
-	
-	public void expireManager(String name){
+
+	public void expireManager(String name) {
 		DeathManager m = managers.get(name);
-		if(m != null){
+		if (m != null) {
 			m.expire(true);
 			removeManager(name);
 		}
 	}
-	
-	
-	
-	public boolean hasPermission(Permissible who, DeathPermission perm){
-		if(config.bukkitPerms)
+
+	public boolean hasPermission(Permissible who, DeathPermission perm) {
+		if (config.bukkitPerms)
 			return who.hasPermission(perm.node);
-		else{
-			if(!perm.opOnly)
+		else {
+			if (!perm.opOnly)
 				return true;
-			if(who instanceof ServerOperator){
-				return ((ServerOperator)who).isOp();
-			}
-			else{
-				log(Level.WARNING, "Could not check permission "+perm.node+" for "+who.toString()+": unsupported type! Denying access ...");
+			if (who instanceof ServerOperator) {
+				return ((ServerOperator) who).isOp();
+			} else {
+				log(Level.WARNING, "Could not check permission " + perm.node + " for " + who.toString() + ": unsupported type! Denying access ...");
 				return false;
 			}
 		}
 	}
-	
-	
-	/**
-	 * Attempts to get the active Register Method. 
-	 * @return The Method, or null if there is no active one or Register is not loaded.
-	 */
-	public Method getRegisterMethod(){
-		try{
-			return Methods.getMethod();
-		} catch(NoClassDefFoundError err){
-		} // ugly solution, I know ...
-		return null;
-	}
-	
-	
-	
+
 	// displays a message to the player
-	public void display(Player ply, String message){
-		ply.sendMessage(ChatColor.GRAY+prefix + ChatColor.WHITE+message);
-	}
-	
-	// logs a message to console
-	public void log(String msg){
-		log(Level.INFO, msg);
-	}
-	public void log(Level lvl, String msg){
-		log(lvl, msg, true);
-	}
-	public void log(Level lvl, String msg, boolean usePrefix){
-		String[] lines = msg.split("\n");
-		if(lines.length > 1){
-			for(String line: lines)
-				log(lvl, line.trim(), usePrefix);
-		}
-		else
-			logger.log(lvl, (usePrefix ? prefix:"") + msg);
+	public void display(Player ply, String message) {
+		ply.sendMessage(ChatColor.GRAY + prefix + ChatColor.WHITE + message);
 	}
 
-	
+	// logs a message to console
+	public void log(String msg) {
+		log(Level.INFO, msg);
+	}
+
+	public void log(Level lvl, String msg) {
+		log(lvl, msg, false);
+	}
+
+	public void log(Level lvl, String msg, boolean overrideLevel) {
+		log(lvl, msg, overrideLevel, true);
+	}
+
+	public void log(Level lvl, String msg, boolean overrideLevel, boolean usePrefix) {
+		if (!overrideLevel && lvl.intValue() < config.loggingLevel)
+			return;
+		
+		// levels below INFO don't get properly displayed by the minecraft logger
+		if(lvl.intValue() < Level.INFO.intValue())
+			lvl = Level.INFO;
+		
+		String[] lines = msg.split("\n");
+		for (String line : lines)
+			logger.log(lvl, (usePrefix ? (new StringBuilder(prefix).append(line).toString()) : line));
+	}
+
 }

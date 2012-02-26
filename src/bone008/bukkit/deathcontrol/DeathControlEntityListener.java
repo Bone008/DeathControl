@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -51,7 +52,7 @@ public class DeathControlEntityListener implements Listener {
 
 		List<ItemStack> drops = e.getDrops();
 		final int totalExp = ply.getTotalExperience();
-		
+
 		List<ItemStack> keptItems = null;
 		int keptExp = 0;
 		int droppedExp = 0;
@@ -112,7 +113,7 @@ public class DeathControlEntityListener implements Listener {
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
 		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
-		
+
 		log2.append("Handling death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
 		log2.append("| Death cause: ").append(deathCause.toHumanString()).append('\n');
@@ -124,17 +125,16 @@ public class DeathControlEntityListener implements Listener {
 		else
 			log2.append("some");
 		log2.append('\n');
-		if(keptExp > 0)
+		if (keptExp > 0)
 			log2.append("| Kept experience: ").append(keptExp).append(" of ").append(totalExp).append('\n');
 		log2.append("| Method: ").append(method).append("\n");
 		if (method == HandlingMethod.COMMAND)
 			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");
 
-		if (plugin.config.loggingLevel == 1)
-			plugin.log(log1.toString().trim());
-		else if (plugin.config.loggingLevel == 2)
-			plugin.log(log2.toString().trim());
-		// else do nothing -> no logging
+		if (plugin.config.loggingLevel <= Level.FINEST.intValue())
+			plugin.log(Level.FINE, log2.toString().trim());
+		else if (plugin.config.loggingLevel <= Level.INFO.intValue())
+			plugin.log(Level.INFO, log1.toString().trim());
 
 		plugin.display(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (drops.isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
 		plugin.display(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
@@ -149,8 +149,7 @@ public class DeathControlEntityListener implements Listener {
 	}
 
 	/**
-	 * Calculates a list of {@link ItemStack}s that the player keeps. Considers
-	 * lists and loss-percentage.
+	 * Calculates a list of {@link ItemStack}s that the player keeps. Considers lists and loss-percentage.
 	 * 
 	 * @param droppedItems
 	 *            the original drops; not affected!

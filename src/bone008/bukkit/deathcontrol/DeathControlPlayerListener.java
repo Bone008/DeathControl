@@ -1,6 +1,7 @@
 package bone008.bukkit.deathcontrol;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +48,7 @@ public class DeathControlPlayerListener implements Listener {
 			int t = m.getTimeoutOnQuit();
 			if (t > 0) {
 				logoffExpireTimers.put(plyName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, t * 20L));
-				plugin.log(plyName + " left the game. Dropping saved items in " + t + " seconds ...");
+				plugin.log(Level.INFO, plyName + " left the game. Dropping saved items in " + t + " seconds ...");
 			} else {
 				task.run();
 			}
@@ -61,7 +62,7 @@ public class DeathControlPlayerListener implements Listener {
 			plugin.getServer().getScheduler().cancelTask(logoffExpireTimers.get(plyName));
 			logoffExpireTimers.remove(plyName);
 			if(plugin.getManager(plyName) != null)
-				plugin.log(plyName + " rejoined. Expiration timer stopped.");
+				plugin.log(Level.FINE, plyName + " rejoined. Expiration timer stopped.");
 		}
 	}
 
@@ -77,7 +78,7 @@ public class DeathControlPlayerListener implements Listener {
 		@Override
 		public void run() {
 			if(manager.expire(false))
-				plugin.log("Saved items for disconnected player " + plyName + " were dropped!");
+				plugin.log(Level.INFO, "Saved items for disconnected player " + plyName + " were dropped!");
 		}
 	}
 
