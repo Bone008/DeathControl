@@ -4,14 +4,15 @@ import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import bone008.bukkit.deathcontrol.DeathManager.Response;
 
-public class DeathControlEntityListener extends EntityListener{
+public class DeathControlEntityListener implements Listener{
 	
 	private DeathControl plugin;
 	
@@ -19,7 +20,7 @@ public class DeathControlEntityListener extends EntityListener{
 		this.plugin = plugin;
 	}
 	
-	@Override
+	@EventHandler
 	public void onEntityDeath(EntityDeathEvent event){
 		if(!(event instanceof PlayerDeathEvent)){
 			return;

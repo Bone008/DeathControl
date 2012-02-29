@@ -1,11 +1,12 @@
 package bone008.bukkit.deathcontrol;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class DeathControlPlayerListener extends PlayerListener {
+public class DeathControlPlayerListener implements Listener {
 
 	private DeathControl plugin;
 	
@@ -13,7 +14,7 @@ public class DeathControlPlayerListener extends PlayerListener {
 		this.plugin = plugin;
 	}
 	
-	@Override
+	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
 		final Player ply = event.getPlayer();
 		
@@ -31,7 +32,7 @@ public class DeathControlPlayerListener extends PlayerListener {
 	}
 	
 	
-	@Override
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		Player ply = event.getPlayer();
 		
