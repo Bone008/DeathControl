@@ -19,8 +19,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Methods;
+//import com.nijikokun.register.payment.Method;
+//import com.nijikokun.register.payment.Methods;
 
 import bone008.bukkit.deathcontrol.command.CommandManager;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;

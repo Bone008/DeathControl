@@ -1,9 +1,9 @@
 name: DeathControl
 main: bone008.bukkit.deathcontrol.DeathControl
-version: 1.4
+version: 1.41.1
 author: Bone008
 description: Allows items to be kept when a player dies for specific reasons.
-softdepend: [Register]
+softdepend: [Vault]
 
 commands:
     death:
