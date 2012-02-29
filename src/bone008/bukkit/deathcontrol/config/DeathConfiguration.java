@@ -141,6 +141,10 @@ public class DeathConfiguration {
 			return null;
 		}
 	}
+    
+    public List<String> getWorlds() {
+        return config.getStringList("worlds");
+    }
 	
 	
 	

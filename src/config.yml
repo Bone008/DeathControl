@@ -7,3 +7,4 @@
 
 use-bukkit-permissions: true
 logging-level: 1
+worlds: world
