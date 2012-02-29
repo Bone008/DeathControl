@@ -64,6 +64,12 @@ public class DeathManager {
 			return new Response();
 		}
 
+        // checks if the player is in the enabled worlds
+        if (!plugin.config.getWorlds().contains(ply.getWorld().getName())) {
+            unregister();
+            return new Response();
+        }
+
 		// check use permission
 		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_USE)) {
 			unregister();

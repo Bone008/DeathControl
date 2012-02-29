@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.ServerOperator;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -75,9 +73,8 @@ public class DeathControl extends JavaPlugin {
 		// register events
 		PluginManager pm = getServer().getPluginManager();
 		
-		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
+		pm.registerEvents(this.entityListener, this);
+		pm.registerEvents(this.playerListener, this);
 		
 		getCommand("death").setExecutor(new CommandManager(this));
 		
