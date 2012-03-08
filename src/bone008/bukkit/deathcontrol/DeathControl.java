@@ -72,8 +72,12 @@ public class DeathControl extends JavaPlugin {
 		pm.registerEvents(entityListener, this);
 		pm.registerEvents(playerListener, this);
 
+		// setup commands
 		getCommand("death").setExecutor(new CommandManager(this));
 
+		// setup economy
+		EconomyUtils.init();
+		
 		log(Level.INFO, "version " + pdfFile.getVersion() + " is enabled!", true);
 	}
 
