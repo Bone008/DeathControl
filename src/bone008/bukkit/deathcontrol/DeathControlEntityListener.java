@@ -46,9 +46,16 @@ public class DeathControlEntityListener implements Listener {
 		EntityDamageEvent damageEvent = ply.getLastDamageCause();
 		DeathCause deathCause = DeathCause.getDeathCause(damageEvent);
 
+		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
+
+		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
+
+		
 		CauseSettings causeSettings = plugin.config.getSettings(deathCause);
-		if (causeSettings == null)
+		if (causeSettings == null){
+			plugin.log(Level.FINE, log1.append("; No handling configured!").toString());
 			return;
+		}
 
 		List<ItemStack> drops = e.getDrops();
 		final int totalExp = ply.getTotalExperience();
@@ -109,10 +116,6 @@ public class DeathControlEntityListener implements Listener {
 				}
 			}, timeout * 20L);
 		}
-
-		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
-
-		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
 
 		log2.append("Handling death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
