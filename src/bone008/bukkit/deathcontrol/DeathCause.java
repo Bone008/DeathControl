@@ -97,9 +97,7 @@ public enum DeathCause {
 			if(cause == DamageCause.ENTITY_ATTACK && (event instanceof EntityDamageByEntityEvent)){
 				EntityDamageByEntityEvent eEvent = (EntityDamageByEntityEvent)event;
 				Entity damager = eEvent.getDamager();
-				if(damager instanceof Projectile)
-					damager = ((Projectile)damager).getShooter();
-				
+
 				if(damager instanceof Player)
 					return DeathCause.PLAYER;
 				if(damager instanceof Wolf)
@@ -108,7 +106,21 @@ public enum DeathCause {
 					return DeathCause.MOB;
 				return DeathCause.UNKNOWN;
 			}
-			
+			// add support for new Bukkit API
+			if(cause == DamageCause.PROJECTILE && (event instanceof EntityDamageByEntityEvent)){
+				EntityDamageByEntityEvent eEvent = (EntityDamageByEntityEvent)event;
+				Entity damager = eEvent.getDamager();
+				damager = ((Projectile)damager).getShooter();
+				
+				if(damager instanceof Player)
+					return DeathCause.PLAYER;
+				if(damager instanceof Wolf)
+					return DeathCause.MOB_WOLF;
+				if(damager instanceof LivingEntity)
+					return DeathCause.MOB;
+				
+				return DeathCause.UNKNOWN;
+			}
 			
 			// if no special case matched, check for a direct match
 			try{
