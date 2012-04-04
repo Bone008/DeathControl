@@ -20,6 +20,8 @@ public enum DeathCause {
 	SUICIDE("suicide", "committed suicide"),
 	STARVATION("starvation", "starved"),
 	LIGHTNING("lightning", "were struck by lightning"),
+	MAGIC("magic", "were killed by magic"),
+	POISON("poison", "were killed by poison"),
 	DROWNING("drowning", "drowned"),
 	LAVA("lava", "died of lava"),
 	FIRE("fire", "died of fire"),
@@ -84,7 +86,11 @@ public enum DeathCause {
 		return null;
 	}
 	
-	
+	/**
+	 * Retrieves a DeathCause from an EntityDamageEvent.
+	 * @param event the event to use
+	 * @return the DeathCause that fits the DamageCause of the event
+	 */
 	public static DeathCause getDeathCause(EntityDamageEvent event){
 		if(event != null){
 			DamageCause cause = event.getCause();
@@ -94,7 +100,7 @@ public enum DeathCause {
 					return DeathCause.MOB_CREEPER;
 				return DeathCause.EXPLOSION;
 			}
-			if(cause == DamageCause.ENTITY_ATTACK && (event instanceof EntityDamageByEntityEvent)){
+			if((cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE) && (event instanceof EntityDamageByEntityEvent)){
 				EntityDamageByEntityEvent eEvent = (EntityDamageByEntityEvent)event;
 				Entity damager = eEvent.getDamager();
 				if(damager instanceof Projectile)
