@@ -23,6 +23,7 @@ public class CommandManager implements CommandExecutor {
 
 		commandMap.put("help", new HelpCommand(this));
 		commandMap.put("back", new BackCommand(this));
+		commandMap.put("drop", new DropCommand(this));
 		commandMap.put("reload", new ReloadCommand(this));
 		commandMap.put("info", new InfoCommand(this));
 	}
