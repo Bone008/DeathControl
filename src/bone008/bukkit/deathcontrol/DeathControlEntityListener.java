@@ -93,12 +93,11 @@ public class DeathControlEntityListener implements Listener {
 			while (it.hasNext()) {
 				ItemStack is = it.next();
 				drops.remove(is); // remove the item from the drops list
-				it.set(is.clone()); // make sure we have an independent
-									// ItemStack
+				it.set(is.clone()); // make sure we have an independent ItemStack
 			}
 		}
 
-		if (keptExp > 0) {
+		if (causeSettings.keepExperience()) { // keep this down here so it stays after the money check
 			e.setDroppedExp(0);
 		}
 

@@ -72,7 +72,7 @@ public class CauseData {
 		} else this.loss = null;
 
 		if(raw.isDefined(RawOptions.NODE_LOSS_PERCENTAGE_EXP)){
-			if(raw.lossExp < 0 || raw.lossExp >= 100)
+			if(raw.lossExp < 0 || raw.lossExp > 100)
 				throw new IllegalPropertyException(RawOptions.NODE_LOSS_PERCENTAGE_EXP, Double.toString(raw.loss));
 			this.lossExp = raw.lossExp;
 		} else this.lossExp = null;
