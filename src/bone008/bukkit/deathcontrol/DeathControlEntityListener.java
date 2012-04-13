@@ -58,7 +58,7 @@ public class DeathControlEntityListener implements Listener {
 		}
 
 		List<ItemStack> drops = e.getDrops();
-		final int totalExp = ply.getTotalExperience();
+		final int totalExp = ExperienceUtils.getActualExp(ply);
 
 		List<ItemStack> keptItems = null;
 		int keptExp = 0;

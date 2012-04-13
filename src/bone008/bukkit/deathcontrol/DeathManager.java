@@ -98,7 +98,7 @@ public class DeathManager {
 			}
 
 			if (keptExp > 0) {
-				ply.giveExp(keptExp);
+				ExperienceUtils.changeExp(ply, keptExp);
 				success = true;
 			}
 		}

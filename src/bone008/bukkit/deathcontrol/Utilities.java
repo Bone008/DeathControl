@@ -156,7 +156,7 @@ public final class Utilities {
 		Logger logger = Logger.getLogger("Minecraft");
 		logger.info(c.getClass().getSimpleName() + ":");
 		for (Object o : c) {
-			logger.info("\t" + o.toString());
+			logger.info("\t" + (o==null ? "null" : o.toString()));
 		}
 	}
 
