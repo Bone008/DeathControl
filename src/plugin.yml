@@ -1,6 +1,6 @@
 name: DeathControl
 main: bone008.bukkit.deathcontrol.DeathControl
-version: 1.52
+version: 1.6
 author: Bone008
 description: Allows items to be kept when a player dies for specific reasons.
 softdepend: [Register, Vault]
@@ -21,10 +21,10 @@ permissions:
             deathcontrol.info: true
             deathcontrol.admin: true
     deathcontrol.use:
-        default: op
+        default: false
         description: Allows the general use of this plugin.
     deathcontrol.free:
-        default: op
+        default: false
         description: Bypasses the cost for a death.
     deathcontrol.info:
         default: op
