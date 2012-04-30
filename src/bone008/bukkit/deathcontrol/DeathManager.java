@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class DeathManager {
 	private boolean valid = true;
 
 	private final DeathControl plugin;
-	private final Player ply;
+	private final String plyName;
 	private final Location deathLocation;
 	private final List<ItemStack> keptItems;
 	private final int keptExp;
@@ -27,7 +28,7 @@ public class DeathManager {
 
 	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
 		this.plugin = plugin;
-		this.ply = ply;
+		this.plyName = ply.getName();
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
 		this.keptExp = keptExp;
@@ -48,10 +49,11 @@ public class DeathManager {
 
 		// sends notification to the player
 		if (showMessage) {
+			Player ply = Bukkit.getPlayer(plyName);
 			plugin.display(ply, ChatColor.DARK_RED + "Time is up.");
 			plugin.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
 			// logs to console
-			plugin.log(Level.FINE, "Timer for " + ply.getName() + " expired! Items dropped.");
+			plugin.log(Level.FINE, "Timer for " + plyName + " expired! Items dropped.");
 		}
 
 		unregister();
@@ -63,13 +65,14 @@ public class DeathManager {
 			return;
 		if (method == HandlingMethod.AUTO) {
 			if (restore())
-				plugin.log(Level.FINE, ply.getName() + " respawned and got back their items.");
+				plugin.log(Level.FINE, plyName + " respawned and got back their items.");
 			unregister();
 		}
 	}
 
 	public boolean commandIssued() {
 		if (method == HandlingMethod.COMMAND && this.valid) {
+			Player ply = Bukkit.getPlayer(plyName);
 			if (restore()) {
 				plugin.display(ply, "You got your items back!");
 				plugin.log(Level.FINE, ply.getName() + " got back their items via command.");
@@ -87,7 +90,8 @@ public class DeathManager {
 			return false;
 
 		boolean success = false;
-
+		
+		Player ply = Bukkit.getPlayer(plyName);
 		if (EconomyUtils.payCost(ply, cost)) {
 			if (keptItems != null) {
 				HashMap<Integer, ItemStack> leftovers = ply.getInventory().addItem(keptItems.toArray(new ItemStack[keptItems.size()]));
@@ -109,7 +113,7 @@ public class DeathManager {
 	private void unregister() {
 		if (!valid)
 			return;
-		plugin.removeManager(ply.getName());
+		plugin.removeManager(plyName);
 		valid = false;
 	}
 
