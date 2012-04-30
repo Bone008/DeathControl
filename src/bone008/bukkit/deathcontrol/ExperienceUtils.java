@@ -23,7 +23,7 @@ public final class ExperienceUtils {
 	 */
 	public static int getActualExp(Player player) {
 		int lvl = player.getLevel();
-		return getTotalExpForLevel(lvl) + Math.round(getExpToReachLevel(lvl + 1) * player.getExp());
+		return getTotalExpForLevel(lvl) + (int)(getExpToReachLevel(lvl + 1) * player.getExp());
 		// total experience at the beginning of the current level + (experience needed for next level * ratio)
 	}
 
@@ -57,14 +57,14 @@ public final class ExperienceUtils {
 		int xp = getActualExp(player) + amt;
 		if (xp < 0)
 			xp = 0;
-
+		
 		int curLvl = player.getLevel();
 		int newLvl = getLevelAtExp(xp);
 		if (curLvl != newLvl) {
 			player.setLevel(newLvl);
 		}
 
-		float pct = ((float) (xp - getTotalExpForLevel(newLvl)) / (float) getExpToReachLevel(newLvl));
+		float pct = (float)((double) (xp - getTotalExpForLevel(newLvl) - 1) / (double) getExpToReachLevel(newLvl));
 		player.setExp(pct);
 		
 		player.setTotalExperience(xp);

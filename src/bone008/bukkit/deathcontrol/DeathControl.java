@@ -97,7 +97,6 @@ public class DeathControl extends JavaPlugin {
 
 		// only update the help file if there currently is one, as it is deprecated.
 		if (helpFile.exists() && helpFile.isFile()) {
-			System.out.println("check: " + checkHelpUpdate());
 			writeDefault("help.txt", "help.txt", checkHelpUpdate());
 		}
 
