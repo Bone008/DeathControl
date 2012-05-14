@@ -3,6 +3,7 @@ package bone008.bukkit.deathcontrol.config;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,6 +39,8 @@ public class DeathConfiguration {
 
 	public static final boolean default_bukkitPerms = true;
 	public static final String default_loggingLevel = "standard";
+	public static final boolean default_allowCrossworld = true;
+	public static final List<String> default_limitedWorlds = new ArrayList<String>();
 
 	private DeathControl plugin;
 	private FileConfiguration config;
@@ -46,6 +49,8 @@ public class DeathConfiguration {
 	public EnumMap<DeathCause, CauseData> handlings = new EnumMap<DeathCause, CauseData>(DeathCause.class);
 	public boolean bukkitPerms;
 	public int loggingLevel;
+	public boolean allowCrossworld;
+	private Set<String> limitedWorlds; // access through API, hence private
 
 	// a list of errors that occurred while parsing
 	public List<String> errors = new ArrayList<String>();
@@ -79,6 +84,19 @@ public class DeathConfiguration {
 		if (loggingLevel == -1) {
 			errors.add("invalid logging-level: " + rawLoggingLevel);
 			loggingLevel = parseLoggingLevel(default_loggingLevel);
+		}
+
+		if (config.isConfigurationSection("multi-world")) {
+			allowCrossworld = config.getBoolean("multi-world.allow-cross-world", default_allowCrossworld);
+
+			List<String> rawLimitedWorlds = config.getStringList("multi-world.limited-worlds");
+			if (rawLimitedWorlds == null || rawLimitedWorlds.isEmpty())
+				rawLimitedWorlds = default_limitedWorlds;
+			limitedWorlds = new HashSet<String>(rawLimitedWorlds);
+		} else {
+			ConfigurationSection mwSec = config.createSection("multi-world");
+			mwSec.set("allow-cross-world", default_allowCrossworld);
+			mwSec.set("limited-worlds", default_limitedWorlds);
 		}
 
 		// parse causes
@@ -133,6 +151,12 @@ public class DeathConfiguration {
 		if (deathCause.parent != null)
 			return getSettings(deathCause.parent);
 		return null;
+	}
+
+	public boolean isWorldAllowed(String worldName) {
+		if (limitedWorlds == null || limitedWorlds.isEmpty())
+			return true;
+		return limitedWorlds.contains(worldName);
 	}
 
 	public static String getCauseNameFromValue(String val) {

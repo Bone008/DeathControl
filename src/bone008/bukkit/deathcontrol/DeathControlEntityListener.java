@@ -39,9 +39,8 @@ public class DeathControlEntityListener implements Listener {
 
 		plugin.expireManager(ply.getName());
 
-		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_USE)) {
+		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
-		}
 
 		EntityDamageEvent damageEvent = ply.getLastDamageCause();
 		DeathCause deathCause = DeathCause.getDeathCause(damageEvent);
@@ -50,9 +49,13 @@ public class DeathControlEntityListener implements Listener {
 
 		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
 
+		if (!plugin.config.isWorldAllowed(ply.getWorld().getName())){
+			plugin.log(Level.FINE, log1.append("; Not in a valid world!").toString());
+			return;
+		}
 		
 		CauseSettings causeSettings = plugin.config.getSettings(deathCause);
-		if (causeSettings == null){
+		if (causeSettings == null) {
 			plugin.log(Level.FINE, log1.append("; No handling configured!").toString());
 			return;
 		}

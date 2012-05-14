@@ -49,7 +49,7 @@ public class DeathManager {
 
 		// sends notification to the player
 		if (showMessage) {
-			Player ply = Bukkit.getPlayer(plyName);
+			Player ply = Bukkit.getPlayerExact(plyName);
 			plugin.display(ply, ChatColor.DARK_RED + "Time is up.");
 			plugin.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
 			// logs to console
@@ -72,13 +72,13 @@ public class DeathManager {
 
 	public boolean commandIssued() {
 		if (method == HandlingMethod.COMMAND && this.valid) {
-			Player ply = Bukkit.getPlayer(plyName);
+			Player ply = Bukkit.getPlayerExact(plyName);
 			if (restore()) {
 				plugin.display(ply, "You got your items back!");
 				plugin.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			} else {
-				plugin.display(ply, ChatColor.RED + "You don't have enough money for that!");
+				
 			}
 			return true;
 		}
@@ -88,10 +88,17 @@ public class DeathManager {
 	private boolean restore() {
 		if (!valid)
 			return false;
+		
+		Player ply = Bukkit.getPlayerExact(plyName);
+		
+		if(!plugin.config.allowCrossworld && !ply.getWorld().equals(deathLocation.getWorld())){
+			plugin.display(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
+			expire(false);
+			return false;
+		}
 
 		boolean success = false;
 		
-		Player ply = Bukkit.getPlayer(plyName);
 		if (EconomyUtils.payCost(ply, cost)) {
 			if (keptItems != null) {
 				HashMap<Integer, ItemStack> leftovers = ply.getInventory().addItem(keptItems.toArray(new ItemStack[keptItems.size()]));
@@ -105,6 +112,8 @@ public class DeathManager {
 				ExperienceUtils.changeExp(ply, keptExp);
 				success = true;
 			}
+		} else {
+			plugin.display(ply, ChatColor.RED + "You don't have enough money to get back your items!");
 		}
 
 		return success;

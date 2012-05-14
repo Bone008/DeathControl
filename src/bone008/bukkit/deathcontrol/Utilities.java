@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import net.minecraft.server.EntityExperienceOrb;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.ExperienceOrb;
@@ -22,6 +23,11 @@ public final class Utilities {
 	public static void dropItem(Location l, ItemStack i, boolean naturally) {
 		if (l == null || i == null || i.getTypeId() < 1 || i.getAmount() < 1)
 			return;
+
+		World w = l.getWorld();
+		if (!w.isChunkLoaded(l.getChunk())) {
+			w.loadChunk(l.getChunk());
+		}
 
 		if (naturally)
 			l.getWorld().dropItemNaturally(l, i);
@@ -156,7 +162,7 @@ public final class Utilities {
 		Logger logger = Logger.getLogger("Minecraft");
 		logger.info(c.getClass().getSimpleName() + ":");
 		for (Object o : c) {
-			logger.info("\t" + (o==null ? "null" : o.toString()));
+			logger.info("\t" + (o == null ? "null" : o.toString()));
 		}
 	}
 
