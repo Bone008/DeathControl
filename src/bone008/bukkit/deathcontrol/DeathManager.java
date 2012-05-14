@@ -91,7 +91,7 @@ public class DeathManager {
 		
 		Player ply = Bukkit.getPlayerExact(plyName);
 		
-		if(!plugin.config.allowCrossworld && !ply.getWorld().equals(deathLocation.getWorld())){
+		if(!plugin.config.allowCrossworld && !plugin.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())){
 			plugin.display(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
 			expire(false);
 			return false;

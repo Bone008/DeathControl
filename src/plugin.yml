@@ -18,6 +18,8 @@ permissions:
         children:
             deathcontrol.use: true
             deathcontrol.free: true
+            deathcontrol.crossworld: true
+            deathcontrol.nolimits: true
             deathcontrol.info: true
             deathcontrol.admin: true
     deathcontrol.use:
@@ -26,6 +28,12 @@ permissions:
     deathcontrol.free:
         default: false
         description: Bypasses the cost for a death.
+    deathcontrol.crossworld:
+        default: false
+        description: Bypasses the restriction for cross-world restoring.
+    deathcontrol.nolimits:
+        default: false
+        description: Bypasses the limitation to certain worlds.
     deathcontrol.info:
         default: op
         description: Allows to use the info command.
