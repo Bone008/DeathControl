@@ -7,3 +7,7 @@
 
 use-bukkit-permissions: true
 logging-level: standard
+
+multi-world:
+    allow-cross-world: true
+    limited-worlds: []

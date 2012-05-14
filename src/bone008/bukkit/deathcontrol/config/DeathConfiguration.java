@@ -86,18 +86,12 @@ public class DeathConfiguration {
 			loggingLevel = parseLoggingLevel(default_loggingLevel);
 		}
 
-		if (config.isConfigurationSection("multi-world")) {
-			allowCrossworld = config.getBoolean("multi-world.allow-cross-world", default_allowCrossworld);
+		allowCrossworld = config.getBoolean("multi-world.allow-cross-world", default_allowCrossworld);
 
-			List<String> rawLimitedWorlds = config.getStringList("multi-world.limited-worlds");
-			if (rawLimitedWorlds == null || rawLimitedWorlds.isEmpty())
-				rawLimitedWorlds = default_limitedWorlds;
-			limitedWorlds = new HashSet<String>(rawLimitedWorlds);
-		} else {
-			ConfigurationSection mwSec = config.createSection("multi-world");
-			mwSec.set("allow-cross-world", default_allowCrossworld);
-			mwSec.set("limited-worlds", default_limitedWorlds);
-		}
+		List<String> rawLimitedWorlds = config.getStringList("multi-world.limited-worlds");
+		if (rawLimitedWorlds == null || rawLimitedWorlds.isEmpty())
+			rawLimitedWorlds = default_limitedWorlds;
+		limitedWorlds = new HashSet<String>(rawLimitedWorlds);
 
 		// parse causes
 		ConfigurationSection causesSection = config.getConfigurationSection("DeathCauses");
