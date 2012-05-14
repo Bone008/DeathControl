@@ -40,9 +40,9 @@ public class DeathControl extends JavaPlugin {
 
 	public static final long helpSize = 227;
 	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
-	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", false);
-	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", false);
-	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", false);
+	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
+	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", true);
+	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", true);
 	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
 	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
 
