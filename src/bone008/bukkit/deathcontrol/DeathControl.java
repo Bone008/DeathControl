@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +22,14 @@ import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 
 public class DeathControl extends JavaPlugin {
-	private static final Logger logger = Logger.getLogger("Minecraft");
+	public static final long HELP_SIZE = 227;
+	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
+	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
+	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", true);
+	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", true);
+	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
+	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
+	
 	public static DeathControl instance;
 
 	private final DeathControlEntityListener entityListener = new DeathControlEntityListener(this);
@@ -37,14 +43,6 @@ public class DeathControl extends JavaPlugin {
 	private String prefix;
 
 	private HashMap<String, DeathManager> managers = new HashMap<String, DeathManager>();
-
-	public static final long helpSize = 227;
-	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
-	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
-	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", true);
-	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", true);
-	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
-	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
 
 	public DeathControl() {
 		instance = this;
@@ -176,7 +174,7 @@ public class DeathControl extends JavaPlugin {
 	private boolean checkHelpUpdate() {
 		if (!helpFile.exists() || !helpFile.isFile())
 			return true;
-		return helpFile.length() != helpSize;
+		return helpFile.length() != HELP_SIZE;
 	}
 
 	public void addManager(String name, DeathManager m) {
@@ -200,6 +198,8 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	public boolean hasPermission(Permissible who, DeathPermission perm) {
+		if(who == null)
+			return false;
 		if (config.bukkitPerms)
 			return who.hasPermission(perm.node);
 		else {
@@ -216,6 +216,8 @@ public class DeathControl extends JavaPlugin {
 
 	// displays a message to the player
 	public void display(Player ply, String message) {
+		if(ply == null)
+			return;
 		ply.sendMessage(ChatColor.GRAY + prefix + ChatColor.WHITE + message);
 	}
 
@@ -229,10 +231,6 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	public void log(Level lvl, String msg, boolean overrideLevel) {
-		log(lvl, msg, overrideLevel, true);
-	}
-
-	public void log(Level lvl, String msg, boolean overrideLevel, boolean usePrefix) {
 		if (!overrideLevel && lvl.intValue() < config.loggingLevel)
 			return;
 		
@@ -242,7 +240,7 @@ public class DeathControl extends JavaPlugin {
 		
 		String[] lines = msg.split("\n");
 		for (String line : lines)
-			logger.log(lvl, (usePrefix ? (new StringBuilder(prefix).append(line).toString()) : line));
+			getLogger().log(lvl, line); // our logger now takes care of prefixes
 	}
 
 }
