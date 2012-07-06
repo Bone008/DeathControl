@@ -198,6 +198,9 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	public boolean hasPermission(Permissible who, DeathPermission perm) {
+		if(perm == null)
+			return true;
+		
 		if(who == null)
 			return false;
 		if (config.bukkitPerms)

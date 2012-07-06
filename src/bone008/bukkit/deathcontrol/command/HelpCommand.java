@@ -16,8 +16,11 @@ public class HelpCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandSender sender, Command mainCmd, String mainLabel, String[] args) throws CommandException {
-		sender.sendMessage(ChatColor.GRAY + manager.plugin.pdfFile.getFullName()+" by Bone008");
-		for(Entry<String, SubCommand> entry: manager.commandMap.entrySet())
+		sender.sendMessage(ChatColor.GRAY + manager.plugin.pdfFile.getFullName() + " by Bone008");
+		for (Entry<String, SubCommand> entry : manager.commandMap.entrySet()) {
+			if (!manager.plugin.hasPermission(sender, entry.getValue().getPermission()))
+				continue;
+
 			sender.sendMessage(
 					new StringBuilder()
 					.append(ChatColor.GRAY)
@@ -33,11 +36,12 @@ public class HelpCommand extends SubCommand {
 					.append(entry.getValue().getDescription())
 					.toString()
 				);
+		}
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Displays the help menu.";
 	}
-	
+
 }
