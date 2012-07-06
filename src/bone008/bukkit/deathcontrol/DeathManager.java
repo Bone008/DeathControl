@@ -15,8 +15,7 @@ import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 public class DeathManager {
 
 	private boolean valid = true;
-
-	private final DeathControl plugin;
+	
 	private final String plyName;
 	private final Location deathLocation;
 	private final List<ItemStack> keptItems;
@@ -26,8 +25,7 @@ public class DeathManager {
 	private final double cost;
 	private final int timeoutOnQuit;
 
-	public DeathManager(DeathControl plugin, Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
-		this.plugin = plugin;
+	public DeathManager(Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
 		this.plyName = ply.getName();
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
@@ -50,10 +48,10 @@ public class DeathManager {
 		// sends notification to the player
 		if (showMessage) {
 			Player ply = Bukkit.getPlayerExact(plyName);
-			plugin.display(ply, ChatColor.DARK_RED + "Time is up.");
-			plugin.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
+			DeathControl.instance.display(ply, ChatColor.DARK_RED + "Time is up.");
+			DeathControl.instance.display(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
 			// logs to console
-			plugin.log(Level.FINE, "Timer for " + plyName + " expired! Items dropped.");
+			DeathControl.instance.log(Level.FINE, "Timer for " + plyName + " expired! Items dropped.");
 		}
 
 		unregister();
@@ -65,7 +63,7 @@ public class DeathManager {
 			return;
 		if (method == HandlingMethod.AUTO) {
 			if (restore())
-				plugin.log(Level.FINE, plyName + " respawned and got back their items.");
+				DeathControl.instance.log(Level.FINE, plyName + " respawned and got back their items.");
 			unregister();
 		}
 	}
@@ -74,8 +72,8 @@ public class DeathManager {
 		if (method == HandlingMethod.COMMAND && this.valid) {
 			Player ply = Bukkit.getPlayerExact(plyName);
 			if (restore()) {
-				plugin.display(ply, "You got your items back!");
-				plugin.log(Level.FINE, ply.getName() + " got back their items via command.");
+				DeathControl.instance.display(ply, "You got your items back!");
+				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			} else {
 				
@@ -91,8 +89,8 @@ public class DeathManager {
 		
 		Player ply = Bukkit.getPlayerExact(plyName);
 		
-		if(!plugin.config.allowCrossworld && !plugin.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())){
-			plugin.display(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
+		if(!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())){
+			DeathControl.instance.display(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
 			expire(false);
 			return false;
 		}
@@ -113,7 +111,7 @@ public class DeathManager {
 				success = true;
 			}
 		} else {
-			plugin.display(ply, ChatColor.RED + "You don't have enough money to get back your items!");
+			DeathControl.instance.display(ply, ChatColor.RED + "You don't have enough money to get back your items!");
 		}
 
 		return success;
@@ -122,7 +120,7 @@ public class DeathManager {
 	private void unregister() {
 		if (!valid)
 			return;
-		plugin.removeManager(plyName);
+		DeathControl.instance.removeManager(plyName);
 		valid = false;
 	}
 

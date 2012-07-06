@@ -25,7 +25,7 @@ public final class EconomyUtils {
 	 * Initializes the economy functionalities.
 	 */
 	public static void init() {
-		// Delay everything by one tick to make sure that all plugins are fully loaded. Softdepend doesn't always work!
+		// delay everything by one tick to make sure that all plugins are fully loaded. Softdepend doesn't always work!
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
 			@Override
 			public void run() {
@@ -40,8 +40,7 @@ public final class EconomyUtils {
 	/**
 	 * Tries to hook Vault.
 	 * 
-	 * @throws NoClassDefFoundError
-	 *             Thrown when Vault is not loaded. Should be caught by the calling method because it is (more or less) intended behavior!
+	 * @throws NoClassDefFoundError Thrown when Vault is not loaded. Should be caught by the calling method because it is (more or less) intended behavior!
 	 */
 	private static void setupVault() {
 		RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);

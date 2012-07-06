@@ -6,40 +6,49 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 
-public class DeathControlEntityListener implements Listener {
+public class BukkitDeathHandler implements Listener {
 
-	private DeathControl plugin;
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onRespawn(final PlayerRespawnEvent event) {
+		final String playerName = event.getPlayer().getName();
 
-	public DeathControlEntityListener(DeathControl plugin) {
-		this.plugin = plugin;
+		// delay this for the next tick to make sure the player fully respawned
+		// to get the correct location
+		// don't use getRespawnLocation(), because it might still be changed by
+		// another plugin - this way is safer
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
+			@Override
+			public void run() {
+				DeathManager m = DeathControl.instance.getManager(playerName);
+				if (m != null) {
+					m.respawned();
+				}
+			}
+		});
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEntityDeath(final EntityDeathEvent event) {
-		if (!(event instanceof PlayerDeathEvent)) {
-			return;
-		}
-
-		PlayerDeathEvent e = (PlayerDeathEvent) event;
+	public void onDeath(final PlayerDeathEvent e) {
 		assert (e.getEntity() instanceof Player);
 		Player ply = (Player) e.getEntity();
 
-		plugin.expireManager(ply.getName());
+		DeathControl.instance.expireManager(ply.getName());
 
-		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_USE))
+		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
 
 		EntityDamageEvent damageEvent = ply.getLastDamageCause();
@@ -49,14 +58,14 @@ public class DeathControlEntityListener implements Listener {
 
 		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
 
-		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_NOLIMITS) && !plugin.config.isWorldAllowed(ply.getWorld().getName())) {
-			plugin.log(Level.FINE, log1.append("; Not in a valid world!").toString());
+		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_NOLIMITS) && !DeathControl.instance.config.isWorldAllowed(ply.getWorld().getName())) {
+			DeathControl.instance.log(Level.FINE, log1.append("; Not in a valid world!").toString());
 			return;
 		}
 
-		CauseSettings causeSettings = plugin.config.getSettings(deathCause);
+		CauseSettings causeSettings = DeathControl.instance.config.getSettings(deathCause);
 		if (causeSettings == null) {
-			plugin.log(Level.FINE, log1.append("; No handling configured!").toString());
+			DeathControl.instance.log(Level.FINE, log1.append("; No handling configured!").toString());
 			return;
 		}
 
@@ -82,11 +91,11 @@ public class DeathControlEntityListener implements Listener {
 			return;
 
 		double cost = 0;
-		if (!plugin.hasPermission(ply, DeathControl.PERMISSION_FREE)) {
+		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_FREE)) {
 			cost = EconomyUtils.calcCost(ply, causeSettings);
 			if (!EconomyUtils.canAfford(ply, cost)) {
-				plugin.display(ply, ChatColor.RED + "You couldn't keep your items");
-				plugin.display(ply, ChatColor.RED + "because you didn't have enough money!");
+				DeathControl.instance.display(ply, ChatColor.RED + "You couldn't keep your items");
+				DeathControl.instance.display(ply, ChatColor.RED + "because you didn't have enough money!");
 				return;
 			}
 		}
@@ -107,11 +116,11 @@ public class DeathControlEntityListener implements Listener {
 		HandlingMethod method = causeSettings.getMethod();
 		int timeout = causeSettings.getTimeout();
 
-		final DeathManager dm = new DeathManager(plugin, ply, keptItems, keptExp, droppedExp, method, cost, causeSettings.getTimeoutOnQuit());
-		plugin.addManager(ply.getName(), dm);
+		final DeathManager dm = new DeathManager(ply, keptItems, keptExp, droppedExp, method, cost, causeSettings.getTimeoutOnQuit());
+		DeathControl.instance.addManager(ply.getName(), dm);
 
 		if (method == HandlingMethod.COMMAND && timeout > 0) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
 				@Override
 				public void run() {
 					dm.expire(true);
@@ -136,21 +145,21 @@ public class DeathControlEntityListener implements Listener {
 		if (method == HandlingMethod.COMMAND)
 			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");
 
-		if (plugin.config.loggingLevel <= Level.FINEST.intValue())
-			plugin.log(Level.FINE, log2.toString().trim());
-		else if (plugin.config.loggingLevel <= Level.INFO.intValue())
-			plugin.log(Level.INFO, log1.toString().trim());
+		if (DeathControl.instance.config.loggingLevel <= Level.FINEST.intValue())
+			DeathControl.instance.log(Level.FINE, log2.toString().trim());
+		else if (DeathControl.instance.config.loggingLevel <= Level.INFO.intValue())
+			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
-		plugin.display(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (drops.isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
-		plugin.display(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
+		DeathControl.instance.display(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (drops.isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
+		DeathControl.instance.display(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
 		if (method == HandlingMethod.COMMAND) {
-			plugin.display(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
+			DeathControl.instance.display(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
 			if (causeSettings.getTimeout() > 0)
-				plugin.display(ply, ChatColor.RED + "This will expire in " + causeSettings.getTimeout() + " seconds!");
+				DeathControl.instance.display(ply, ChatColor.RED + "This will expire in " + causeSettings.getTimeout() + " seconds!");
 		}
 
 		if (cost > 0)
-			plugin.display(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
+			DeathControl.instance.display(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
 	}
 
 	/**

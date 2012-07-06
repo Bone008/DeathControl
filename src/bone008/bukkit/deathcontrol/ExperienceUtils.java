@@ -3,16 +3,16 @@ package bone008.bukkit.deathcontrol;
 import org.bukkit.entity.Player;
 
 /**
- * @author desht
- * @author nisovin
- * @author Bone008
- * 
  * Note by Bone008:
  * 	I heavily modified the class so it doesn't use pre-cached values.
  *  The algorithm is now slower, but for this purpose it doesn't have to be fast.
  *  I kept the author tags of the original version because I based my calculations on them.
  *  In {@code changeExp(Player, int)} the total experience is now also set to improve compatibility. My best attempt to improve the already broken experience system ...
  *  @see net.minecraft.server.EntityHuman.getExpToLevel()
+ *  
+ * @author desht
+ * @author nisovin
+ * @author Bone008
  */
 public final class ExperienceUtils {
 

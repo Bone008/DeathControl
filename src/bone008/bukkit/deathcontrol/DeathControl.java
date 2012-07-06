@@ -32,8 +32,8 @@ public class DeathControl extends JavaPlugin {
 	
 	public static DeathControl instance;
 
-	private final DeathControlEntityListener entityListener = new DeathControlEntityListener(this);
-	private final DeathControlPlayerListener playerListener = new DeathControlPlayerListener(this);
+	private final BukkitDeathHandler evtDeathHandler = new BukkitDeathHandler();
+	private final BukkitReconnectHandler evtReconnectHandler = new BukkitReconnectHandler();
 
 	private File helpFile = null;
 
@@ -69,16 +69,14 @@ public class DeathControl extends JavaPlugin {
 
 		// register events
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(entityListener, this);
-		pm.registerEvents(playerListener, this);
+		pm.registerEvents(evtDeathHandler, this);
+		pm.registerEvents(evtReconnectHandler, this);
 
 		// setup commands
 		getCommand("death").setExecutor(new CommandManager(this));
 
 		// setup economy
 		EconomyUtils.init();
-		
-		log(Level.INFO, "version " + pdfFile.getVersion() + " is enabled!", true);
 	}
 
 	/**
