@@ -65,6 +65,24 @@ public final class Utilities {
 	}
 
 	/**
+	 * Prefixes the given String at each new line.
+	 * 
+	 * @param str The string to prefix.
+	 * @param prefix The prefix to put in front of the lines.
+	 * @return The wrapped string as a CharSequence
+	 */
+	public static CharSequence wrapPrefixed(String str, String prefix) {
+		String[] lines = str.split("\n");
+		StringBuilder output = new StringBuilder();
+		for (int i = 0; i < lines.length; i++) {
+			if (output.length() > 0)
+				output.append('\n');
+			output.append(prefix).append(lines[i]);
+		}
+		return output;
+	}
+
+	/**
 	 * Gets a list from the given {@code ConfigurationSection} with a special type given through the formal type parameter.
 	 * 
 	 * @param <T> The type which the list is expected to be. <u>Note: Must be explicitly declared in the method call!</u>

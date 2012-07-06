@@ -16,7 +16,12 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import bone008.bukkit.deathcontrol.command.CommandManager;
+import bone008.bukkit.deathcontrol.commandhandler.CommandHandler;
+import bone008.bukkit.deathcontrol.commands.BackCommand;
+import bone008.bukkit.deathcontrol.commands.DropCommand;
+import bone008.bukkit.deathcontrol.commands.HelpCommand;
+import bone008.bukkit.deathcontrol.commands.InfoCommand;
+import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
@@ -73,7 +78,15 @@ public class DeathControl extends JavaPlugin {
 		pm.registerEvents(evtReconnectHandler, this);
 
 		// setup commands
-		getCommand("death").setExecutor(new CommandManager(this));
+		CommandHandler deathCmd = new CommandHandler();
+
+		deathCmd.addSubCommand("help", new HelpCommand(), "?");
+		deathCmd.addSubCommand("back", new BackCommand(), "restore");
+		deathCmd.addSubCommand("drop", new DropCommand(), "expire");
+		deathCmd.addSubCommand("reload", new ReloadCommand());
+		deathCmd.addSubCommand("info", new InfoCommand(), "status");
+		
+		getCommand("death").setExecutor(deathCmd);
 
 		// setup economy
 		EconomyUtils.init();
