@@ -27,8 +27,7 @@ public class DeathLists {
 	/**
 	 * gets a list by its name
 	 * 
-	 * @param name
-	 *            the name of the list
+	 * @param name the name of the list
 	 * @return a list of {@code ListItem}s
 	 */
 	public List<ListItem> getList(String name) {
@@ -43,8 +42,9 @@ public class DeathLists {
 	 * parses lists.txt and writes the entries to "lists"-member
 	 */
 	private void parseFile(File f) {
+		BufferedReader reader = null;
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(f));
+			reader = new BufferedReader(new FileReader(f));
 
 			List<ListItem> currentList = null;
 
@@ -116,6 +116,13 @@ public class DeathLists {
 
 		} catch (IOException e) {
 			plugin.log(Level.WARNING, "Could not load lists.txt!", true);
+		} finally {
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 	}
 
