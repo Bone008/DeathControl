@@ -87,7 +87,7 @@ public class DeathManager {
 		if (!valid)
 			return false;
 		
-		Player ply = Bukkit.getPlayerExact(plyName);
+		final Player ply = Bukkit.getPlayerExact(plyName);
 		
 		if(!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())){
 			MessageHelper.sendMessage(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
@@ -108,6 +108,17 @@ public class DeathManager {
 
 			if (keptExp > 0) {
 				ExperienceUtils.changeExp(ply, keptExp);
+				
+				// manually send a Packet43SetExperience to properly update the client;
+				// as of 1.3.1, the client doesn't seem to accept that directly after respawn, so we delay it further
+				Bukkit.getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
+					@Override
+					public void run() {
+						Utilities.updateExperience(ply);
+					}
+				}, 20L);
+				
+				
 				success = true;
 			}
 		} else {

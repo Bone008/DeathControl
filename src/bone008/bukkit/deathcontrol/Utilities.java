@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.server.EntityExperienceOrb;
+import net.minecraft.server.Packet43SetExperience;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class Utilities {
@@ -62,6 +65,10 @@ public final class Utilities {
 			ExperienceOrb orb = l.getWorld().spawn(l, ExperienceOrb.class);
 			orb.setExperience(amount);
 		}
+	}
+
+	public static void updateExperience(Player ply) {
+		((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet43SetExperience(ply.getExp(), ply.getTotalExperience(), ply.getLevel()));
 	}
 
 	/**
