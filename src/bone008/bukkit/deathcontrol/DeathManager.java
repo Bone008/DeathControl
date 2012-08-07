@@ -9,23 +9,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 
 public class DeathManager {
 
 	private boolean valid = true;
-	
+
 	private final String plyName;
 	private final Location deathLocation;
-	private final List<ItemStack> keptItems;
+	private final List<StoredItemStack> keptItems;
 	private final int keptExp;
 	private final int droppedExp;
 	private final HandlingMethod method;
 	private final double cost;
 	private final int timeoutOnQuit;
 
-	public DeathManager(Player ply, List<ItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
+	public DeathManager(Player ply, List<StoredItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
 		this.plyName = ply.getName();
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
@@ -41,7 +42,9 @@ public class DeathManager {
 			return false;
 
 		// drops items
-		Utilities.dropItems(deathLocation, keptItems, true);
+		for (StoredItemStack storedStack : keptItems)
+			Utilities.dropItem(deathLocation, storedStack.itemStack, true);
+
 		// drops experience orbs
 		Utilities.dropExp(deathLocation, droppedExp, true);
 
@@ -76,7 +79,7 @@ public class DeathManager {
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			} else {
-				
+
 			}
 			return true;
 		}
@@ -86,29 +89,40 @@ public class DeathManager {
 	private boolean restore() {
 		if (!valid)
 			return false;
-		
+
 		final Player ply = Bukkit.getPlayerExact(plyName);
-		
-		if(!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())){
+
+		if (!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())) {
 			MessageHelper.sendMessage(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
 			expire(false);
 			return false;
 		}
 
 		boolean success = false;
-		
+
 		if (EconomyUtils.payCost(ply, cost)) {
 			if (keptItems != null) {
-				HashMap<Integer, ItemStack> leftovers = ply.getInventory().addItem(keptItems.toArray(new ItemStack[keptItems.size()]));
-				if (leftovers.size() > 0) {
-					Utilities.dropItems(ply.getLocation(), leftovers, false);
+				PlayerInventory inv = ply.getInventory();
+
+				for (StoredItemStack storedStack : keptItems) {
+
+					if (inv.getItem(storedStack.slot) == null) // slot is empty
+						inv.setItem(storedStack.slot, storedStack.itemStack);
+
+					else { // slot is occupied --> add it regularly and drop if necessary
+						HashMap<Integer, ItemStack> leftovers = inv.addItem(storedStack.itemStack);
+						if (leftovers.size() > 0)
+							Utilities.dropItems(ply.getLocation(), leftovers, false);
+					}
+
 				}
+
 				success = true;
 			}
 
 			if (keptExp > 0) {
 				ExperienceUtils.changeExp(ply, keptExp);
-				
+
 				// manually send a Packet43SetExperience to properly update the client;
 				// as of 1.3.1, the client doesn't seem to accept that directly after respawn, so we delay it further
 				Bukkit.getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
@@ -117,8 +131,7 @@ public class DeathManager {
 						Utilities.updateExperience(ply);
 					}
 				}, 20L);
-				
-				
+
 				success = true;
 			}
 		} else {

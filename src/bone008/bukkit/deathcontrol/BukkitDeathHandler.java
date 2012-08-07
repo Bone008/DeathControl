@@ -2,7 +2,6 @@ package bone008.bukkit.deathcontrol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -16,11 +15,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 
 public class BukkitDeathHandler implements Listener {
+
+	private final Random rand = new Random();
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onRespawn(final PlayerRespawnEvent event) {
@@ -42,9 +44,9 @@ public class BukkitDeathHandler implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onDeath(final PlayerDeathEvent e) {
-		assert (e.getEntity() instanceof Player);
-		Player ply = (Player) e.getEntity();
+	public void onDeath(final PlayerDeathEvent event) {
+		assert (event.getEntity() instanceof Player);
+		Player ply = (Player) event.getEntity();
 
 		DeathControl.instance.expireManager(ply.getName());
 
@@ -69,22 +71,22 @@ public class BukkitDeathHandler implements Listener {
 			return;
 		}
 
-		List<ItemStack> drops = e.getDrops();
 		final int totalExp = ExperienceUtils.getCurrentExp(ply);
 
-		List<ItemStack> keptItems = null;
+		List<ItemStack> desiredDrops = new ArrayList<ItemStack>();
+		List<StoredItemStack> keptItems = null;
 		int keptExp = 0;
 		int droppedExp = 0;
 
 		if (causeSettings.keepInventory()) {
-			keptItems = calculateItems(drops, causeSettings);
+			keptItems = calculateItems(ply.getInventory(), causeSettings, desiredDrops);
 			if (keptItems.isEmpty())
 				keptItems = null;
 		}
 
 		if (causeSettings.keepExperience()) {
 			keptExp = (int) Math.round(((100 - causeSettings.getLossExp()) / 100) * totalExp);
-			droppedExp = e.getDroppedExp();
+			droppedExp = event.getDroppedExp();
 		}
 
 		if (keptItems == null && keptExp <= 0)
@@ -102,16 +104,13 @@ public class BukkitDeathHandler implements Listener {
 		}
 
 		if (keptItems != null) {
-			ListIterator<ItemStack> it = keptItems.listIterator();
-			while (it.hasNext()) {
-				ItemStack is = it.next();
-				drops.remove(is); // remove the item from the drops list
-				it.set(is.clone()); // make sure we have an independent ItemStack
-			}
+			// replace the natural drops with our filtered ones
+			event.getDrops().clear();
+			event.getDrops().addAll(desiredDrops);
 		}
 
 		if (causeSettings.keepExperience()) { // keep this down here so it stays after the money check
-			e.setDroppedExp(0);
+			event.setDroppedExp(0);
 		}
 
 		HandlingMethod method = causeSettings.getMethod();
@@ -135,7 +134,7 @@ public class BukkitDeathHandler implements Listener {
 		log2.append("| Kept items: ");
 		if (keptItems == null)
 			log2.append("none");
-		else if (drops.isEmpty())
+		else if (event.getDrops().isEmpty())
 			log2.append("all");
 		else
 			log2.append("some");
@@ -151,7 +150,7 @@ public class BukkitDeathHandler implements Listener {
 		else if (DeathControl.instance.config.loggingLevel <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
-		MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (drops.isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
+		MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (event.getDrops().isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
 		MessageHelper.sendMessage(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
 		if (method == HandlingMethod.COMMAND) {
 			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
@@ -166,38 +165,64 @@ public class BukkitDeathHandler implements Listener {
 	/**
 	 * Calculates a list of {@link ItemStack}s that the player keeps. Considers lists and loss-percentage.
 	 * 
-	 * @param droppedItems
-	 *            the original drops; not affected!
-	 * @param settings
-	 *            the cause settings associated with the death cause
+	 * @param playerInv the inventory of the dying player
+	 * @param settings the cause settings associated with the death cause
+	 * @param desiredDrops ItemStacks that should be lost are added to this list
 	 * @return a list of ItemStacks that should be kept
 	 */
-	private List<ItemStack> calculateItems(List<ItemStack> droppedItems, CauseSettings settings) {
-		List<ItemStack> ret = new ArrayList<ItemStack>();
+	private List<StoredItemStack> calculateItems(PlayerInventory playerInv, CauseSettings settings, List<ItemStack> desiredDrops) {
+		// the actual size of the inventory including armor
+		final int invSize = playerInv.getSize() + playerInv.getArmorContents().length;
 
-		// save the items that may be kept due to whitelist/blacklist limits in
-		// "temp"
-		for (ItemStack item : droppedItems) {
-			if (settings.isValidItem(item))
-				ret.add(item);
-		}
+		final double loss = settings.getLoss() / 100;
 
-		// no need to do anything when there are no items
-		if (ret.isEmpty())
-			return ret;
+		List<StoredItemStack> ret = new ArrayList<StoredItemStack>(invSize);
 
-		if (settings.getLoss() > 0) {
-			// apply the loss-percentage
-			double lossMultiplier = settings.getLoss() / 100;
-			int lostStacks = Math.round((float) (ret.size() * lossMultiplier));
-			Random rand = new Random();
+		// save the items that may be kept due to whitelist/blacklist limits in "temp"
+		for (int slot = 0; slot < invSize; slot++) {
+			ItemStack item = playerInv.getItem(slot);
 
-			for (int i = 0; i < lostStacks; i++) {
-				ret.remove(rand.nextInt(ret.size()));
+			if (item == null) // skip empty slots
+				continue;
+
+			if (!settings.isValidItem(item))
+				continue;
+
+			ItemStack keptItem = item.clone();
+			applyLoss(keptItem, loss);
+
+			if (keptItem.getAmount() > 0)
+				ret.add(new StoredItemStack(slot, keptItem));
+
+			if (keptItem.getAmount() < item.getAmount()) {
+				ItemStack droppedItem = item.clone();
+				droppedItem.setAmount(item.getAmount() - keptItem.getAmount());
+				desiredDrops.add(droppedItem);
 			}
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Applies a given loss-percentage to an ItemStack.
+	 * 
+	 * @param item The ItemStack to modify.
+	 * @param loss The loss-percentage (between 0.0 and 1.0) to apply.
+	 */
+	private void applyLoss(ItemStack item, double loss) {
+		if (loss <= 0.0)
+			return;
+
+		double newAmount = ((double) item.getAmount()) * (1.0 -loss);
+		int intAmount = (int) newAmount;
+
+		// got a floating result --> apply random
+		if (newAmount > intAmount && rand.nextDouble() < newAmount - intAmount) {
+			intAmount++;
+		}
+
+		item.setAmount(intAmount);
 	}
 
 }
