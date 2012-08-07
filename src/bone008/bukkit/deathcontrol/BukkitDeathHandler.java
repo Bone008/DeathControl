@@ -70,7 +70,7 @@ public class BukkitDeathHandler implements Listener {
 		}
 
 		List<ItemStack> drops = e.getDrops();
-		final int totalExp = ExperienceUtils.getActualExp(ply);
+		final int totalExp = ExperienceUtils.getCurrentExp(ply);
 
 		List<ItemStack> keptItems = null;
 		int keptExp = 0;
@@ -96,6 +96,7 @@ public class BukkitDeathHandler implements Listener {
 			if (!EconomyUtils.canAfford(ply, cost)) {
 				MessageHelper.sendMessage(ply, "You couldn't keep your items", true);
 				MessageHelper.sendMessage(ply, "because you didn't have enough money!", true);
+				DeathControl.instance.log(Level.FINE, log1.append("; Not enough money!").toString());
 				return;
 			}
 		}
