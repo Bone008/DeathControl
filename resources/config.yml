@@ -7,6 +7,11 @@
 
 use-bukkit-permissions: true
 logging-level: standard
+show-messages: true
+
+multi-world:
+    allow-cross-world: true
+    limited-worlds: []
 
 DeathCauses:
     VOID, LAVA:
@@ -22,7 +27,3 @@ DeathCauses:
         keep-inventory: true
         whitelist:
         - valuables
-
-multi-world:
-    allow-cross-world: true
-    limited-worlds: []

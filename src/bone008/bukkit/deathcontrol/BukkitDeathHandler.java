@@ -151,21 +151,25 @@ public class BukkitDeathHandler implements Listener {
 		if (method == HandlingMethod.COMMAND)
 			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");
 
+		// message the console
 		if (DeathControl.instance.config.loggingLevel <= Level.FINEST.intValue())
 			DeathControl.instance.log(Level.FINE, log2.toString().trim());
 		else if (DeathControl.instance.config.loggingLevel <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
-		MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (event.getDrops().isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
-		MessageHelper.sendMessage(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
-		if (method == HandlingMethod.COMMAND) {
-			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
-			if (causeSettings.getTimeout() > 0)
-				MessageHelper.sendMessage(ply, ChatColor.RED + "This will expire in " + causeSettings.getTimeout() + " seconds!");
-		}
+		// message the player
+		if (DeathControl.instance.config.showMessages) {
+			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (event.getDrops().isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
+			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
+			if (method == HandlingMethod.COMMAND) {
+				MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
+				if (causeSettings.getTimeout() > 0)
+					MessageHelper.sendMessage(ply, ChatColor.RED + "This will expire in " + causeSettings.getTimeout() + " seconds!");
+			}
 
-		if (cost > 0)
-			MessageHelper.sendMessage(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
+			if (cost > 0)
+				MessageHelper.sendMessage(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
+		}
 	}
 
 	/**
