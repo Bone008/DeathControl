@@ -42,7 +42,8 @@ public class BukkitDeathHandler implements Listener {
 		});
 	}
 
-	@EventHandler(priority = EventPriority.HIGH) // Note: Essentials listens on LOW
+	@EventHandler(priority = EventPriority.HIGH)
+	// Note: Essentials listens on LOW
 	public void onDeath(final PlayerDeathEvent event) {
 		assert (event.getEntity() instanceof Player);
 		Player ply = (Player) event.getEntity();
@@ -86,7 +87,7 @@ public class BukkitDeathHandler implements Listener {
 		if (causeSettings.keepExperience()) {
 			keptExp = (int) Math.round(((100 - causeSettings.getLossExp()) / 100) * totalExp);
 			droppedExp = event.getDroppedExp();
-			
+
 			// fix for Essentials: we take control over respawned exp ...
 			event.setKeepLevel(false);
 			event.setNewExp(0);
@@ -190,8 +191,10 @@ public class BukkitDeathHandler implements Listener {
 			if (item == null) // skip empty slots
 				continue;
 
-			if (!settings.isValidItem(item))
+			if (!settings.isValidItem(item)) {
+				desiredDrops.add(item.clone());
 				continue;
+			}
 
 			ItemStack keptItem = item.clone();
 			applyLoss(keptItem, loss);
@@ -219,7 +222,7 @@ public class BukkitDeathHandler implements Listener {
 		if (loss <= 0.0)
 			return;
 
-		double newAmount = ((double) item.getAmount()) * (1.0 -loss);
+		double newAmount = ((double) item.getAmount()) * (1.0 - loss);
 		int intAmount = (int) newAmount;
 
 		// got a floating result --> apply random
