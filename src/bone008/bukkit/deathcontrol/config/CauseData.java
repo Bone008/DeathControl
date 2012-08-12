@@ -66,7 +66,7 @@ public class CauseData {
 		this.timeoutOnQuit = (raw.isDefined(RawOptions.NODE_TIMEOUT_ON_QUIT) ? raw.timeoutOnQuit : null);
 
 		if(raw.isDefined(RawOptions.NODE_LOSS_PERCENTAGE)){
-			if(raw.loss < 0 || raw.loss >= 100)
+			if(raw.loss < 0 || raw.loss > 100)
 				throw new IllegalPropertyException(RawOptions.NODE_LOSS_PERCENTAGE, Double.toString(raw.loss));
 			this.loss = raw.loss;
 		} else this.loss = null;

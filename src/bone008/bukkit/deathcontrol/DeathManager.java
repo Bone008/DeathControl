@@ -15,6 +15,15 @@ import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 
 public class DeathManager {
 
+	/**
+	 * The amount of packets to send to the client while attempting to fix the updating issue after respawn.
+	 */
+	private static final int EXPERIENCE_FIX_TRIES = 10;
+	/**
+	 * The amount of ticks to wait between tries when updating exp.
+	 */
+	private static final long EXPERIENCE_FIX_PERIOD = 20L;
+
 	private boolean valid = true;
 
 	private final String plyName;
@@ -65,7 +74,7 @@ public class DeathManager {
 		if (!valid)
 			return;
 		if (method == HandlingMethod.AUTO) {
-			if (restore())
+			if (restore(true))
 				DeathControl.instance.log(Level.FINE, plyName + " respawned and got back their items.");
 			unregister();
 		}
@@ -74,7 +83,7 @@ public class DeathManager {
 	public boolean commandIssued() {
 		if (method == HandlingMethod.COMMAND && this.valid) {
 			Player ply = Bukkit.getPlayerExact(plyName);
-			if (restore()) {
+			if (restore(false)) {
 				MessageHelper.sendMessage(ply, "You got your items back!");
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
@@ -86,7 +95,7 @@ public class DeathManager {
 		return false;
 	}
 
-	private boolean restore() {
+	private boolean restore(boolean isRespawn) {
 		if (!valid)
 			return false;
 
@@ -121,16 +130,36 @@ public class DeathManager {
 			}
 
 			if (keptExp > 0) {
+				if (isRespawn) {
+					// check for modifications
+					if (ExperienceUtils.getCurrentExp(ply) > 0)
+						DeathControl.instance.log(Level.FINE, "Another plugin set the player's experience after respawning. These changes have been overridden.");
+
+					// reset always just in case
+					ply.setExp(0);
+					ply.setLevel(0);
+					ply.setTotalExperience(0);
+
+					// manually send a Packet43SetExperience to properly update the client;
+					// as of 1.3.1, the client doesn't seem to accept that directly after respawn, so we do a couple of attempts to fix it;
+					// we can do that before actually changing the exp below, since it's delayed anyway
+					Runnable expFixTask = new Runnable() {
+						@Override
+						public void run() {
+							Utilities.updateExperience(ply);
+						}
+					};
+
+					for (int i = 1; i <= EXPERIENCE_FIX_TRIES; i++)
+						Bukkit.getScheduler().scheduleSyncDelayedTask(DeathControl.instance, expFixTask, EXPERIENCE_FIX_PERIOD * i);
+				}
+
+				// give back the exp
 				ExperienceUtils.changeExp(ply, keptExp);
 
-				// manually send a Packet43SetExperience to properly update the client;
-				// as of 1.3.1, the client doesn't seem to accept that directly after respawn, so we delay it further
-				Bukkit.getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
-					@Override
-					public void run() {
-						Utilities.updateExperience(ply);
-					}
-				}, 20L);
+				// directly update experience on command in case bukkit fails to do so automatically
+				if (!isRespawn)
+					Utilities.updateExperience(ply);
 
 				success = true;
 			}

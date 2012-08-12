@@ -28,10 +28,9 @@ public class BukkitDeathHandler implements Listener {
 	public void onRespawn(final PlayerRespawnEvent event) {
 		final String playerName = event.getPlayer().getName();
 
-		// delay this for the next tick to make sure the player fully respawned
-		// to get the correct location
-		// don't use getRespawnLocation(), because it might still be changed by
-		// another plugin - this way is safer
+		// delay this for the next tick to make sure the player fully respawned to get the correct location
+		// don't use getRespawnLocation(), because it might still be changed by another plugin - this way is safer
+		// this also allows the plugin to correctly view and handle other plugins actions on the player (e.g. Essentials giving back exp automatically)
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
 			@Override
 			public void run() {
@@ -43,7 +42,7 @@ public class BukkitDeathHandler implements Listener {
 		});
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGH) // Note: Essentials listens on LOW
 	public void onDeath(final PlayerDeathEvent event) {
 		assert (event.getEntity() instanceof Player);
 		Player ply = (Player) event.getEntity();
@@ -87,6 +86,12 @@ public class BukkitDeathHandler implements Listener {
 		if (causeSettings.keepExperience()) {
 			keptExp = (int) Math.round(((100 - causeSettings.getLossExp()) / 100) * totalExp);
 			droppedExp = event.getDroppedExp();
+			
+			// fix for Essentials: we take control over respawned exp ...
+			event.setKeepLevel(false);
+			event.setNewExp(0);
+			event.setNewLevel(0);
+			event.setNewTotalExp(0);
 		}
 
 		if (keptItems == null && keptExp <= 0)
