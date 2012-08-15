@@ -51,8 +51,9 @@ public class DeathManager {
 			return false;
 
 		// drops items
-		for (StoredItemStack storedStack : keptItems)
-			Utilities.dropItem(deathLocation, storedStack.itemStack, true);
+		if (keptItems != null)
+			for (StoredItemStack storedStack : keptItems)
+				Utilities.dropItem(deathLocation, storedStack.itemStack, true);
 
 		// drops experience orbs
 		Utilities.dropExp(deathLocation, droppedExp, true);
