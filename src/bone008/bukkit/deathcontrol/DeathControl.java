@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -55,12 +56,12 @@ public class DeathControl extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (this.managers.size() > 0) {
-			for (DeathManager m : managers.values()) {
-				m.expire(true);
+		if (!this.managers.isEmpty()) {
+			// avoid CME by iterating over a stand-alone list
+			for (DeathManager manager : new ArrayList<DeathManager>(this.managers.values())) {
+				manager.expire(true);
 			}
 		}
-		log(Level.INFO, "is disabled!", true);
 	}
 
 	@Override
