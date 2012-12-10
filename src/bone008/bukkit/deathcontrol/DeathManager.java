@@ -40,7 +40,7 @@ public class DeathManager {
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
 		this.keptExp = keptExp;
-		this.droppedExp = keptExp;
+		this.droppedExp = droppedExp;
 		this.method = method;
 		this.cost = cost;
 		this.timeoutOnQuit = timeoutOnQuit;
@@ -56,7 +56,7 @@ public class DeathManager {
 				Utilities.dropItem(deathLocation, storedStack.itemStack, true);
 
 		// drops experience orbs
-		Utilities.dropExp(deathLocation, droppedExp, true);
+		Utilities.dropExp(deathLocation, droppedExp);
 
 		// sends notification to the player
 		if (showMessage) {

@@ -177,7 +177,7 @@ public class DeathConfiguration {
 		}
 	}
 
-	public class RawOptions {
+	public static class RawOptions {
 
 		public static final String NODE_KEEP_INVENTORY = "keep-inventory";
 		public static final String NODE_KEEP_EXPERIENCE = "keep-experience";
