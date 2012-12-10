@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class Utilities {
@@ -52,11 +51,6 @@ public final class Utilities {
 		// so the orb size will always be displayed very small.
 		ExperienceOrb orb = l.getWorld().spawn(l, ExperienceOrb.class);
 		orb.setExperience(amount);
-	}
-
-	public static void updateExperience(Player ply) {
-		// subject to be removed
-		((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet43SetExperience(ply.getExp(), ply.getTotalExperience(), ply.getLevel()));
 	}
 
 	/**
