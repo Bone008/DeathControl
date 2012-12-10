@@ -1,5 +1,8 @@
 package bone008.bukkit.deathcontrol.commandhandler;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
@@ -28,8 +31,7 @@ public abstract class SubCommand {
 	protected String usage = null;
 
 	/**
-	 * The permission node that is required for the command to execute.
-	 * This is checked automatically.
+	 * The permission node that is required for the command to execute. This is checked automatically.
 	 */
 	protected DeathPermission permission = null;
 
@@ -45,8 +47,19 @@ public abstract class SubCommand {
 	public abstract void execute(CommandContext context) throws CommandException;
 
 	/**
-	 * Checks if the given CommandSender has the given permission node and throws a CommandException if not.
-	 * <b>Note:</b> This is automatically done before each sub-command is executed.
+	 * Called when any argument of the sub-command needs to be auto-completed. The default method in SubCommand returns an empty List.
+	 * 
+	 * @param context The current CommandContext of this operation.
+	 * 
+	 * @return A List of possible options to return, or null if the default handling should be passed.
+	 * @throws CommandException if an error occurred that should be automatically shown to the player
+	 */
+	public List<String> tabComplete(CommandContext context) throws CommandException {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Checks if the given CommandSender has the given permission node and throws a CommandException if not. <b>Note:</b> This is automatically done before each sub-command is executed.
 	 * 
 	 * @param sender The CommandSender to check the permission for
 	 * @param perm The permission node to check

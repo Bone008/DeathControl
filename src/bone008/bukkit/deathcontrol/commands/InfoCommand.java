@@ -2,9 +2,13 @@ package bone008.bukkit.deathcontrol.commands;
 
 import static org.bukkit.ChatColor.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.bukkit.util.StringUtil;
 
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
@@ -20,10 +24,45 @@ import bone008.bukkit.deathcontrol.exceptions.CommandException;
 
 public class InfoCommand extends SubCommand {
 
+	private static final List<String> COMPLETE_OPTIONS = Arrays.asList("cause", "causes", "list", "lists");
+
 	public InfoCommand() {
 		this.description = "Displays various information about the config.";
 		this.usage = "info [causes|lists]\ninfo cause <cause-name>\ninfo list <list-name>";
 		this.permission = DeathControl.PERMISSION_INFO;
+	}
+
+	@Override
+	public List<String> tabComplete(CommandContext context) throws CommandException {
+		List<String> matches = new ArrayList<String>();
+
+		if (context.argsCount() < 1)
+			return matches;
+
+		String option = context.getStringArg(0);
+
+		if (context.argsCount() == 1) {
+			return StringUtil.copyPartialMatches(context.getStringArg(0), COMPLETE_OPTIONS, matches);
+		}
+
+		else if (option.equalsIgnoreCase("cause")) {
+			String userCause = context.getStringArg(1);
+
+			for (DeathCause dc : DeathControl.instance.config.handlings.keySet()) {
+				if (StringUtil.startsWithIgnoreCase(dc.toHumanString(), userCause))
+					matches.add(dc.toHumanString());
+			}
+
+			return matches;
+		}
+
+		else if (option.equalsIgnoreCase("list")) {
+			String userList = context.getStringArg(1);
+
+			return StringUtil.copyPartialMatches(userList, DeathControl.instance.deathLists.getListNames(), matches);
+		}
+
+		return matches; // empty list
 	}
 
 	@Override
@@ -34,7 +73,7 @@ public class InfoCommand extends SubCommand {
 			String option = context.getStringArg(0);
 			if (option.equalsIgnoreCase("causes")) {
 				context.sender.sendMessage(GRAY + "Registered death causes (" + YELLOW + DeathControl.instance.config.handlings.size() + GRAY + "):");
-				
+
 				Iterator<DeathCause> it = DeathControl.instance.config.handlings.keySet().iterator();
 				while (it.hasNext()) {
 					context.sender.sendMessage(pre + WHITE + it.next().toHumanString());
@@ -44,9 +83,9 @@ public class InfoCommand extends SubCommand {
 
 			else if (option.equalsIgnoreCase("cause")) {
 				String causeName = context.getStringArg(1);
-				
+
 				DeathCause dc = DeathCause.parseCause(DeathConfiguration.getCauseNameFromValue(causeName), DeathConfiguration.getCauseMetaFromValue(causeName));
-				
+
 				CauseSettings settings = DeathControl.instance.config.getSettings(dc);
 				if (settings == null) {
 					// it's prettier not to throw a CommandException here
@@ -80,7 +119,7 @@ public class InfoCommand extends SubCommand {
 
 			else if (option.equalsIgnoreCase("list")) {
 				String listName = context.getStringArg(1).toLowerCase();
-				
+
 				List<ListItem> list = DeathControl.instance.deathLists.getList(listName);
 				if (list == null) {
 					// it's prettier not to throw a CommandException here
@@ -109,9 +148,9 @@ public class InfoCommand extends SubCommand {
 		context.sender.sendMessage(GRAY + "==== DeathControl configuration ====");
 		context.sender.sendMessage(pre + WHITE + "registered valid death causes: " + YELLOW + DeathControl.instance.config.handlings.size());
 		context.sender.sendMessage(pre + WHITE + "registered valid lists: " + YELLOW + DeathControl.instance.deathLists.getListsAmount());
-		
+
 		List<String> cfgErrors = DeathControl.instance.config.errors;
-		
+
 		if (!cfgErrors.isEmpty()) {
 			String errorsStr;
 			if (cfgErrors.size() == 1)
