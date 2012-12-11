@@ -111,6 +111,7 @@ public class DeathControl extends JavaPlugin {
 		FileConfiguration cfg = getConfig();
 		cfg.options().copyDefaults(true);
 		cfg.options().copyHeader(true);
+		cfg.set("show-messages", null); // remove deprecated option
 
 		// only update the help file if there currently is one, as it is deprecated.
 		if (helpFile.exists() && helpFile.isFile()) {

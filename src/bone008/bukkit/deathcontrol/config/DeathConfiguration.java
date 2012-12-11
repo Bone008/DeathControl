@@ -41,7 +41,6 @@ public class DeathConfiguration {
 	public static final String default_loggingLevel = "standard";
 	public static final boolean default_allowCrossworld = true;
 	public static final List<String> default_limitedWorlds = new ArrayList<String>();
-	public static final boolean default_showMessages = true;
 
 	private DeathControl plugin;
 	private FileConfiguration config;
@@ -52,7 +51,6 @@ public class DeathConfiguration {
 	public int loggingLevel;
 	public boolean allowCrossworld;
 	private Set<String> limitedWorlds; // access through API, hence private
-	public boolean showMessages;
 
 	// a list of errors that occurred while parsing
 	public List<String> errors = new ArrayList<String>();
@@ -94,8 +92,6 @@ public class DeathConfiguration {
 		if (rawLimitedWorlds == null || rawLimitedWorlds.isEmpty())
 			rawLimitedWorlds = default_limitedWorlds;
 		limitedWorlds = new HashSet<String>(rawLimitedWorlds);
-
-		showMessages = config.getBoolean("show-messages", default_showMessages);
 
 		// parse causes
 		ConfigurationSection causesSection = config.getConfigurationSection("DeathCauses");

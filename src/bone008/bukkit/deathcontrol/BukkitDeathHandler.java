@@ -156,18 +156,16 @@ public class BukkitDeathHandler implements Listener {
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
 		// message the player
-		if (DeathControl.instance.config.showMessages) {
-			MessageHelper.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
-			if (method == HandlingMethod.COMMAND) {
-				MessageHelper.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
-				if (causeSettings.getTimeout() > 0)
-					MessageHelper.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
-			}
+		MessageHelper.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
+		if (method == HandlingMethod.COMMAND) {
+			MessageHelper.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
+			if (causeSettings.getTimeout() > 0)
+				MessageHelper.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
+		}
 
-			if (cost > 0) {
-				Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
-				MessageHelper.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtils.formatMoney(cost));
-			}
+		if (cost > 0) {
+			Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
+			MessageHelper.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtils.formatMoney(cost));
 		}
 	}
 
