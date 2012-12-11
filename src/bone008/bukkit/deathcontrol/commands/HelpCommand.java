@@ -21,6 +21,7 @@ public class HelpCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandContext context) throws CommandException {
+		// TODO externalize help command
 		MessageHelper.sendMessage(context.sender, GRAY + DeathControl.instance.pdfFile.getFullName() + " by Bone008", null);
 
 		String subCmdPrefix = ChatColor.BLUE + "/" + context.mainLabel + " ";
@@ -33,7 +34,7 @@ public class HelpCommand extends SubCommand {
 				continue;
 
 			StringBuilder sb = new StringBuilder();
-			
+
 			if (cmd.getUsage() == null)
 				sb.append(subCmdPrefix).append(cmdName);
 			else
@@ -43,7 +44,7 @@ public class HelpCommand extends SubCommand {
 				sb.append('\n');
 				sb.append(Utilities.wrapPrefixed(cmd.getDescription(), "   " + ChatColor.GRAY));
 			}
-			
+
 			MessageHelper.sendMessage(context.sender, sb.toString(), "> ");
 			/*
 			 * sender.sendMessage( new StringBuilder() .append(ChatColor.GRAY) .append("| ") .append(ChatColor.BLUE) .append("/") .append(mainLabel) .append(" ") .append(entry.getKey()) .append(ChatColor.GRAY) .append(" - ") .append(ChatColor.WHITE) .append(entry.getValue().getDescription()) .toString() );

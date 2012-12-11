@@ -9,6 +9,22 @@ public final class MessageHelper {
 	private MessageHelper() {
 	}
 
+	public static void sendMessage(CommandSender who, Message msg, String... replaces) {
+		if (replaces.length % 2 > 0)
+			throw new IllegalArgumentException("replace patterns must consist of two elements");
+
+		String translatedMessage = msg.getTranslation();
+		
+		if(translatedMessage == null || translatedMessage.isEmpty())
+			return;
+
+		for (int i = 0; i < replaces.length - 1; i += 2) {
+			translatedMessage = translatedMessage.replace(replaces[i], replaces[i + 1]);
+		}
+
+		sendMessage(who, ChatColor.translateAlternateColorCodes('&', translatedMessage), false);
+	}
+
 	public static void sendMessage(CommandSender who, CharSequence msg) {
 		sendMessage(who, msg, false);
 	}

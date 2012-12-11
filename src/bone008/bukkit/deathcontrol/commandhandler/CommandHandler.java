@@ -73,7 +73,7 @@ public class CommandHandler implements TabExecutor {
 				try {
 					return subCmd.tabComplete(new CommandContext(sender, cmd, label, this, getSubArgs(args)));
 				} catch (CommandException e) {
-					MessageHelper.sendMessage(sender, "Error on tab-completion: "+e.getMessage(), true);
+					MessageHelper.sendMessage(sender, "Error on tab-completion: " + e.getMessage(), true);
 				}
 			}
 		}
@@ -108,7 +108,10 @@ public class CommandHandler implements TabExecutor {
 				cmd.checkPermission(sender, cmd.getPermission());
 				cmd.execute(new CommandContext(sender, mainCmd, mainLabel, this, args));
 			} catch (CommandException e) {
-				MessageHelper.sendMessage(sender, e.getMessage(), true);
+				if (e.getTranslatableMessage() == null)
+					MessageHelper.sendMessage(sender, e.getMessage());
+				else
+					MessageHelper.sendMessage(sender, e.getTranslatableMessage());
 			}
 			return true;
 		}

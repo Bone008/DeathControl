@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import bone008.bukkit.deathcontrol.Message;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 
 /**
@@ -14,10 +15,10 @@ import bone008.bukkit.deathcontrol.exceptions.CommandException;
  */
 public class CommandContext {
 
-	private static final String MSG_PLAYER_CONTEXT = "You have to be a player to do this!";
-	private static final String MSG_NOT_ENOUGH_ARGUMENTS = "You did not provide enough arguments!";
-	private static final String MSG_NUMBER_EXPECTED = "A number was expected!";
-	private static final String MSG_INVALID_PLAYER = "The given player is not online or does not exist!";
+	private static final Message MSG_PLAYER_CONTEXT = Message.CMDCONTEXT_PLAYER_CONTEXT;
+	private static final Message MSG_NOT_ENOUGH_ARGUMENTS =  Message.CMDCONTEXT_ARGUMENT_MISSING;
+	private static final Message MSG_NUMBER_EXPECTED =  Message.CMDCONTEXT_NUMBER_EXPECTED;
+	private static final Message MSG_INVALID_PLAYER =  Message.CMDCONTEXT_INVALID_PLAYER;
 
 	/**
 	 * The {@link CommandSender} associated with this command.

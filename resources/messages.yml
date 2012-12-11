@@ -1,0 +1,66 @@
+death:
+  not-enough-money: |
+    &cYou couldn't keep your items
+    &cbecause you didn't have enough money!
+  items-kept: |
+    &eYou keep your items
+    &ebecause %cause-reason%.
+  command-indicator: |
+    &eYou can get them back with &a/death back&e.
+  timeout-indicator: |
+    &cThis will expire in %timeout% seconds!
+  cost-indicator-direct: |
+    &6This costs you &f%formatted-cost%&6!
+  cost-indicator-command: |
+    &6This will cost you &f%formatted-cost%&6!
+
+notification:
+  expiration: |
+    &4Time is up.
+    &4Your items are dropped at your death location.
+  restoration: |
+    You've got your items back!
+  no-cross-world: |
+    &4You are in a different world, your items were dropped!
+  no-money: |
+    &cYou don't have enough money to get back your items!
+
+command:
+  no-restorable-items: |
+    &cYou don't have any items to get back!
+  no-droppable-items: |
+    &cYou don't have any stored items to drop!
+  items-were-dropped: |
+    Your items were dropped at your death location.
+  context:
+    no-permission: |
+      &cYou don't have permission to do that!
+    player-context-required: |
+      &cYou have to be a player to do this!
+    not-enough-arguments: |
+      &cYou did not provide enough arguments!
+    number-expected: |
+      &cA number was expected!
+    invalid-player-arg: |
+      &cThe given player is not online or does not exist!
+
+cause-reasons:
+  CONTACT: you died of a cactus
+  SUFFOCATION: you suffocated
+  FALL: you died of falling
+  VOID: you died in the void
+  SUICIDE: you committed suicide
+  STARVATION: you starved
+  LIGHTNING: you were struck by lightning
+  MAGIC: you were killed by magic
+  POISON: you were killed by poison
+  DROWNING: you drowned
+  LAVA: you died of lava
+  FIRE: you died of fire
+  FIRE|TICK: you died of fire
+  EXPLOSION: you exploded
+  MOB: you were killed by a mob
+  MOB|CREEPER: you fell victim to a creeper
+  MOB|WOLF: you were killed by a wolf
+  PLAYER: you were killed by a player
+  UNKNOWN: you don't know why you died

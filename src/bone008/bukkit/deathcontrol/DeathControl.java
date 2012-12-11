@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.ServerOperator;
@@ -35,16 +37,15 @@ public class DeathControl extends JavaPlugin {
 	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", true);
 	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
 	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
-	
+
 	public static DeathControl instance;
 
-	private final BukkitDeathHandler evtDeathHandler = new BukkitDeathHandler();
-	private final BukkitReconnectHandler evtReconnectHandler = new BukkitReconnectHandler();
-
 	private File helpFile = null;
+	private File messagesFile = null;
 
 	public DeathConfiguration config;
 	public DeathLists deathLists;
+	public YamlConfiguration messagesData;
 	public PluginDescriptionFile pdfFile;
 	private String prefix;
 
@@ -62,11 +63,14 @@ public class DeathControl extends JavaPlugin {
 				manager.expire(true);
 			}
 		}
+
+		instance = null;
 	}
 
 	@Override
 	public void onEnable() {
 		helpFile = new File(getDataFolder(), "help.txt");
+		messagesFile = new File(getDataFolder(), "messages.yml");
 		pdfFile = getDescription();
 		prefix = "[" + pdfFile.getName() + "] ";
 
@@ -75,8 +79,8 @@ public class DeathControl extends JavaPlugin {
 
 		// register events
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(evtDeathHandler, this);
-		pm.registerEvents(evtReconnectHandler, this);
+		pm.registerEvents(new BukkitDeathHandler(), this);
+		pm.registerEvents(new BukkitReconnectHandler(), this);
 
 		// setup commands
 		CommandHandler deathCmd = new CommandHandler();
@@ -86,7 +90,7 @@ public class DeathControl extends JavaPlugin {
 		deathCmd.addSubCommand("drop", new DropCommand(), "expire");
 		deathCmd.addSubCommand("reload", new ReloadCommand());
 		deathCmd.addSubCommand("info", new InfoCommand(), "status");
-		
+
 		getCommand("death").setExecutor(deathCmd);
 
 		// setup economy
@@ -100,6 +104,7 @@ public class DeathControl extends JavaPlugin {
 		// create the default files
 		writeDefault("config.yml", "config.yml", false); // only write the default if no file exists
 		writeDefault("lists.txt", "lists.txt", false);
+		writeDefault("messages.yml", "messages.yml", false);
 
 		// now load the config, otherwise it would be created before the exists check
 		reloadConfig();
@@ -112,10 +117,13 @@ public class DeathControl extends JavaPlugin {
 			writeDefault("help.txt", "help.txt", checkHelpUpdate());
 		}
 
-		// parse the config & lists files
+		// parse the config & lists files		
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new DeathConfiguration(this, cfg);
 		saveConfig();
+
+		messagesData = YamlConfiguration.loadConfiguration(messagesFile);
+		checkMessagesIntegrity();
 
 		log(Level.CONFIG, "is now using " + (config.bukkitPerms ? "bukkit permissions" : "the OP-system") + "!");
 	}
@@ -123,12 +131,9 @@ public class DeathControl extends JavaPlugin {
 	/**
 	 * Writes a resource contained in the jar to a specified destination.
 	 * 
-	 * @param resourceName
-	 *            The name of the resource in the jar
-	 * @param destination
-	 *            The destination path, relative to the plugin's data folder
-	 * @param force
-	 *            Specifies if the file should be overwritten when already existing
+	 * @param resourceName The name of the resource in the jar
+	 * @param destination The destination path, relative to the plugin's data folder
+	 * @param force Specifies if the file should be overwritten when already existing
 	 * @return true, if and only if the file was successfully written
 	 */
 	public boolean writeDefault(String resourceName, String destination, boolean force) {
@@ -179,6 +184,49 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	/**
+	 * Checks messages.yml for completeness. If action needs to be taken, the old messages.yml file is backed up and the default one is written. We can't use YAML saving, as it will severely screw up multi-line options.
+	 */
+	private void checkMessagesIntegrity() {
+		InputStream messageDefaultsStream = getClass().getResourceAsStream("/resources/messages.yml");
+		if (messageDefaultsStream == null) // we might have been hot-swapped and don't want to crash, checks are aborted and done at another point of time
+			return;
+
+		boolean needsUpdate = false, needsBackup = false;
+
+		YamlConfiguration defaultMessages = YamlConfiguration.loadConfiguration(messageDefaultsStream);
+		for (String msgKey : defaultMessages.getKeys(true)) {
+			if (messagesData.isSet(msgKey)) {
+				Object defaultVal = messagesData.get(msgKey);
+				if (!(defaultVal instanceof ConfigurationSection) && !defaultVal.equals(defaultMessages.get(msgKey)))
+					needsBackup = true;
+			} else {
+				needsUpdate = true;
+			}
+		}
+
+		// some property was missing so we need to update
+		if (needsUpdate) {
+			log(Level.WARNING, "Your messages.yml file is out of date. It will now be updated.");
+			if (needsBackup) {
+				log(Level.INFO, "Creating backup of your old messages ...");
+
+				// backup old file
+				File backupFile = new File(getDataFolder(), "messages-old-backup.yml");
+				if (!messagesFile.renameTo(backupFile)) {
+					log(Level.WARNING, "Unable to backup old messages.yml file! Automatic updating failed!");
+					return;
+				}
+
+				log(Level.INFO, "Old messages have been backed up to " + backupFile.getPath());
+			}
+
+			// now write the new default
+			writeDefault("messages.yml", "messages.yml", true);
+
+		}
+	}
+
+	/**
 	 * Checks if the help file is outdated by comparing its length with the internal resource.
 	 * 
 	 * @return true, if help.txt needs to be updated, otherwise false
@@ -210,28 +258,27 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	public boolean hasPermission(Permissible who, DeathPermission perm) {
-		if(perm == null)
+		if (perm == null)
 			return true;
-		
-		if(who == null)
+
+		if (who == null)
 			return false;
 		if (config.bukkitPerms)
 			return who.hasPermission(perm.node);
 		else {
 			if (!perm.opOnly)
 				return true;
-			if (who instanceof ServerOperator) {
+			if (who instanceof ServerOperator)
 				return ((ServerOperator) who).isOp();
-			} else {
-				log(Level.WARNING, "Could not check permission " + perm.node + " for " + who.toString() + ": unsupported type! Denying access ...");
-				return false;
-			}
+
+			log(Level.WARNING, "Could not check permission " + perm.node + " for " + who.toString() + ": unsupported type! Denying access ...");
+			return false;
 		}
 	}
 
 	// displays a message to the player
 	public void display(Player ply, String message) {
-		if(ply == null)
+		if (ply == null)
 			return;
 		ply.sendMessage(ChatColor.GRAY + prefix + ChatColor.WHITE + message);
 	}
@@ -248,11 +295,11 @@ public class DeathControl extends JavaPlugin {
 	public void log(Level lvl, String msg, boolean overrideLevel) {
 		if (!overrideLevel && lvl.intValue() < config.loggingLevel)
 			return;
-		
+
 		// levels below INFO don't get properly displayed by the minecraft logger
-		if(lvl.intValue() < Level.INFO.intValue())
+		if (lvl.intValue() < Level.INFO.intValue())
 			lvl = Level.INFO;
-		
+
 		String[] lines = msg.split("\n");
 		for (String line : lines)
 			getLogger().log(lvl, line); // our logger now takes care of prefixes

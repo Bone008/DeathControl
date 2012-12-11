@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,8 +51,7 @@ public class DeathManager {
 		// sends notification to the player
 		if (showMessage) {
 			Player ply = Bukkit.getPlayerExact(plyName);
-			MessageHelper.sendMessage(ply, ChatColor.DARK_RED + "Time is up.");
-			MessageHelper.sendMessage(ply, ChatColor.DARK_RED + "Your items are dropped at your death location.");
+			MessageHelper.sendMessage(ply, Message.NOTIF_EXPIRATION);
 			// logs to console
 			DeathControl.instance.log(Level.FINE, "Timer for " + plyName + " expired! Items dropped.");
 		}
@@ -76,7 +74,7 @@ public class DeathManager {
 		if (method == HandlingMethod.COMMAND && this.valid) {
 			Player ply = Bukkit.getPlayerExact(plyName);
 			if (restore(false)) {
-				MessageHelper.sendMessage(ply, "You got your items back!");
+				MessageHelper.sendMessage(ply, Message.NOTIF_RESTORATION);
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			} else {
@@ -94,7 +92,7 @@ public class DeathManager {
 		final Player ply = Bukkit.getPlayerExact(plyName);
 
 		if (!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())) {
-			MessageHelper.sendMessage(ply, ChatColor.DARK_RED + "You are in a different world, your items were dropped!");
+			MessageHelper.sendMessage(ply, Message.NOTIF_NOCROSSWORLD);
 			expire(false);
 			return false;
 		}
@@ -139,7 +137,7 @@ public class DeathManager {
 				success = true;
 			}
 		} else {
-			MessageHelper.sendMessage(ply, "You don't have enough money to get back your items!", true);
+			MessageHelper.sendMessage(ply, Message.NOTIF_NOMONEY);
 		}
 
 		return success;

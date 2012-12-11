@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.DeathManager;
+import bone008.bukkit.deathcontrol.Message;
 import bone008.bukkit.deathcontrol.MessageHelper;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
@@ -21,9 +22,9 @@ public class DropCommand extends SubCommand {
 
 		DeathManager m = DeathControl.instance.getManager(ply.getName());
 		if (m != null && m.expire(false))
-			MessageHelper.sendMessage(ply, "Your items were dropped at your death location.");
+			MessageHelper.sendMessage(ply, Message.CMD_ITEMS_WERE_DROPPED);
 		else
-			throw new CommandException("You don't have any stored items to drop!");
+			throw new CommandException(Message.CMD_NO_DROPPABLE_ITEMS);
 	}
 
 }

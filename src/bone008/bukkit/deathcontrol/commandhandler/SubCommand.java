@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.DeathPermission;
+import bone008.bukkit.deathcontrol.Message;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 
 public abstract class SubCommand {
@@ -69,7 +70,7 @@ public abstract class SubCommand {
 		if (perm == null)
 			return;
 		if (!DeathControl.instance.hasPermission(sender, perm))
-			throw new CommandException("You don't have permission to do that!");
+			throw new CommandException(Message.CMDCONTEXT_NO_PERMISSION);
 	}
 
 	public final String getUsage() {

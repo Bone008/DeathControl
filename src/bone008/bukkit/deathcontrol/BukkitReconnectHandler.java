@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BukkitReconnectHandler implements Listener {
-	
+
 	private HashMap<String, Integer> logoffExpireTimers = new HashMap<String, Integer>();
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -34,10 +34,10 @@ public class BukkitReconnectHandler implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		String plyName = event.getPlayer().getName();
-		if(logoffExpireTimers.containsKey(plyName)){
+		if (logoffExpireTimers.containsKey(plyName)) {
 			Bukkit.getServer().getScheduler().cancelTask(logoffExpireTimers.get(plyName));
 			logoffExpireTimers.remove(plyName);
-			if(DeathControl.instance.getManager(plyName) != null)
+			if (DeathControl.instance.getManager(plyName) != null)
 				DeathControl.instance.log(Level.FINE, plyName + " rejoined. Expiration timer stopped.");
 		}
 	}
@@ -53,7 +53,7 @@ public class BukkitReconnectHandler implements Listener {
 
 		@Override
 		public void run() {
-			if(manager.expire(false))
+			if (manager.expire(false))
 				DeathControl.instance.log(Level.INFO, "Saved items for disconnected player " + plyName + " were dropped!");
 		}
 	}

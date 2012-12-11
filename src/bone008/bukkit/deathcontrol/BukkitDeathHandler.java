@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -102,8 +101,7 @@ public class BukkitDeathHandler implements Listener {
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_FREE)) {
 			cost = EconomyUtils.calcCost(ply, causeSettings);
 			if (!EconomyUtils.canAfford(ply, cost)) {
-				MessageHelper.sendMessage(ply, "You couldn't keep your items", true);
-				MessageHelper.sendMessage(ply, "because you didn't have enough money!", true);
+				MessageHelper.sendMessage(ply, Message.DEATH_NO_MONEY);
 				DeathControl.instance.log(Level.FINE, log1.append("; Not enough money!").toString());
 				return;
 			}
@@ -159,16 +157,17 @@ public class BukkitDeathHandler implements Listener {
 
 		// message the player
 		if (DeathControl.instance.config.showMessages) {
-			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You keep " + ChatColor.WHITE + (event.getDrops().isEmpty() ? "all" : "some") + ChatColor.YELLOW + " of your items");
-			MessageHelper.sendMessage(ply, ChatColor.YELLOW + "because you " + deathCause.toMsgString() + ".");
+			MessageHelper.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
 			if (method == HandlingMethod.COMMAND) {
-				MessageHelper.sendMessage(ply, ChatColor.YELLOW + "You can get them back with " + ChatColor.GREEN + "/death back");
+				MessageHelper.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
 				if (causeSettings.getTimeout() > 0)
-					MessageHelper.sendMessage(ply, ChatColor.RED + "This will expire in " + causeSettings.getTimeout() + " seconds!");
+					MessageHelper.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
 			}
 
-			if (cost > 0)
-				MessageHelper.sendMessage(ply, ChatColor.GOLD + "This " + (method == HandlingMethod.COMMAND ? "will cost" : "costs") + " you " + ChatColor.WHITE + EconomyUtils.formatMoney(cost) + ChatColor.GOLD + "!");
+			if (cost > 0) {
+				Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
+				MessageHelper.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtils.formatMoney(cost));
+			}
 		}
 	}
 

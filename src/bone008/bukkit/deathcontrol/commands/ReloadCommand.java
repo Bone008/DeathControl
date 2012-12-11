@@ -14,11 +14,11 @@ public class ReloadCommand extends SubCommand {
 		this.description = "Reloads the config files of the plugin.";
 		this.permission = DeathControl.PERMISSION_ADMIN;
 	}
-	
+
 	@Override
 	public void execute(CommandContext context) throws CommandException {
 		DeathControl.instance.loadConfig();
-		MessageHelper.sendMessage(context.sender, ChatColor.GREEN + "Reloaded config files!");
+		MessageHelper.sendMessage(context.sender, ChatColor.GREEN + "Reloaded all config files!");
 	}
 
 }

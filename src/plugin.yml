@@ -8,8 +8,9 @@ softdepend: [Register, Vault]
 commands:
     death:
         usage: |
-            /<command> help  for more information!
+            Use "/<command> help" for more information!
         aliases: [deathcontrol, dc]
+        description: Generic command for the DeathControl plugin
 
 
 permissions:
