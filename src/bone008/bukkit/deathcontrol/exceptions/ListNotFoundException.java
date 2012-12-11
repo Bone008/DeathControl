@@ -7,14 +7,15 @@ public class ListNotFoundException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	private String listName;
-	
-	protected ListNotFoundException(){}
-	
-	public ListNotFoundException(String listName){
+
+	protected ListNotFoundException() {
+	}
+
+	public ListNotFoundException(String listName) {
 		this.listName = listName;
 	}
-	
-	public String getListName(){
+
+	public String getListName() {
 		return listName;
 	}
 }

@@ -25,7 +25,8 @@ public class BukkitReconnectHandler implements Listener {
 			if (t > 0) {
 				logoffExpireTimers.put(plyName, Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, task, t * 20L));
 				DeathControl.instance.log(Level.INFO, plyName + " left the game. Dropping saved items in " + t + " seconds ...");
-			} else {
+			}
+			else {
 				task.run(); // manually execute the task to drop stuff instantly
 			}
 		}

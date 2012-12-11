@@ -61,9 +61,11 @@ public final class EconomyUtils {
 		if (m != null) {
 			MethodAccount acc = m.getAccount(ply.getName());
 			currBalance = acc.balance();
-		} else if (vaultEconomy != null) {
+		}
+		else if (vaultEconomy != null) {
 			currBalance = vaultEconomy.getBalance(ply.getName());
-		} else {
+		}
+		else {
 			logNotice(ply.getName());
 			return 0;
 		}
@@ -86,9 +88,11 @@ public final class EconomyUtils {
 		if (m != null) {
 			MethodAccount acc = m.getAccount(ply.getName());
 			return acc.hasEnough(cost);
-		} else if (vaultEconomy != null) {
+		}
+		else if (vaultEconomy != null) {
 			return vaultEconomy.has(ply.getName(), cost);
-		} else {
+		}
+		else {
 			logNotice(ply.getName());
 			return true;
 		}
@@ -107,9 +111,11 @@ public final class EconomyUtils {
 			if (!acc.hasEnough(cost))
 				return false;
 			return acc.subtract(cost);
-		} else if (vaultEconomy != null) {
+		}
+		else if (vaultEconomy != null) {
 			return vaultEconomy.withdrawPlayer(ply.getName(), cost).transactionSuccess();
-		} else {
+		}
+		else {
 			logNotice(ply.getName());
 			return true;
 		}

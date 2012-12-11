@@ -16,9 +16,9 @@ import bone008.bukkit.deathcontrol.exceptions.CommandException;
 public class CommandContext {
 
 	private static final Message MSG_PLAYER_CONTEXT = Message.CMDCONTEXT_PLAYER_CONTEXT;
-	private static final Message MSG_NOT_ENOUGH_ARGUMENTS =  Message.CMDCONTEXT_ARGUMENT_MISSING;
-	private static final Message MSG_NUMBER_EXPECTED =  Message.CMDCONTEXT_NUMBER_EXPECTED;
-	private static final Message MSG_INVALID_PLAYER =  Message.CMDCONTEXT_INVALID_PLAYER;
+	private static final Message MSG_NOT_ENOUGH_ARGUMENTS = Message.CMDCONTEXT_ARGUMENT_MISSING;
+	private static final Message MSG_NUMBER_EXPECTED = Message.CMDCONTEXT_NUMBER_EXPECTED;
+	private static final Message MSG_INVALID_PLAYER = Message.CMDCONTEXT_INVALID_PLAYER;
 
 	/**
 	 * The {@link CommandSender} associated with this command.

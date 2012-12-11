@@ -8,12 +8,13 @@ public class IllegalPropertyException extends Exception {
 	private static final long serialVersionUID = 1L;
 	public String propertyName;
 	public String propertyValue;
-	
-	protected IllegalPropertyException(){}
-	
-	public IllegalPropertyException(String name, String value){
+
+	protected IllegalPropertyException() {
+	}
+
+	public IllegalPropertyException(String name, String value) {
 		this.propertyName = name;
 		this.propertyValue = value;
 	}
-	
+
 }

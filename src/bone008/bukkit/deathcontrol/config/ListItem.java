@@ -23,7 +23,8 @@ public class ListItem {
 		if (itemStack.getTypeId() == this.id) {
 			if (this.hasData) {
 				return (this.data == itemStack.getDurability());
-			} else {
+			}
+			else {
 				return true;
 			}
 		}
@@ -47,21 +48,27 @@ public class ListItem {
 					if (o1.hasData) {
 						if (o2.hasData) {
 							return compInt(o1.data, o2.data);
-						} else {
+						}
+						else {
 							return 1;
 						}
-					} else if (o2.hasData) {
+					}
+					else if (o2.hasData) {
 						if (o1.hasData) {
 							return compInt(o1.data, o2.data);
-						} else {
+						}
+						else {
 							return -1;
 						}
-					} else {
+					}
+					else {
 						return 0;
 					}
-				} else if (o1.id > o2.id) {
+				}
+				else if (o1.id > o2.id) {
 					return 1;
-				} else {
+				}
+				else {
 					assert o1.id < o2.id;
 					return -1;
 				}

@@ -185,7 +185,8 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	/**
-	 * Checks messages.yml for completeness. If action needs to be taken, the old messages.yml file is backed up and the default one is written. We can't use YAML saving, as it will severely screw up multi-line options.
+	 * Checks messages.yml for completeness. If action needs to be taken, the old messages.yml file is backed up and the default one is written.
+	 * We can't use YAML saving, as it will severely screw up multi-line options.
 	 */
 	private void checkMessagesIntegrity() {
 		InputStream messageDefaultsStream = getClass().getResourceAsStream("/resources/messages.yml");
@@ -200,7 +201,8 @@ public class DeathControl extends JavaPlugin {
 				Object defaultVal = messagesData.get(msgKey);
 				if (!(defaultVal instanceof ConfigurationSection) && !defaultVal.equals(defaultMessages.get(msgKey)))
 					needsBackup = true;
-			} else {
+			}
+			else {
 				needsUpdate = true;
 			}
 		}

@@ -77,7 +77,8 @@ public class DeathManager {
 				MessageHelper.sendMessage(ply, Message.NOTIF_RESTORATION);
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
-			} else {
+			}
+			else {
 
 			}
 			return true;
@@ -136,7 +137,8 @@ public class DeathManager {
 
 				success = true;
 			}
-		} else {
+		}
+		else {
 			MessageHelper.sendMessage(ply, Message.NOTIF_NOMONEY);
 		}
 

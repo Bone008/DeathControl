@@ -56,7 +56,8 @@ public final class ExperienceUtils {
 			xpTotalToReachLevel[i] = xpTotalToReachLevel[i - 1] + incr;
 			if (i >= 30) {
 				incr += 7;
-			} else if (i >= 16) {
+			}
+			else if (i >= 16) {
 				incr += 3;
 			}
 		}

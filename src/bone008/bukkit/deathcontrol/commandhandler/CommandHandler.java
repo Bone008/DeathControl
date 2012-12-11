@@ -67,7 +67,8 @@ public class CommandHandler implements TabExecutor {
 			}
 
 			return matches;
-		} else if (args.length > 1) {
+		}
+		else if (args.length > 1) {
 			SubCommand subCmd = getCmdByName(args[0]);
 			if (subCmd != null) {
 				try {
@@ -102,7 +103,8 @@ public class CommandHandler implements TabExecutor {
 
 		if (cmd == null) {
 			return false;
-		} else {
+		}
+		else {
 			try {
 				cmd.checkPermission(sender, basePermissionNode);
 				cmd.checkPermission(sender, cmd.getPermission());

@@ -111,7 +111,8 @@ public class DeathConfiguration {
 
 				if (cause == null) {
 					errors.add("invalid cause: " + causeEntryName);
-				} else {
+				}
+				else {
 					try {
 						handlings.put(cause, new CauseData(plugin, new RawOptions(causeEntry.getValue())));
 					} catch (IllegalPropertyException e) {
@@ -158,7 +159,8 @@ public class DeathConfiguration {
 		// also check if not the first char is the SEPARATOR
 		if (sepIndex > 0) {
 			return val.substring(0, sepIndex);
-		} else {
+		}
+		else {
 			return val;
 		}
 	}
@@ -168,7 +170,8 @@ public class DeathConfiguration {
 		// also check if not the first char is the SEPARATOR
 		if (sepIndex > 0) {
 			return val.substring(sepIndex + 1);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}

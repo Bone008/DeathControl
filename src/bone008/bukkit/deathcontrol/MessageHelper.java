@@ -14,8 +14,8 @@ public final class MessageHelper {
 			throw new IllegalArgumentException("replace patterns must consist of two elements");
 
 		String translatedMessage = msg.getTranslation();
-		
-		if(translatedMessage == null || translatedMessage.isEmpty())
+
+		if (translatedMessage == null || translatedMessage.isEmpty())
 			return;
 
 		for (int i = 0; i < replaces.length - 1; i += 2) {
