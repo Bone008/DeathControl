@@ -19,7 +19,8 @@ public final class MessageHelper {
 			return;
 
 		for (int i = 0; i < replaces.length - 1; i += 2) {
-			translatedMessage = translatedMessage.replace(replaces[i], replaces[i + 1]);
+			if (replaces[i] != null && replaces[i + 1] != null)
+				translatedMessage = translatedMessage.replace(replaces[i], replaces[i + 1]);
 		}
 
 		sendMessage(who, ChatColor.translateAlternateColorCodes('&', translatedMessage), false);

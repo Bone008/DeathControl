@@ -45,7 +45,7 @@ command:
       &cThe given player is not online or does not exist!
 
 cause-reasons:
-  CONTACT: you died of a cactus
+  CACTUS: you died of a cactus
   SUFFOCATION: you suffocated
   FALL: you died of falling
   VOID: you died in the void
