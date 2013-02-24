@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.inventory.ItemStack;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration.RawOptions;
+import bone008.bukkit.deathcontrol.config.lists.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
 
 /**
- * stores configured data about how to deal with a specific cause
+ * Stores configured data about how to deal with a specific cause.
  */
 public class CauseData {
 
@@ -139,35 +139,6 @@ public class CauseData {
 
 	public boolean hasPotentialCost() {
 		return (cost != null && cost > 0);
-	}
-
-
-	/**
-	 * Checks if the given item may be kept. Combines whitelists and blacklists to match the result.
-	 * 
-	 * @param itemStack the item stack to check for
-	 * @return true, if the item may be kept, otherwise false.
-	 */
-	public boolean isValidItem(ItemStack itemStack) {
-		// check blacklist match -> return false
-		for (ListItem item : blacklist) {
-			if (item.matches(itemStack))
-				return false;
-		}
-
-		// if a whitelist is defined
-		if (whitelist.size() > 0) {
-			// check whitelist match -> return true
-			for (ListItem item : whitelist) {
-				if (item.matches(itemStack))
-					return true;
-			}
-			// false if no match
-			return false;
-		}
-
-		// if no whitelist -> automatically valid
-		return true;
 	}
 
 

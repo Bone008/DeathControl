@@ -19,7 +19,7 @@ import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
-import bone008.bukkit.deathcontrol.config.ListItem;
+import bone008.bukkit.deathcontrol.config.lists.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 
 public class InfoCommand extends SubCommand {
@@ -67,7 +67,7 @@ public class InfoCommand extends SubCommand {
 
 	@Override
 	public void execute(CommandContext context) throws CommandException {
-		String pre = GRAY + "| ";
+		final String pre = GRAY + "| ";
 
 		if (context.argsCount() >= 1) {
 			String option = context.getStringArg(0);
@@ -76,7 +76,7 @@ public class InfoCommand extends SubCommand {
 
 				Iterator<DeathCause> it = DeathControl.instance.config.handlings.keySet().iterator();
 				while (it.hasNext()) {
-					context.sender.sendMessage(pre + WHITE + it.next().toHumanString());
+					context.sender.sendMessage(pre + RESET + it.next().toHumanString());
 				}
 				return;
 			}
@@ -94,17 +94,17 @@ public class InfoCommand extends SubCommand {
 					return;
 				}
 				context.sender.sendMessage(GRAY + "Current settings for " + YELLOW + dc.toHumanString() + GRAY + ":");
-				context.sender.sendMessage(pre + WHITE + "keep-inventory: " + YELLOW + settings.keepInventory());
-				context.sender.sendMessage(pre + WHITE + "keep-experience: " + YELLOW + settings.keepExperience());
-				context.sender.sendMessage(pre + WHITE + "cost: " + YELLOW + settings.getRawCost());
-				context.sender.sendMessage(pre + WHITE + "method: " + YELLOW + settings.getMethod().toString());
+				context.sender.sendMessage(pre + RESET + "keep-inventory: " + YELLOW + settings.keepInventory());
+				context.sender.sendMessage(pre + RESET + "keep-experience: " + YELLOW + settings.keepExperience());
+				context.sender.sendMessage(pre + RESET + "cost: " + YELLOW + settings.getRawCost());
+				context.sender.sendMessage(pre + RESET + "method: " + YELLOW + settings.getMethod().toString());
 				if (settings.getMethod() == HandlingMethod.COMMAND)
-					context.sender.sendMessage(pre + WHITE + "timeout: " + YELLOW + settings.getTimeout());
-				context.sender.sendMessage(pre + WHITE + "timeout-on-quit: " + YELLOW + settings.getTimeoutOnQuit());
-				context.sender.sendMessage(pre + WHITE + "loss-percentage: " + YELLOW + settings.getLoss() + "%");
-				context.sender.sendMessage(pre + WHITE + "loss-percentage-experience: " + YELLOW + settings.getLossExp() + "%");
-				context.sender.sendMessage(pre + WHITE + "whitelist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
-				context.sender.sendMessage(pre + WHITE + "blacklist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
+					context.sender.sendMessage(pre + RESET + "timeout: " + YELLOW + settings.getTimeout());
+				context.sender.sendMessage(pre + RESET + "timeout-on-quit: " + YELLOW + settings.getTimeoutOnQuit());
+				context.sender.sendMessage(pre + RESET + "loss-percentage: " + YELLOW + settings.getLoss() + "%");
+				context.sender.sendMessage(pre + RESET + "loss-percentage-experience: " + YELLOW + settings.getLossExp() + "%");
+				context.sender.sendMessage(pre + RESET + "whitelist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
+				context.sender.sendMessage(pre + RESET + "blacklist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
 				return;
 			}
 
@@ -112,7 +112,7 @@ public class InfoCommand extends SubCommand {
 				context.sender.sendMessage(GRAY + "Registered lists (" + YELLOW + DeathControl.instance.deathLists.getListsAmount() + GRAY + "):");
 				Iterator<String> it = DeathControl.instance.deathLists.getListNames().iterator();
 				while (it.hasNext()) {
-					context.sender.sendMessage(pre + WHITE + it.next());
+					context.sender.sendMessage(pre + RESET + it.next());
 				}
 				return;
 			}
@@ -136,9 +136,10 @@ public class InfoCommand extends SubCommand {
 					if (sb.length() > 0) {
 						sb.append(", ");
 					}
-					sb.append(item.toHumanString());
+					sb.append(item.toHumanString()).append(RESET);
 				}
-				context.sender.sendMessage(sb.toString());
+
+				MessageHelper.sendMessage(context.sender, sb, pre + RESET);
 				context.sender.sendMessage(GRAY + "==========================");
 				return;
 			}
@@ -146,8 +147,8 @@ public class InfoCommand extends SubCommand {
 
 		// get here when no valid command was captured above
 		context.sender.sendMessage(GRAY + "==== DeathControl configuration ====");
-		context.sender.sendMessage(pre + WHITE + "registered valid death causes: " + YELLOW + DeathControl.instance.config.handlings.size());
-		context.sender.sendMessage(pre + WHITE + "registered valid lists: " + YELLOW + DeathControl.instance.deathLists.getListsAmount());
+		context.sender.sendMessage(pre + RESET + "registered valid death causes: " + YELLOW + DeathControl.instance.config.handlings.size());
+		context.sender.sendMessage(pre + RESET + "registered valid lists: " + YELLOW + DeathControl.instance.deathLists.getListsAmount());
 
 		List<String> cfgErrors = DeathControl.instance.config.errors;
 
@@ -165,10 +166,10 @@ public class InfoCommand extends SubCommand {
 		}
 
 		context.sender.sendMessage(pre + "----------");
-		context.sender.sendMessage(pre + WHITE + "Use " + BLUE + "/" + context.mainLabel + " info causes" + WHITE + " for details about causes");
-		context.sender.sendMessage(pre + WHITE + "Use " + BLUE + "/" + context.mainLabel + " info cause <causename>" + WHITE + " for a specific cause");
-		context.sender.sendMessage(pre + WHITE + "Use " + BLUE + "/" + context.mainLabel + " info lists" + WHITE + " for details about lists");
-		context.sender.sendMessage(pre + WHITE + "Use " + BLUE + "/" + context.mainLabel + " info list <listname>" + WHITE + " for a specific list");
+		context.sender.sendMessage(pre + RESET + "Use " + BLUE + "/" + context.mainLabel + " info causes" + RESET + " for details about causes");
+		context.sender.sendMessage(pre + RESET + "Use " + BLUE + "/" + context.mainLabel + " info cause <causename>" + RESET + " for a specific cause");
+		context.sender.sendMessage(pre + RESET + "Use " + BLUE + "/" + context.mainLabel + " info lists" + RESET + " for details about lists");
+		context.sender.sendMessage(pre + RESET + "Use " + BLUE + "/" + context.mainLabel + " info list <listname>" + RESET + " for a specific list");
 
 	}
 

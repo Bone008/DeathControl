@@ -4,7 +4,41 @@
 # Documentation about how to configure this file can be found at:
 # http://dev.bukkit.org/server-mods/deathcontrol/pages/lists/
 
+$list armor
+DIAMOND_CHESTPLATE
+DIAMOND_HELMET
+DIAMOND_LEGGINGS
+DIAMOND_BOOTS
+IRON_CHESTPLATE
+IRON_HELMET
+IRON_LEGGINGS
+IRON_BOOTS
+LEATHER_CHESTPLATE
+LEATHER_HELMET
+LEATHER_LEGGINGS
+LEATHER_BOOTS
+CHAINMAIL_CHESTPLATE
+CHAINMAIL_HELMET
+CHAINMAIL_LEGGINGS
+CHAINMAIL_BOOTS
 
+$list armor
+DIAMOND_CHESTPLATE
+DIAMOND_HELMET
+DIAMOND_LEGGINGS
+DIAMOND_BOOTS
+IRON_CHESTPLATE
+IRON_HELMET
+IRON_LEGGINGS
+IRON_BOOTS
+LEATHER_CHESTPLATE
+LEATHER_HELMET
+LEATHER_LEGGINGS
+LEATHER_BOOTS
+CHAINMAIL_CHESTPLATE
+CHAINMAIL_HELMET
+CHAINMAIL_LEGGINGS
+CHAINMAIL_BOOTS
 
 $list armor
 DIAMOND_CHESTPLATE
@@ -33,10 +67,12 @@ DIAMOND_SPADE
 DIAMOND_SWORD
 
 
-$list valuables
-DIAMOND
-IRON_ORE
-IRON_INGOT
-COAL
-GOLD_ORE
-GOLD_INGOT
+$list advanced
+
+# Example: matches any undamaged tool with the durability/unbreaking enchantment
+{ type = tool, data = 0, enchantment = durability }
+
+# Example: matches any armor with a protection enchantment of at least level 2, but only if it was renamed to exactly "Awesome"
+{ type = armor, enchantment >= protection_environmental.2, name = Awesome }
+
+# More information available at the BukkitDev project (linked above).

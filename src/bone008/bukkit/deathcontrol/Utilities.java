@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -144,6 +145,31 @@ public final class Utilities {
 		if (obj.equals(search))
 			return repl;
 		return obj;
+	}
+
+	/**
+	 * Splits a given input at a delimiter and returns the processed result as a {@link List}.
+	 * <p/>
+	 * The returned list may be empty if he given input is empty, regardless of the setting of <code>allowEmpty</code>!
+	 * 
+	 * @param input The input string to split.
+	 * @param delimiterRegex The delimiter to split the input at.
+	 * @param allowEmpty Whether to delete empty results.
+	 * @return A {@link List} containing all the filtered results. Never null, but possibly empty.
+	 */
+	public static List<String> tokenize(String input, String delimiterRegex, boolean allowEmpty) {
+		String[] rawTokens = input.trim().split(delimiterRegex);
+		List<String> tokens = new ArrayList<String>(rawTokens.length);
+
+		for (String token : rawTokens) {
+			token = token.trim();
+			if (!allowEmpty && token.isEmpty())
+				continue;
+
+			tokens.add(token);
+		}
+
+		return tokens;
 	}
 
 }

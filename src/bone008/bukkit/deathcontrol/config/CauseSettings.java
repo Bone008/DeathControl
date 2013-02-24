@@ -1,12 +1,13 @@
 package bone008.bukkit.deathcontrol.config;
 
-import org.bukkit.inventory.ItemStack;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.inventory.ItemStack;
+
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
+import bone008.bukkit.deathcontrol.config.lists.ListItem;
 
 /**
  * General interface that represents the settings for a specific death cause. Has some general methods implemented that are valid for every sub-class.
