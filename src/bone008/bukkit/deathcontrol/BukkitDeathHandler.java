@@ -70,6 +70,15 @@ public class BukkitDeathHandler implements Listener {
 			return;
 		}
 
+
+		if (BukkitRuleNotifHandler.isProblematicRuleEnabled(ply.getWorld())) {
+			DeathControl.instance.log(Level.SEVERE, "The vanilla gamerule keepInventory is enabled in world " + ply.getWorld().getName() + "!");
+			DeathControl.instance.log(Level.SEVERE, "You have to disable that rule to make the plugin work properly.");
+			DeathControl.instance.log(Level.SEVERE, "Handling of " + ply.getName() + "'s death was cancelled.");
+			return;
+		}
+
+
 		final int totalExp = ExperienceUtils.getCurrentExp(ply);
 
 		List<ItemStack> desiredDrops = new ArrayList<ItemStack>();

@@ -81,6 +81,10 @@ public class DeathControl extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new BukkitDeathHandler(), this);
 		pm.registerEvents(new BukkitReconnectHandler(), this);
+		pm.registerEvents(new BukkitRuleNotifHandler(), this);
+
+		// initially notify everyone of potentially wrong gamerules
+		BukkitRuleNotifHandler.warnAll();
 
 		// setup commands
 		CommandHandler deathCmd = new CommandHandler();
@@ -210,6 +214,7 @@ public class DeathControl extends JavaPlugin {
 		// some property was missing so we need to update
 		if (needsUpdate) {
 			log(Level.WARNING, "Your messages.yml file is out of date. It will now be updated.");
+
 			if (needsBackup) {
 				log(Level.INFO, "Creating backup of your old messages ...");
 
