@@ -18,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
+import bone008.bukkit.deathcontrol.hooks.HooksManager;
 
 public class BukkitDeathHandler implements Listener {
 
@@ -44,8 +45,7 @@ public class BukkitDeathHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	// Note: Essentials listens on LOW
 	public void onDeath(final PlayerDeathEvent event) {
-		assert (event.getEntity() instanceof Player);
-		Player ply = (Player) event.getEntity();
+		Player ply = event.getEntity();
 
 		DeathControl.instance.expireManager(ply.getName());
 
@@ -58,6 +58,11 @@ public class BukkitDeathHandler implements Listener {
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
 		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
+
+		if (HooksManager.shouldCancelDeathHandling(ply)) {
+			DeathControl.instance.log(Level.FINE, log1.append("; Other plugin has control of player!").toString());
+			return;
+		}
 
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_NOLIMITS) && !DeathControl.instance.config.isWorldAllowed(ply.getWorld().getName())) {
 			DeathControl.instance.log(Level.FINE, log1.append("; Not in a valid world!").toString());
