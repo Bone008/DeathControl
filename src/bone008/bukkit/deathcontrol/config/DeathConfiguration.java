@@ -29,6 +29,7 @@ public class DeathConfiguration {
 
 	public static final boolean default_keepInventory = false;
 	public static final boolean default_keepExperience = false;
+	public static final boolean default_keepHunger = false;
 	public static final double default_cost = 0;
 	public static final String default_cost_raw = String.valueOf(default_cost);
 	public static final HandlingMethod default_method = HandlingMethod.AUTO;
@@ -180,6 +181,7 @@ public class DeathConfiguration {
 
 		public static final String NODE_KEEP_INVENTORY = "keep-inventory";
 		public static final String NODE_KEEP_EXPERIENCE = "keep-experience";
+		public static final String NODE_KEEP_HUNGER = "keep-hunger";
 		public static final String NODE_COST = "cost";
 		public static final String NODE_METHOD = "method";
 		public static final String NODE_TIMEOUT = "timeout";
@@ -191,6 +193,7 @@ public class DeathConfiguration {
 
 		public final boolean keepInventory;
 		public final boolean keepExperience;
+		public final boolean keepHunger;
 		public final String rawCost;
 		public final String method;
 		public final int timeout;
@@ -208,6 +211,7 @@ public class DeathConfiguration {
 			// now store config options, defaults should not be actually used as of 1.3
 			keepInventory = sec.getBoolean(NODE_KEEP_INVENTORY, default_keepInventory);
 			keepExperience = sec.getBoolean(NODE_KEEP_EXPERIENCE, default_keepExperience);
+			keepHunger = sec.getBoolean(NODE_KEEP_EXPERIENCE, default_keepHunger);
 			rawCost = Utilities.getConfigString(sec, NODE_COST, default_cost_raw);
 			method = sec.getString(NODE_METHOD); // don't provide default, because that's not raw
 			timeout = Utilities.getConfigInt(sec, NODE_TIMEOUT, default_timeout);

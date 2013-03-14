@@ -25,6 +25,9 @@ public class CauseSettings {
 		data = d;
 	}
 
+	// The amount of duplicate code in here is terrible due to the parent checks.
+	// A better, more flexible system is on the way ...
+
 	public boolean hasPotentialCost() {
 		if (data.hasPotentialCost())
 			return true;
@@ -142,6 +145,18 @@ public class CauseSettings {
 		}
 
 		return DeathConfiguration.default_keepInventory;
+	}
+
+	public boolean keepHunger() {
+		if (data.keepHunger != null)
+			return data.keepHunger;
+		else if (cause.parent != null) {
+			CauseSettings s = config.getSettings(cause.parent);
+			if (s != null)
+				return s.keepHunger();
+		}
+
+		return DeathConfiguration.default_keepHunger;
 	}
 
 	public Set<ListItem> getWhitelist() {

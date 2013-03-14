@@ -91,6 +91,8 @@ public class BukkitDeathHandler implements Listener {
 		int keptExp = 0;
 		int droppedExp = 0;
 
+		StoredHunger keptHunger = null;
+
 		if (causeSettings.keepInventory()) {
 			keptItems = calculateItems(ply.getInventory(), causeSettings, desiredDrops);
 			if (keptItems.isEmpty())
@@ -108,7 +110,12 @@ public class BukkitDeathHandler implements Listener {
 			event.setNewTotalExp(0);
 		}
 
-		if (keptItems == null && keptExp <= 0)
+		if (causeSettings.keepHunger()) {
+			keptHunger = new StoredHunger(ply);
+		}
+
+		// no actions are to be taken --> we can cancel here
+		if (keptItems == null && keptExp <= 0 && keptHunger == null)
 			return;
 
 		double cost = 0;
@@ -131,10 +138,13 @@ public class BukkitDeathHandler implements Listener {
 			event.setDroppedExp(0);
 		}
 
+		// hunger doesn't need any cleanup on death
+
+
 		HandlingMethod method = causeSettings.getMethod();
 		int timeout = causeSettings.getTimeout();
 
-		final DeathManager dm = new DeathManager(ply, keptItems, keptExp, droppedExp, method, cost, causeSettings.getTimeoutOnQuit());
+		final DeathManager dm = new DeathManager(ply, keptItems, keptExp, droppedExp, keptHunger, method, cost, causeSettings.getTimeoutOnQuit());
 		DeathControl.instance.addManager(ply.getName(), dm);
 
 		if (method == HandlingMethod.COMMAND && timeout > 0) {

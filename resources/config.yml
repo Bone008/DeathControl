@@ -22,7 +22,9 @@ DeathCauses:
         method: command
         timeout: 10
         loss-percentage: 12.5
-    LAVA:
+    SUICIDE:
         keep-inventory: true
+        keep-experience: true
+        keep-hunger: true
         whitelist:
-        - valuables
+        - armor

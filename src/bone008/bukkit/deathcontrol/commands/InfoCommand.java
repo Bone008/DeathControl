@@ -96,6 +96,7 @@ public class InfoCommand extends SubCommand {
 				context.sender.sendMessage(GRAY + "Current settings for " + YELLOW + dc.toHumanString() + GRAY + ":");
 				context.sender.sendMessage(pre + RESET + "keep-inventory: " + YELLOW + settings.keepInventory());
 				context.sender.sendMessage(pre + RESET + "keep-experience: " + YELLOW + settings.keepExperience());
+				context.sender.sendMessage(pre + RESET + "keep-hunger: " + YELLOW + settings.keepHunger());
 				context.sender.sendMessage(pre + RESET + "cost: " + YELLOW + settings.getRawCost());
 				context.sender.sendMessage(pre + RESET + "method: " + YELLOW + settings.getMethod().toString());
 				if (settings.getMethod() == HandlingMethod.COMMAND)

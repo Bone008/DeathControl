@@ -18,6 +18,7 @@ public class CauseData {
 	// auto-boxed types to allow null values
 	public final Boolean keepInventory;
 	public final Boolean keepExperience;
+	public final Boolean keepHunger;
 	public final HandlingMethod method;
 	public final Integer timeout;
 	public final Integer timeoutOnQuit;
@@ -36,6 +37,7 @@ public class CauseData {
 
 		this.keepInventory = (raw.isDefined(RawOptions.NODE_KEEP_INVENTORY) ? raw.keepInventory : null);
 		this.keepExperience = (raw.isDefined(RawOptions.NODE_KEEP_EXPERIENCE) ? raw.keepExperience : null);
+		this.keepHunger = (raw.isDefined(RawOptions.NODE_KEEP_HUNGER) ? raw.keepHunger : null);
 
 		if (raw.isDefined(RawOptions.NODE_COST)) {
 			try {

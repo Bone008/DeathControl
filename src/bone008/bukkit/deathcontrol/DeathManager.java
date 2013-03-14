@@ -21,16 +21,19 @@ public class DeathManager {
 	private final List<StoredItemStack> keptItems;
 	private final int keptExp;
 	private final int droppedExp;
+	private final StoredHunger keptHunger; // may be null
 	private final HandlingMethod method;
 	private final double cost;
 	private final int timeoutOnQuit;
 
-	public DeathManager(Player ply, List<StoredItemStack> keptItems, int keptExp, int droppedExp, HandlingMethod method, double cost, int timeoutOnQuit) {
+
+	public DeathManager(Player ply, List<StoredItemStack> keptItems, int keptExp, int droppedExp, StoredHunger keptHunger, HandlingMethod method, double cost, int timeoutOnQuit) {
 		this.plyName = ply.getName();
 		this.deathLocation = ply.getLocation();
 		this.keptItems = keptItems;
 		this.keptExp = keptExp;
 		this.droppedExp = droppedExp;
+		this.keptHunger = keptHunger;
 		this.method = method;
 		this.cost = cost;
 		this.timeoutOnQuit = timeoutOnQuit;
@@ -77,9 +80,6 @@ public class DeathManager {
 				MessageHelper.sendMessage(ply, Message.NOTIF_RESTORATION);
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
-			}
-			else {
-
 			}
 			return true;
 		}
@@ -134,6 +134,14 @@ public class DeathManager {
 
 				// give back the exp
 				ExperienceUtils.changeExp(ply, keptExp);
+
+				success = true;
+			}
+
+			if (keptHunger != null) {
+				ply.setFoodLevel(keptHunger.foodLevel);
+				ply.setSaturation(keptHunger.saturation);
+				ply.setExhaustion(keptHunger.exhaustion);
 
 				success = true;
 			}
