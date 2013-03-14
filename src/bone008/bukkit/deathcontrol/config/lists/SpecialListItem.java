@@ -151,14 +151,10 @@ public class SpecialListItem extends ListItem {
 
 	@Override
 	public boolean matches(ItemStack itemStack) {
-		System.out.println("========= MATCH START: " + toHumanString());
-		for (Condition c : conditions) {
-			boolean matches = c.matches(itemStack);
-			System.out.println(c.prop.toHumanString() + " matched: " + matches);
-			if (!matches)
+		for (Condition cond : conditions) {
+			if (!cond.matches(itemStack))
 				return false;
 		}
-		System.out.println("======== MATCH END ===================");
 
 		return true;
 	}

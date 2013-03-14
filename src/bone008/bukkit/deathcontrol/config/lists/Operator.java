@@ -37,8 +37,6 @@ enum Operator {
 	}
 
 	public boolean invokeString(String left, String right) {
-		System.out.println("comparing '" + left + "' to '" + right + "'   " + getPrimaryIdentifier());
-
 		switch (this) {
 		case LESS:
 			// "bcd" < "abcde"
@@ -50,7 +48,7 @@ enum Operator {
 			return left.contains(right);
 		case GREATER:
 			// "abcde" > "bcd"
-			// but not "bcd" < "bcd"
+			// but not "bcd" > "bcd"
 			return left.contains(right) && !left.equals(right);
 		case EQUAL:
 			return left.equals(right);

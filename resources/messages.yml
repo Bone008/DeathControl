@@ -1,3 +1,9 @@
+# ====== Custom messages for DeathControl ======
+# IMPORTANT: Do NOT use tabs in this file! Only use spaces!
+# 
+# Documentation about this file can be found here:
+# http://dev.bukkit.org/server-mods/deathcontrol/pages/configuration/messages-yml/
+
 death:
   not-enough-money: |
     &cYou couldn't keep your items
