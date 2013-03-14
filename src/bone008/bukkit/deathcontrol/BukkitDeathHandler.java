@@ -169,6 +169,8 @@ public class BukkitDeathHandler implements Listener {
 		log2.append('\n');
 		if (keptExp > 0)
 			log2.append("| Kept experience: ").append(keptExp).append(" of ").append(totalExp).append('\n');
+		if (keptHunger != null)
+			log2.append("| Kept hunger: ").append(keptHunger.toHumanString()).append('\n');
 		log2.append("| Method: ").append(method).append("\n");
 		if (method == HandlingMethod.COMMAND)
 			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");

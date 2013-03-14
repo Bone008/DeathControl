@@ -4,8 +4,6 @@ import org.bukkit.entity.Player;
 
 /**
  * Represents a hunger state including food level, saturation and exhaustion.
- * 
- * To be treated like a struct.
  */
 public class StoredHunger {
 
@@ -21,6 +19,10 @@ public class StoredHunger {
 
 	public StoredHunger(Player source) {
 		this(source.getFoodLevel(), source.getSaturation(), source.getExhaustion());
+	}
+
+	public String toHumanString() {
+		return String.format("food-level=%d, saturation=%.2f, exhaustion=%.2f", foodLevel, saturation, exhaustion);
 	}
 
 }
