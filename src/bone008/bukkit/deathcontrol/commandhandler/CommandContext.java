@@ -5,8 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import bone008.bukkit.deathcontrol.Message;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.Message;
 
 /**
  * The use of this class was inspired by WorldEdit's command handling. I didn't take any code of it, because most of its functionality isn't needed here.

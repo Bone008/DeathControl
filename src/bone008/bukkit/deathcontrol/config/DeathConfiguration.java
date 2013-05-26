@@ -15,10 +15,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 public class DeathConfiguration {
 

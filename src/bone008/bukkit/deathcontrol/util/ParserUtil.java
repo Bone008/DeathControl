@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bone008.bukkit.deathcontrol.Utilities;
 
 public class ParserUtil {
 

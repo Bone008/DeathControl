@@ -1,4 +1,6 @@
-package bone008.bukkit.deathcontrol;
+package bone008.bukkit.deathcontrol.util;
+
+import bone008.bukkit.deathcontrol.DeathControl;
 
 public enum Message {
 	DEATH_NO_MONEY("death.not-enough-money"),

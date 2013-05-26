@@ -1,9 +1,11 @@
-package bone008.bukkit.deathcontrol;
+package bone008.bukkit.deathcontrol.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+
+import bone008.bukkit.deathcontrol.DeathControl;
 
 public final class MessageHelper {
 	private MessageHelper() {

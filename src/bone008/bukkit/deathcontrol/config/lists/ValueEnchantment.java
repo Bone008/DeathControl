@@ -5,8 +5,8 @@ import java.util.List;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 public class ValueEnchantment {
 

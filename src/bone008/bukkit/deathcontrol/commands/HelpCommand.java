@@ -5,11 +5,11 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.MessageHelper;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 import static org.bukkit.ChatColor.*;
 

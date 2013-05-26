@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol;
+package bone008.bukkit.deathcontrol.util;
 
 import java.util.logging.Level;
 
@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 
 import com.nijikokun.register.payment.Method;

@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import bone008.bukkit.deathcontrol.util.MessageHelper;
+
 public class BukkitRuleNotifHandler implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)

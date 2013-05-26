@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol;
+package bone008.bukkit.deathcontrol.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

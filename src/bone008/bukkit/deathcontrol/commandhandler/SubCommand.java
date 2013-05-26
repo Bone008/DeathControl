@@ -6,9 +6,9 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.DeathPermission;
-import bone008.bukkit.deathcontrol.Message;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.DeathPermission;
+import bone008.bukkit.deathcontrol.util.Message;
 
 public abstract class SubCommand {
 

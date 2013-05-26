@@ -19,6 +19,10 @@ import org.bukkit.inventory.PlayerInventory;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.hooks.HooksManager;
+import bone008.bukkit.deathcontrol.util.EconomyUtils;
+import bone008.bukkit.deathcontrol.util.ExperienceUtils;
+import bone008.bukkit.deathcontrol.util.Message;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
 
 public class BukkitDeathHandler implements Listener {
 

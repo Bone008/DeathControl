@@ -13,9 +13,9 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.DeathPermission;
-import bone008.bukkit.deathcontrol.MessageHelper;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.DeathPermission;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
 
 public class CommandHandler implements TabExecutor {
 

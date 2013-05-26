@@ -28,6 +28,8 @@ import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 import bone008.bukkit.deathcontrol.newconfig.NewConfiguration;
+import bone008.bukkit.deathcontrol.util.DeathPermission;
+import bone008.bukkit.deathcontrol.util.EconomyUtils;
 
 public class DeathControl extends JavaPlugin {
 

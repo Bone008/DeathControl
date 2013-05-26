@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol;
+package bone008.bukkit.deathcontrol.util;
 
 public class DeathPermission {
 	public final String node;

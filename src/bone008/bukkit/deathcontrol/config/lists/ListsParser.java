@@ -13,8 +13,8 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 public class ListsParser {
 

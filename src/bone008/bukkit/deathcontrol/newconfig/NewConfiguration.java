@@ -12,9 +12,9 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 public class NewConfiguration {
 

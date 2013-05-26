@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.DeathManager;
-import bone008.bukkit.deathcontrol.Message;
-import bone008.bukkit.deathcontrol.MessageHelper;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.Message;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
 
 public class DropCommand extends SubCommand {
 

@@ -1,6 +1,6 @@
 package bone008.bukkit.deathcontrol.exceptions;
 
-import bone008.bukkit.deathcontrol.Message;
+import bone008.bukkit.deathcontrol.util.Message;
 
 public class CommandException extends Exception {
 

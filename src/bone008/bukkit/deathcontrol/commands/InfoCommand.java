@@ -12,8 +12,6 @@ import org.bukkit.util.StringUtil;
 
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.MessageHelper;
-import bone008.bukkit.deathcontrol.Utilities;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
@@ -21,6 +19,8 @@ import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.lists.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.Utilities;
 
 public class InfoCommand extends SubCommand {
 

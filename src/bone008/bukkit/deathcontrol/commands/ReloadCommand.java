@@ -3,10 +3,10 @@ package bone008.bukkit.deathcontrol.commands;
 import org.bukkit.ChatColor;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.MessageHelper;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
+import bone008.bukkit.deathcontrol.util.MessageHelper;
 
 public class ReloadCommand extends SubCommand {
 
