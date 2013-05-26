@@ -172,4 +172,28 @@ public final class Utilities {
 		return tokens;
 	}
 
+
+	/**
+	 * Utility method to build a word's plural only if necessary. It returns the passed number plus the word as it is if num equals 1, otherwise it appends an s.
+	 * 
+	 * @param num The number to check
+	 * @param word The singular word
+	 * @return the number + {@code word} + possibly an 's', depending on {@code num}
+	 */
+	public static String pluralNum(int num, String word) {
+		return num + " " + word + (num == 1 ? "" : "s");
+	}
+
+	/**
+	 * Utility method to build a word's plural only if necessary. It returns the passed number plus the normal word if num equals 1, otherwise the plural word.
+	 * 
+	 * @param num The number to check
+	 * @param word The singular word
+	 * @param wordPlural The plural word
+	 * @return the number + either {@code word} or {@code wordPlural}, depending on {@code num}, separated with a space
+	 */
+	public static String pluralNum(int num, String word, String wordPlural) {
+		return num + " " + (num == 1 ? word : wordPlural);
+	}
+
 }

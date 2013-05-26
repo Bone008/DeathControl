@@ -25,9 +25,9 @@ import bone008.bukkit.deathcontrol.commands.DropCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
 import bone008.bukkit.deathcontrol.commands.InfoCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
-import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
+import bone008.bukkit.deathcontrol.newconfig.NewConfiguration;
 
 public class DeathControl extends JavaPlugin {
 
@@ -41,7 +41,7 @@ public class DeathControl extends JavaPlugin {
 	public static DeathControl instance;
 	private File messagesFile = null;
 
-	public DeathConfiguration config;
+	public NewConfiguration config;
 	public DeathLists deathLists;
 	public YamlConfiguration messagesData;
 	public PluginDescriptionFile pdfFile;
@@ -116,13 +116,13 @@ public class DeathControl extends JavaPlugin {
 
 		// parse the config & lists files		
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
-		config = new DeathConfiguration(this, cfg);
+		config = new NewConfiguration(cfg);
 		saveConfig();
 
 		messagesData = YamlConfiguration.loadConfiguration(messagesFile);
 		checkMessagesIntegrity();
 
-		log(Level.CONFIG, "is now using " + (config.bukkitPerms ? "bukkit permissions" : "the OP-system") + "!");
+		log(Level.CONFIG, "is now using " + (config.usesBukkitPerms() ? "bukkit permissions" : "the OP-system") + "!");
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class DeathControl extends JavaPlugin {
 
 		if (who == null)
 			return false;
-		if (config.bukkitPerms)
+		if (config.usesBukkitPerms())
 			return who.hasPermission(perm.node);
 		else {
 			if (!perm.opOnly)
@@ -282,7 +282,7 @@ public class DeathControl extends JavaPlugin {
 	}
 
 	public void log(Level lvl, String msg, boolean overrideLevel) {
-		if (!overrideLevel && lvl.intValue() < config.loggingLevel)
+		if (!overrideLevel && config != null && lvl.intValue() < config.getLoggingLevel())
 			return;
 
 		// levels below INFO don't get properly displayed by the minecraft logger
@@ -293,5 +293,4 @@ public class DeathControl extends JavaPlugin {
 		for (String line : lines)
 			getLogger().log(lvl, line); // our logger now takes care of prefixes
 	}
-
 }
