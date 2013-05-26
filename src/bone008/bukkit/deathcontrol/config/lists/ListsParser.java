@@ -14,7 +14,7 @@ import org.bukkit.Material;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class ListsParser {
 
@@ -92,7 +92,7 @@ public class ListsParser {
 
 		// regular list item
 
-		List<String> chunks = Utilities.tokenize(currentLine, ":", true);
+		List<String> chunks = Util.tokenize(currentLine, ":", true);
 		if (chunks.size() > 2 || chunks.size() < 1) {
 			logLineWarning("invalid formatting of item '" + currentLine + "'");
 			return;
@@ -148,7 +148,7 @@ public class ListsParser {
 		SpecialListItem listItem = new SpecialListItem();
 
 		try {
-			for (String argToken : Utilities.tokenize(specialItemArgs, ",", false)) {
+			for (String argToken : Util.tokenize(specialItemArgs, ",", false)) {
 				listItem.parseCondition(argToken);
 			}
 		} catch (ConditionFormatException e) {

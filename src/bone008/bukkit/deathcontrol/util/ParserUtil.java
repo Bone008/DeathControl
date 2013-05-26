@@ -68,7 +68,7 @@ public class ParserUtil {
 	 * @return the name (first) token of the operation, or null if <code>input</code> was empty
 	 */
 	public static String parseOperationName(String input) {
-		List<String> tokens = Utilities.tokenize(input, " ", false);
+		List<String> tokens = Util.tokenize(input, " ", false);
 
 		if (tokens.isEmpty())
 			return null;
@@ -83,7 +83,7 @@ public class ParserUtil {
 	 * @return a list of all tokens but the first one (which is the name of the operation); may be empty, but never null
 	 */
 	public static List<String> parseOperationArgs(String input) {
-		List<String> tokens = Utilities.tokenize(input, " ", false);
+		List<String> tokens = Util.tokenize(input, " ", false);
 		if (!tokens.isEmpty())
 			tokens.remove(0);
 		return tokens;

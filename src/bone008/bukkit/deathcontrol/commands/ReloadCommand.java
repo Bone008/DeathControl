@@ -6,7 +6,7 @@ import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 
 public class ReloadCommand extends SubCommand {
 
@@ -18,7 +18,7 @@ public class ReloadCommand extends SubCommand {
 	@Override
 	public void execute(CommandContext context) throws CommandException {
 		DeathControl.instance.loadConfig();
-		MessageHelper.sendMessage(context.sender, ChatColor.GREEN + "Reloaded all config files!");
+		MessageUtil.sendMessage(context.sender, ChatColor.GREEN + "Reloaded all config files!");
 	}
 
 }

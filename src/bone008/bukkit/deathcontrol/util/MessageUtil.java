@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 
-public final class MessageHelper {
-	private MessageHelper() {
+public final class MessageUtil {
+	private MessageUtil() {
 	}
 
 	public static void sendMessage(CommandSender who, Message msg, String... replaces) {

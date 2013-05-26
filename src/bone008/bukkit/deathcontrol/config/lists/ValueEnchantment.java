@@ -6,12 +6,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class ValueEnchantment {
 
 	public static ValueEnchantment parseValue(String rawValue) throws ConditionFormatException {
-		List<String> enchTokens = Utilities.tokenize(rawValue, "\\.", false);
+		List<String> enchTokens = Util.tokenize(rawValue, "\\.", false);
 
 		if (enchTokens.size() > 2)
 			throw new ConditionFormatException("invalid enchantment format: " + rawValue);

@@ -28,17 +28,17 @@ import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 import bone008.bukkit.deathcontrol.newconfig.NewConfiguration;
-import bone008.bukkit.deathcontrol.util.DeathPermission;
-import bone008.bukkit.deathcontrol.util.EconomyUtils;
+import bone008.bukkit.deathcontrol.util.DPermission;
+import bone008.bukkit.deathcontrol.util.EconomyUtil;
 
 public class DeathControl extends JavaPlugin {
 
-	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
-	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
-	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", true);
-	public static final DeathPermission PERMISSION_NOLIMITS = new DeathPermission("deathcontrol.nolimits", true);
-	public static final DeathPermission PERMISSION_INFO = new DeathPermission("deathcontrol.info", true);
-	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
+	public static final DPermission PERMISSION_USE = new DPermission("deathcontrol.use", false);
+	public static final DPermission PERMISSION_FREE = new DPermission("deathcontrol.free", true);
+	public static final DPermission PERMISSION_CROSSWORLD = new DPermission("deathcontrol.crossworld", true);
+	public static final DPermission PERMISSION_NOLIMITS = new DPermission("deathcontrol.nolimits", true);
+	public static final DPermission PERMISSION_INFO = new DPermission("deathcontrol.info", true);
+	public static final DPermission PERMISSION_ADMIN = new DPermission("deathcontrol.admin", true);
 
 	public static DeathControl instance;
 	private File messagesFile = null;
@@ -97,7 +97,7 @@ public class DeathControl extends JavaPlugin {
 		getCommand("death").setExecutor(deathCmd);
 
 		// setup economy
-		EconomyUtils.init();
+		EconomyUtil.init();
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class DeathControl extends JavaPlugin {
 		}
 	}
 
-	public boolean hasPermission(Permissible who, DeathPermission perm) {
+	public boolean hasPermission(Permissible who, DPermission perm) {
 		if (perm == null)
 			return true;
 

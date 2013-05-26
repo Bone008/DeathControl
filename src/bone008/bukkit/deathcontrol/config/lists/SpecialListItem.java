@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class SpecialListItem extends ListItem {
 
@@ -85,7 +85,7 @@ public class SpecialListItem extends ListItem {
 				ItemMeta meta = itemStack.getItemMeta();
 				String cmpStr = "";
 				if (meta != null && meta.hasLore())
-					cmpStr = Utilities.joinCollection("\n", meta.getLore());
+					cmpStr = Util.joinCollection("\n", meta.getLore());
 
 				return operator.invokeString(cmpStr, (String) value);
 			}

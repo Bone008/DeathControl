@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.util.DeathPermission;
+import bone008.bukkit.deathcontrol.util.DPermission;
 import bone008.bukkit.deathcontrol.util.Message;
 
 public abstract class SubCommand {
@@ -34,7 +34,7 @@ public abstract class SubCommand {
 	/**
 	 * The permission node that is required for the command to execute. This is checked automatically.
 	 */
-	protected DeathPermission permission = null;
+	protected DPermission permission = null;
 
 	protected SubCommand() {
 	}
@@ -66,7 +66,7 @@ public abstract class SubCommand {
 	 * @param perm The permission node to check
 	 * @throws CommandException if {@code sender} does not have {@code perm}
 	 */
-	public final void checkPermission(CommandSender sender, DeathPermission perm) throws CommandException {
+	public final void checkPermission(CommandSender sender, DPermission perm) throws CommandException {
 		if (perm == null)
 			return;
 		if (!DeathControl.instance.hasPermission(sender, perm))
@@ -81,7 +81,7 @@ public abstract class SubCommand {
 		return description;
 	}
 
-	public final DeathPermission getPermission() {
+	public final DPermission getPermission() {
 		return permission;
 	}
 }

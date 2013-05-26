@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class NewConfiguration {
 
@@ -67,7 +67,7 @@ public class NewConfiguration {
 		}
 
 		errors.log("Errors while parsing configuration:");
-		DeathControl.instance.log(Level.CONFIG, "loaded " + Utilities.pluralNum(handlings.size(), "valid handling") + "!", true);
+		DeathControl.instance.log(Level.CONFIG, "loaded " + Util.pluralNum(handlings.size(), "valid handling") + "!", true);
 	}
 
 	public boolean usesBukkitPerms() {

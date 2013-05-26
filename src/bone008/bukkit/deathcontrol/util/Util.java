@@ -12,8 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 
-public final class Utilities {
-	private Utilities() {
+public final class Util {
+	private Util() {
 	}
 
 	public static void dropItem(Location l, ItemStack i, boolean naturally) {
@@ -71,6 +71,8 @@ public final class Utilities {
 		}
 		return output;
 	}
+
+	// TODO remove old "getConfigXXX" utility methods 
 
 	/**
 	 * Gets a list from the given {@code ConfigurationSection} with a special type given through the formal type parameter.

@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
  * @author desht
  * @author modified by Bone008
  */
-public final class ExperienceUtils {
+public final class ExperienceUtil {
 
-	private ExperienceUtils() {
+	private ExperienceUtil() {
 	}
 
 	// this is to stop the lookup tables growing without control

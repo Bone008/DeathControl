@@ -8,8 +8,8 @@ import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
+import bone008.bukkit.deathcontrol.util.Util;
 
 import static org.bukkit.ChatColor.*;
 
@@ -22,7 +22,7 @@ public class HelpCommand extends SubCommand {
 	@Override
 	public void execute(CommandContext context) throws CommandException {
 		// TODO externalize help command
-		MessageHelper.sendMessage(context.sender, GRAY + DeathControl.instance.pdfFile.getFullName() + " by Bone008", null);
+		MessageUtil.sendMessage(context.sender, GRAY + DeathControl.instance.pdfFile.getFullName() + " by Bone008", null);
 
 		String subCmdPrefix = ChatColor.BLUE + "/" + context.mainLabel + " ";
 
@@ -38,14 +38,14 @@ public class HelpCommand extends SubCommand {
 			if (cmd.getUsage() == null)
 				sb.append(subCmdPrefix).append(cmdName);
 			else
-				sb.append(Utilities.wrapPrefixed(cmd.getUsage(), subCmdPrefix));
+				sb.append(Util.wrapPrefixed(cmd.getUsage(), subCmdPrefix));
 
 			if (cmd.getDescription() != null) {
 				sb.append('\n');
-				sb.append(Utilities.wrapPrefixed(cmd.getDescription(), "   " + ChatColor.GRAY));
+				sb.append(Util.wrapPrefixed(cmd.getDescription(), "   " + ChatColor.GRAY));
 			}
 
-			MessageHelper.sendMessage(context.sender, sb.toString(), "> ");
+			MessageUtil.sendMessage(context.sender, sb.toString(), "> ");
 			/*
 			 * sender.sendMessage( new StringBuilder() .append(ChatColor.GRAY) .append("| ") .append(ChatColor.BLUE) .append("/") .append(mainLabel) .append(" ") .append(entry.getKey()) .append(ChatColor.GRAY) .append(" - ") .append(ChatColor.WHITE) .append(entry.getValue().getDescription()) .toString() );
 			 */

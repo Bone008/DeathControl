@@ -14,15 +14,15 @@ import org.bukkit.util.StringUtil;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.util.DeathPermission;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.DPermission;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 
 public class CommandHandler implements TabExecutor {
 
 	public final Map<String, SubCommand> commandMap = new TreeMap<String, SubCommand>();
 	public final Map<String, SubCommand> aliasesMap = new TreeMap<String, SubCommand>();
 	private String msgOnUndefined = null;
-	private DeathPermission basePermissionNode = null;
+	private DPermission basePermissionNode = null;
 
 	public void addSubCommand(String name, SubCommand cmd, String... aliases) {
 		if (name == null || name.trim().isEmpty())
@@ -45,7 +45,7 @@ public class CommandHandler implements TabExecutor {
 	/**
 	 * Sets the base permission node that should be checked for each command. This is independent from the permissions that the commands themselves specify and is checked additionally.
 	 */
-	public void setBasePermissionNode(DeathPermission node) {
+	public void setBasePermissionNode(DPermission node) {
 		basePermissionNode = node;
 	}
 
@@ -74,7 +74,7 @@ public class CommandHandler implements TabExecutor {
 				try {
 					return subCmd.tabComplete(new CommandContext(sender, cmd, label, this, getSubArgs(args)));
 				} catch (CommandException e) {
-					MessageHelper.sendMessage(sender, "Error on tab-completion: " + e.getMessage(), true);
+					MessageUtil.sendMessage(sender, "Error on tab-completion: " + e.getMessage(), true);
 				}
 			}
 		}
@@ -111,9 +111,9 @@ public class CommandHandler implements TabExecutor {
 				cmd.execute(new CommandContext(sender, mainCmd, mainLabel, this, args));
 			} catch (CommandException e) {
 				if (e.getTranslatableMessage() == null)
-					MessageHelper.sendMessage(sender, e.getMessage());
+					MessageUtil.sendMessage(sender, e.getMessage());
 				else
-					MessageHelper.sendMessage(sender, e.getTranslatableMessage());
+					MessageUtil.sendMessage(sender, e.getTranslatableMessage());
 			}
 			return true;
 		}

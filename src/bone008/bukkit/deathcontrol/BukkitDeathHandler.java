@@ -19,10 +19,10 @@ import org.bukkit.inventory.PlayerInventory;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.hooks.HooksManager;
-import bone008.bukkit.deathcontrol.util.EconomyUtils;
-import bone008.bukkit.deathcontrol.util.ExperienceUtils;
+import bone008.bukkit.deathcontrol.util.EconomyUtil;
+import bone008.bukkit.deathcontrol.util.ExperienceUtil;
 import bone008.bukkit.deathcontrol.util.Message;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 
 public class BukkitDeathHandler implements Listener {
 
@@ -88,7 +88,7 @@ public class BukkitDeathHandler implements Listener {
 		}
 
 
-		final int totalExp = ExperienceUtils.getCurrentExp(ply);
+		final int totalExp = ExperienceUtil.getCurrentExp(ply);
 
 		List<ItemStack> desiredDrops = new ArrayList<ItemStack>();
 		List<StoredItemStack> keptItems = null;
@@ -124,9 +124,9 @@ public class BukkitDeathHandler implements Listener {
 
 		double cost = 0;
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_FREE)) {
-			cost = EconomyUtils.calcCost(ply, causeSettings);
-			if (!EconomyUtils.canAfford(ply, cost)) {
-				MessageHelper.sendMessage(ply, Message.DEATH_NO_MONEY);
+			cost = EconomyUtil.calcCost(ply, causeSettings);
+			if (!EconomyUtil.canAfford(ply, cost)) {
+				MessageUtil.sendMessage(ply, Message.DEATH_NO_MONEY);
 				DeathControl.instance.log(Level.FINE, log1.append("; Not enough money!").toString());
 				return;
 			}
@@ -186,16 +186,16 @@ public class BukkitDeathHandler implements Listener {
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
 		// message the player
-		MessageHelper.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
+		MessageUtil.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
 		if (method == HandlingMethod.COMMAND) {
-			MessageHelper.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
+			MessageUtil.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
 			if (causeSettings.getTimeout() > 0)
-				MessageHelper.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
+				MessageUtil.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
 		}
 
 		if (cost > 0) {
 			Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
-			MessageHelper.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtils.formatMoney(cost));
+			MessageUtil.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtil.formatMoney(cost));
 		}
 	}
 

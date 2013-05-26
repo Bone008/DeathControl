@@ -18,7 +18,7 @@ import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
 import bone008.bukkit.deathcontrol.exceptions.IllegalPropertyException;
 import bone008.bukkit.deathcontrol.exceptions.ListNotFoundException;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class DeathConfiguration {
 
@@ -212,12 +212,12 @@ public class DeathConfiguration {
 			keepInventory = sec.getBoolean(NODE_KEEP_INVENTORY, default_keepInventory);
 			keepExperience = sec.getBoolean(NODE_KEEP_EXPERIENCE, default_keepExperience);
 			keepHunger = sec.getBoolean(NODE_KEEP_EXPERIENCE, default_keepHunger);
-			rawCost = Utilities.getConfigString(sec, NODE_COST, default_cost_raw);
+			rawCost = Util.getConfigString(sec, NODE_COST, default_cost_raw);
 			method = sec.getString(NODE_METHOD); // don't provide default, because that's not raw
-			timeout = Utilities.getConfigInt(sec, NODE_TIMEOUT, default_timeout);
-			timeoutOnQuit = Utilities.getConfigInt(sec, NODE_TIMEOUT_ON_QUIT, default_timeoutOnQuit);
-			loss = Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE, default_loss);
-			lossExp = Utilities.getConfigDouble(sec, NODE_LOSS_PERCENTAGE_EXP, default_lossExp);
+			timeout = Util.getConfigInt(sec, NODE_TIMEOUT, default_timeout);
+			timeoutOnQuit = Util.getConfigInt(sec, NODE_TIMEOUT_ON_QUIT, default_timeoutOnQuit);
+			loss = Util.getConfigDouble(sec, NODE_LOSS_PERCENTAGE, default_loss);
+			lossExp = Util.getConfigDouble(sec, NODE_LOSS_PERCENTAGE_EXP, default_lossExp);
 			whitelist = sec.getStringList(NODE_WHITELIST);
 			blacklist = sec.getStringList(NODE_BLACKLIST);
 		}

@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
-import bone008.bukkit.deathcontrol.util.EconomyUtils;
-import bone008.bukkit.deathcontrol.util.ExperienceUtils;
+import bone008.bukkit.deathcontrol.util.EconomyUtil;
+import bone008.bukkit.deathcontrol.util.ExperienceUtil;
 import bone008.bukkit.deathcontrol.util.Message;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class DeathManager {
 
@@ -51,15 +51,15 @@ public class DeathManager {
 		// drops items
 		if (keptItems != null)
 			for (StoredItemStack storedStack : keptItems)
-				Utilities.dropItem(deathLocation, storedStack.itemStack, true);
+				Util.dropItem(deathLocation, storedStack.itemStack, true);
 
 		// drops experience orbs
-		Utilities.dropExp(deathLocation, droppedExp);
+		Util.dropExp(deathLocation, droppedExp);
 
 		// sends notification to the player
 		if (showMessage) {
 			Player ply = Bukkit.getPlayerExact(plyName);
-			MessageHelper.sendMessage(ply, Message.NOTIF_EXPIRATION);
+			MessageUtil.sendMessage(ply, Message.NOTIF_EXPIRATION);
 			// logs to console
 			DeathControl.instance.log(Level.FINE, "Timer for " + plyName + " expired! Items dropped.");
 		}
@@ -82,7 +82,7 @@ public class DeathManager {
 		if (method == HandlingMethod.COMMAND && this.valid) {
 			Player ply = Bukkit.getPlayerExact(plyName);
 			if (restore(false)) {
-				MessageHelper.sendMessage(ply, Message.NOTIF_RESTORATION);
+				MessageUtil.sendMessage(ply, Message.NOTIF_RESTORATION);
 				DeathControl.instance.log(Level.FINE, ply.getName() + " got back their items via command.");
 				unregister();
 			}
@@ -98,14 +98,14 @@ public class DeathManager {
 		final Player ply = Bukkit.getPlayerExact(plyName);
 
 		if (!DeathControl.instance.config.allowCrossworld && !DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_CROSSWORLD) && !ply.getWorld().equals(deathLocation.getWorld())) {
-			MessageHelper.sendMessage(ply, Message.NOTIF_NOCROSSWORLD);
+			MessageUtil.sendMessage(ply, Message.NOTIF_NOCROSSWORLD);
 			expire(false);
 			return false;
 		}
 
 		boolean success = false;
 
-		if (EconomyUtils.payCost(ply, cost)) {
+		if (EconomyUtil.payCost(ply, cost)) {
 			if (keptItems != null) {
 				PlayerInventory inv = ply.getInventory();
 
@@ -117,7 +117,7 @@ public class DeathManager {
 					else { // slot is occupied --> add it regularly and drop if necessary
 						HashMap<Integer, ItemStack> leftovers = inv.addItem(storedStack.itemStack);
 						if (leftovers.size() > 0)
-							Utilities.dropItems(ply.getLocation(), leftovers, false);
+							Util.dropItems(ply.getLocation(), leftovers, false);
 					}
 
 				}
@@ -128,7 +128,7 @@ public class DeathManager {
 			if (keptExp > 0) {
 				if (isRespawn) {
 					// check for modifications
-					if (ExperienceUtils.getCurrentExp(ply) > 0)
+					if (ExperienceUtil.getCurrentExp(ply) > 0)
 						DeathControl.instance.log(Level.FINE, "Another plugin set the player's experience after respawning. These changes have been overridden.");
 
 					// reset always just in case
@@ -138,7 +138,7 @@ public class DeathManager {
 				}
 
 				// give back the exp
-				ExperienceUtils.changeExp(ply, keptExp);
+				ExperienceUtil.changeExp(ply, keptExp);
 
 				success = true;
 			}
@@ -152,7 +152,7 @@ public class DeathManager {
 			}
 		}
 		else {
-			MessageHelper.sendMessage(ply, Message.NOTIF_NOMONEY);
+			MessageUtil.sendMessage(ply, Message.NOTIF_NOMONEY);
 		}
 
 		return success;

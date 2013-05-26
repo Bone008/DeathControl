@@ -8,7 +8,7 @@ import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 import bone008.bukkit.deathcontrol.util.Message;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 
 public class DropCommand extends SubCommand {
 
@@ -22,7 +22,7 @@ public class DropCommand extends SubCommand {
 
 		DeathManager m = DeathControl.instance.getManager(ply.getName());
 		if (m != null && m.expire(false))
-			MessageHelper.sendMessage(ply, Message.CMD_ITEMS_WERE_DROPPED);
+			MessageUtil.sendMessage(ply, Message.CMD_ITEMS_WERE_DROPPED);
 		else
 			throw new CommandException(Message.CMD_NO_DROPPABLE_ITEMS);
 	}

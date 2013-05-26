@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import bone008.bukkit.deathcontrol.util.MessageHelper;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 
 public class BukkitRuleNotifHandler implements Listener {
 
@@ -49,11 +49,11 @@ public class BukkitRuleNotifHandler implements Listener {
 	 */
 	private static void warn(CommandSender who, String worldName) {
 		final String prefix = ChatColor.BOLD.toString() + ChatColor.RED + "> " + ChatColor.RESET;
-		MessageHelper.sendMessage(who, "====== WARNING ======", true);
-		MessageHelper.sendMessage(who, "The gamerule \"keepInventory\" is enabled in world \"" + worldName + "\"!", prefix);
-		MessageHelper.sendMessage(who, "This breaks DeathControl by overwriting its functionality.", prefix);
-		MessageHelper.sendMessage(who, "Please disable the rule with the following command:\n    " + ChatColor.AQUA + "/gamerule keepInventory false", prefix);
-		MessageHelper.sendMessage(who, "=====================", true);
+		MessageUtil.sendMessage(who, "====== WARNING ======", true);
+		MessageUtil.sendMessage(who, "The gamerule \"keepInventory\" is enabled in world \"" + worldName + "\"!", prefix);
+		MessageUtil.sendMessage(who, "This breaks DeathControl by overwriting its functionality.", prefix);
+		MessageUtil.sendMessage(who, "Please disable the rule with the following command:\n    " + ChatColor.AQUA + "/gamerule keepInventory false", prefix);
+		MessageUtil.sendMessage(who, "=====================", true);
 	}
 
 	/**

@@ -15,9 +15,9 @@ import com.nijikokun.register.payment.Method;
 import com.nijikokun.register.payment.Method.MethodAccount;
 import com.nijikokun.register.payment.Methods;
 
-public final class EconomyUtils {
+public final class EconomyUtil {
 
-	private EconomyUtils() {
+	private EconomyUtil() {
 	}
 
 	private static Economy vaultEconomy = null;

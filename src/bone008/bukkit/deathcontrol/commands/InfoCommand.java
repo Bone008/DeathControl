@@ -19,8 +19,8 @@ import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.config.DeathConfiguration;
 import bone008.bukkit.deathcontrol.config.lists.ListItem;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.util.MessageHelper;
-import bone008.bukkit.deathcontrol.util.Utilities;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class InfoCommand extends SubCommand {
 
@@ -89,8 +89,8 @@ public class InfoCommand extends SubCommand {
 				CauseSettings settings = DeathControl.instance.config.getSettings(dc);
 				if (settings == null) {
 					// it's prettier not to throw a CommandException here
-					MessageHelper.sendMessage(context.sender, "There is no registered death cause called " + ITALIC + causeName, true);
-					MessageHelper.sendMessage(context.sender, BLUE + "/" + context.mainLabel + " info causes" + RED + " lists all registered causes.", true);
+					MessageUtil.sendMessage(context.sender, "There is no registered death cause called " + ITALIC + causeName, true);
+					MessageUtil.sendMessage(context.sender, BLUE + "/" + context.mainLabel + " info causes" + RED + " lists all registered causes.", true);
 					return;
 				}
 				context.sender.sendMessage(GRAY + "Current settings for " + YELLOW + dc.toHumanString() + GRAY + ":");
@@ -104,8 +104,8 @@ public class InfoCommand extends SubCommand {
 				context.sender.sendMessage(pre + RESET + "timeout-on-quit: " + YELLOW + settings.getTimeoutOnQuit());
 				context.sender.sendMessage(pre + RESET + "loss-percentage: " + YELLOW + settings.getLoss() + "%");
 				context.sender.sendMessage(pre + RESET + "loss-percentage-experience: " + YELLOW + settings.getLossExp() + "%");
-				context.sender.sendMessage(pre + RESET + "whitelist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
-				context.sender.sendMessage(pre + RESET + "blacklist: " + YELLOW + Utilities.replaceValue(Utilities.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
+				context.sender.sendMessage(pre + RESET + "whitelist: " + YELLOW + Util.replaceValue(Util.joinCollection(", ", settings.getRawWhitelist()), "", "none"));
+				context.sender.sendMessage(pre + RESET + "blacklist: " + YELLOW + Util.replaceValue(Util.joinCollection(", ", settings.getRawBlacklist()), "", "none"));
 				return;
 			}
 
@@ -124,8 +124,8 @@ public class InfoCommand extends SubCommand {
 				List<ListItem> list = DeathControl.instance.deathLists.getList(listName);
 				if (list == null) {
 					// it's prettier not to throw a CommandException here
-					MessageHelper.sendMessage(context.sender, "There is no list called " + ITALIC + listName, true);
-					MessageHelper.sendMessage(context.sender, BLUE + "/" + context.mainLabel + " info lists" + RED + " lists all registered lists.", true);
+					MessageUtil.sendMessage(context.sender, "There is no list called " + ITALIC + listName, true);
+					MessageUtil.sendMessage(context.sender, BLUE + "/" + context.mainLabel + " info lists" + RED + " lists all registered lists.", true);
 					return;
 				}
 
@@ -140,7 +140,7 @@ public class InfoCommand extends SubCommand {
 					sb.append(item.toHumanString()).append(RESET);
 				}
 
-				MessageHelper.sendMessage(context.sender, sb, pre + RESET);
+				MessageUtil.sendMessage(context.sender, sb, pre + RESET);
 				context.sender.sendMessage(GRAY + "==========================");
 				return;
 			}

@@ -1,10 +1,10 @@
 package bone008.bukkit.deathcontrol.util;
 
-public class DeathPermission {
+public class DPermission {
 	public final String node;
 	public final boolean opOnly;
 
-	public DeathPermission(String node, boolean opOnly) {
+	public DPermission(String node, boolean opOnly) {
 		this.node = node;
 		this.opOnly = opOnly;
 	}
