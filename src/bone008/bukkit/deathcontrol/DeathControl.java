@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,13 +20,12 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import bone008.bukkit.deathcontrol.commandhandler.CommandHandler;
-import bone008.bukkit.deathcontrol.commands.BackCommand;
 import bone008.bukkit.deathcontrol.commands.DropCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
-import bone008.bukkit.deathcontrol.commands.InfoCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
+import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 import bone008.bukkit.deathcontrol.newconfig.NewConfiguration;
 import bone008.bukkit.deathcontrol.util.DPermission;
 import bone008.bukkit.deathcontrol.util.EconomyUtil;
@@ -47,9 +46,8 @@ public class DeathControl extends JavaPlugin {
 	public DeathLists deathLists;
 	public YamlConfiguration messagesData;
 	public PluginDescriptionFile pdfFile;
-	private String prefix;
 
-	private HashMap<String, DeathManager> managers = new HashMap<String, DeathManager>();
+	private Map<String, DeathContextImpl> activeDeaths = new HashMap<String, DeathContextImpl>();
 
 	public DeathControl() {
 		instance = this;
@@ -57,10 +55,10 @@ public class DeathControl extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (!this.managers.isEmpty()) {
+		if (!this.activeDeaths.isEmpty()) {
 			// avoid CME by iterating over a stand-alone list
-			for (DeathManager manager : new ArrayList<DeathManager>(this.managers.values())) {
-				manager.expire(true);
+			for (DeathContextImpl context : new ArrayList<DeathContextImpl>(this.activeDeaths.values())) {
+				context.cancel();
 			}
 		}
 
@@ -71,7 +69,6 @@ public class DeathControl extends JavaPlugin {
 	public void onEnable() {
 		messagesFile = new File(getDataFolder(), "messages.yml");
 		pdfFile = getDescription();
-		prefix = "[" + pdfFile.getName() + "] ";
 
 		// load/generate the configurations and setup permissions if needed
 		loadConfig();
@@ -89,10 +86,10 @@ public class DeathControl extends JavaPlugin {
 		CommandHandler deathCmd = new CommandHandler();
 
 		deathCmd.addSubCommand("help", new HelpCommand(), "?");
-		deathCmd.addSubCommand("back", new BackCommand(), "restore");
+		//		deathCmd.addSubCommand("back", new BackCommand(), "restore");
 		deathCmd.addSubCommand("drop", new DropCommand(), "expire");
 		deathCmd.addSubCommand("reload", new ReloadCommand());
-		deathCmd.addSubCommand("info", new InfoCommand(), "status");
+		//		deathCmd.addSubCommand("info", new InfoCommand(), "status");
 
 		getCommand("death").setExecutor(deathCmd);
 
@@ -228,24 +225,19 @@ public class DeathControl extends JavaPlugin {
 		}
 	}
 
-	public void addManager(String name, DeathManager m) {
-		managers.put(name, m);
+	public void addActiveDeath(Player player, DeathContextImpl context) {
+		activeDeaths.put(player.getName(), context);
 	}
 
-	public DeathManager getManager(String name) {
-		return managers.get(name);
+	public DeathContextImpl getActiveDeath(Player player) {
+		return activeDeaths.get(player.getName());
 	}
 
-	public void removeManager(String name) {
-		managers.remove(name);
-	}
-
-	public void expireManager(String name) {
-		DeathManager m = managers.get(name);
-		if (m != null) {
-			m.expire(true);
-			removeManager(name);
-		}
+	/**
+	 * Removes the {@link DeathContext} from the collection, but doesn't cancel it properly. Calling cancel calls this.
+	 */
+	public void clearActiveDeath(Player player) {
+		activeDeaths.remove(player.getName());
 	}
 
 	public boolean hasPermission(Permissible who, DPermission perm) {
@@ -265,13 +257,6 @@ public class DeathControl extends JavaPlugin {
 			log(Level.WARNING, "Could not check permission " + perm.node + " for " + who.toString() + ": unsupported type! Denying access ...");
 			return false;
 		}
-	}
-
-	// displays a message to the player
-	public void display(Player ply, String message) {
-		if (ply == null)
-			return;
-		ply.sendMessage(ChatColor.GRAY + prefix + ChatColor.WHITE + message);
 	}
 
 	// logs a message to console

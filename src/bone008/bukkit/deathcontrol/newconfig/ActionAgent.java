@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.newconfig;
 
+
 public abstract class ActionAgent {
 
 	protected final DeathContext context;

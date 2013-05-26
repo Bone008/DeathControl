@@ -1,11 +1,6 @@
 package bone008.bukkit.deathcontrol.newconfig;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.Configuration;
@@ -28,7 +23,7 @@ public class NewConfiguration {
 	private boolean allowCrossworld;
 	private Set<String> limitedWorlds;
 
-	private Map<String, HandlingDescriptor> handlings = new HashMap<String, HandlingDescriptor>();
+	private Set<HandlingDescriptor> handlings = new TreeSet<HandlingDescriptor>(); // automatically ordered by priority
 
 	public NewConfiguration(Configuration config) {
 		ErrorObserver errors = new ErrorObserver();
@@ -60,7 +55,7 @@ public class NewConfiguration {
 				ErrorObserver handlingLog = new ErrorObserver();
 				handlingLog.setPrefix("  ");
 
-				handlings.put(name, new HandlingDescriptor(handlingsSec.getConfigurationSection(name), handlingLog));
+				handlings.add(new HandlingDescriptor(name, handlingsSec.getConfigurationSection(name), handlingLog));
 
 				handlingLog.logTo(errors, "Handling " + name + ":");
 			}
@@ -86,6 +81,10 @@ public class NewConfiguration {
 		if (limitedWorlds == null || limitedWorlds.isEmpty())
 			return true;
 		return limitedWorlds.contains(worldName);
+	}
+
+	public Set<HandlingDescriptor> getHandlings() {
+		return handlings;
 	}
 
 }

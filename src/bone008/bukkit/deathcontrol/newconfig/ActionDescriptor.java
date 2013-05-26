@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bone008.bukkit.deathcontrol.newconfig.actions.KeepExperienceAction;
+import bone008.bukkit.deathcontrol.newconfig.actions.MessageAction;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 
 public abstract class ActionDescriptor {
@@ -20,10 +22,18 @@ public abstract class ActionDescriptor {
 
 	public static ActionDescriptor createDescriptor(String name, List<String> args, ErrorObserver log) {
 		try {
-			return registeredTypes.get(name.toLowerCase()).getConstructor(List.class, ErrorObserver.class).newInstance(args, log);
+			return registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+		} catch (NullPointerException e) {
+			return null;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
+	}
+
+	static {
+		registerAction("keep-experience", KeepExperienceAction.class);
+		registerAction("message", MessageAction.class);
 	}
 
 	public abstract ActionAgent createAgent(DeathContext context);

@@ -23,7 +23,10 @@ public abstract class ConditionDescriptor {
 	public static ConditionDescriptor createDescriptor(String name, List<String> args, ErrorObserver log) {
 		try {
 			return registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+		} catch (NullPointerException e) {
+			return null;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

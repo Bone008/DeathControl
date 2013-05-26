@@ -3,59 +3,68 @@ package bone008.bukkit.deathcontrol;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitReconnectHandler implements Listener {
 
-	private HashMap<String, Integer> logoffExpireTimers = new HashMap<String, Integer>();
+	private HashMap<String, QuitHandlerTask> logoffExpireTimers = new HashMap<String, QuitHandlerTask>();
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent event) {
-		String plyName = event.getPlayer().getName();
+		Player player = event.getPlayer();
 
-		DeathManager m = DeathControl.instance.getManager(plyName);
-		if (m != null) {
-			QuitHandlerTask task = new QuitHandlerTask(m, plyName);
-			int t = m.getTimeoutOnQuit();
+		DeathContextImpl context = DeathControl.instance.getActiveDeath(player);
+		if (context != null) {
+			QuitHandlerTask task = new QuitHandlerTask(context);
+
+			int t = context.getDisconnectTimeout();
 			if (t > 0) {
-				logoffExpireTimers.put(plyName, Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, task, t * 20L));
-				DeathControl.instance.log(Level.INFO, plyName + " left the game. Dropping saved items in " + t + " seconds ...");
+				task.runTaskLater(DeathControl.instance, 20L * t);
+				logoffExpireTimers.put(player.getName(), task);
+				DeathControl.instance.log(Level.INFO, player.getName() + " left the game. Cancelling in " + t + " seconds ...");
 			}
-			else {
+			else if (t == 0) {
 				task.run(); // manually execute the task to drop stuff instantly
+				DeathControl.instance.log(Level.INFO, player.getName() + " left the game. Cancelling now ...");
 			}
+			// don't do anything if infinite timeout
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		String plyName = event.getPlayer().getName();
-		if (logoffExpireTimers.containsKey(plyName)) {
-			Bukkit.getServer().getScheduler().cancelTask(logoffExpireTimers.get(plyName));
-			logoffExpireTimers.remove(plyName);
-			if (DeathControl.instance.getManager(plyName) != null)
-				DeathControl.instance.log(Level.FINE, plyName + " rejoined. Expiration timer stopped.");
+		Player player = event.getPlayer();
+
+		if (logoffExpireTimers.containsKey(player.getName())) {
+			logoffExpireTimers.remove(player.getName()).cancel();
+
+			// if player still has an active death
+			if (DeathControl.instance.getActiveDeath(player) != null)
+				DeathControl.instance.log(Level.FINE, player.getName() + " rejoined. Expiration timer stopped.");
 		}
 	}
 
-	private class QuitHandlerTask implements Runnable {
-		private final DeathManager manager;
-		private final String plyName;
+	private class QuitHandlerTask extends BukkitRunnable {
+		private final DeathContextImpl context;
 
-		public QuitHandlerTask(final DeathManager m, final String pn) {
-			manager = m;
-			plyName = pn;
+		public QuitHandlerTask(DeathContextImpl context) {
+			this.context = context;
 		}
 
 		@Override
 		public void run() {
-			if (manager.expire(false))
-				DeathControl.instance.log(Level.INFO, "Saved items for disconnected player " + plyName + " were dropped!");
+			if (!context.isCancelled()) {
+				context.cancel();
+				DeathControl.instance.log(Level.INFO, "Death handling for disconnected player " + context.getVictim().getName() + " was cancelled!");
+			}
+
+			logoffExpireTimers.remove(context.getVictim().getName());
 		}
 	}
 

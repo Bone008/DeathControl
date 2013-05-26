@@ -17,6 +17,8 @@ import bone008.bukkit.deathcontrol.util.Message;
 import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
+// TODO remove deprecated DeathManager
+@Deprecated
 public class DeathManager {
 
 	private boolean valid = true;

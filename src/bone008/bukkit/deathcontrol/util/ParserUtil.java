@@ -62,6 +62,31 @@ public class ParserUtil {
 	}
 
 	/**
+	 * Parses a given percentage string, making an educated guess about what format the user intended.
+	 * Only positive numbers are accepted, but they may range above 100%.
+	 * 
+	 * @param input the input to parse
+	 * @return the interpreted percentage as a number, where 1.0 represents 100%; -1 if it couldn't be parsed
+	 */
+	public static double parsePercentage(String input) {
+		try {
+			int pctIndex = input.indexOf('%');
+			double num = Double.parseDouble(pctIndex == -1 ? input : (pctIndex == 0 ? input.substring(1) : input.substring(0, pctIndex)));
+			if (num >= 0) {
+				if (pctIndex > -1)
+					return num / 100; // must be out of 100 in this case
+				if (num <= 1.0)
+					return num; // most likely already given as fraction out of 1
+
+				return num / 100; // otherwise interpret as percentage anyway
+			}
+		} catch (NumberFormatException ignored) {
+		}
+
+		return -1;
+	}
+
+	/**
 	 * Extracts the name of an operation in space-separated format.
 	 * 
 	 * @param input the complete operation, may have trailing spaces

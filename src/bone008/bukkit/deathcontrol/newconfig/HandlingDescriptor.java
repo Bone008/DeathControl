@@ -6,22 +6,25 @@ import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import bone008.bukkit.deathcontrol.DeathContextImpl;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
 
-public class HandlingDescriptor {
+public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 
+	private final String name;
 	private final int priority;
 	private final boolean lastHandling;
 	private final int timeoutOnDisconnect;
 
 	private final List<ConditionDescriptor> conditions;
-	private final List<Boolean> invertedConditions;
+	private final List<Boolean> expectedConditionResults;
 	private final List<ActionDescriptor> actions;
 
-	public HandlingDescriptor(ConfigurationSection config, ErrorObserver log) {
-		this.priority = config.getInt("priority", 0);
-		this.lastHandling = config.getBoolean("last-handling", false);
+	public HandlingDescriptor(String name, ConfigurationSection config, ErrorObserver log) {
+		this.name = name;
+		this.priority = config.getInt("priority-order", 0);
+		this.lastHandling = !config.getBoolean("allow-others", true);
 		this.timeoutOnDisconnect = ParserUtil.parseTime(config.getString("timeout-on-disconnect"), 30);
 
 		Iterator<String> it;
@@ -30,7 +33,7 @@ public class HandlingDescriptor {
 
 		List<String> rawConditions = config.getStringList("conditions");
 		this.conditions = new ArrayList<ConditionDescriptor>(rawConditions.size());
-		this.invertedConditions = new ArrayList<Boolean>(rawConditions.size());
+		this.expectedConditionResults = new ArrayList<Boolean>(rawConditions.size());
 
 		// iterate with i for display
 		for (i = 1, it = rawConditions.iterator(); it.hasNext(); i++) {
@@ -41,21 +44,21 @@ public class HandlingDescriptor {
 				continue;
 			}
 
-			String name = ParserUtil.parseOperationName(current);
-			List<String> args = ParserUtil.parseOperationArgs(current);
+			String opName = ParserUtil.parseOperationName(current);
+			List<String> opArgs = ParserUtil.parseOperationArgs(current);
 
-			boolean inverted = name.startsWith("-");
+			boolean inverted = opName.startsWith("-");
 			if (inverted)
-				name = name.substring(1);
+				opName = opName.substring(1);
 
-			ConditionDescriptor descriptor = ConditionDescriptor.createDescriptor(name, args, log);
+			ConditionDescriptor descriptor = ConditionDescriptor.createDescriptor(opName, opArgs, log);
 			if (descriptor == null) {
-				log.addWarning("Condition %d: condition \"%s\" not found!", i, name);
+				log.addWarning("Condition %d: condition \"%s\" not found!", i, opName);
 				continue;
 			}
 
 			this.conditions.add(descriptor);
-			this.invertedConditions.add(inverted);
+			this.expectedConditionResults.add(!inverted);
 		}
 
 
@@ -71,17 +74,36 @@ public class HandlingDescriptor {
 				continue;
 			}
 
-			String name = ParserUtil.parseOperationName(current);
-			List<String> args = ParserUtil.parseOperationArgs(current);
+			String opName = ParserUtil.parseOperationName(current);
+			List<String> opArgs = ParserUtil.parseOperationArgs(current);
 
-			ActionDescriptor descriptor = ActionDescriptor.createDescriptor(name, args, log);
+			ActionDescriptor descriptor = ActionDescriptor.createDescriptor(opName, opArgs, log);
 			if (descriptor == null) {
-				log.addWarning("Action %d: action \"%s\" not found!", i, name);
+				log.addWarning("Action %d: action \"%s\" not found!", i, opName);
 				continue;
 			}
 
 			this.actions.add(descriptor);
 		}
+	}
+
+	public boolean areConditionsMet(DeathContext context) {
+		for (int i = 0; i < conditions.size(); i++) {
+			ConditionDescriptor condition = conditions.get(i);
+			if (condition.matches(context) != expectedConditionResults.get(i))
+				return false;
+		}
+
+		return true;
+	}
+
+	public void assignAgents(DeathContextImpl context) {
+		for (ActionDescriptor action : actions)
+			context.assignAgent(action.createAgent(context));
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public int getPriority() {
@@ -94,6 +116,15 @@ public class HandlingDescriptor {
 
 	public int getTimeoutOnDisconnect() {
 		return timeoutOnDisconnect;
+	}
+
+	@Override
+	public int compareTo(HandlingDescriptor other) {
+		if (this.priority == other.priority)
+			// to be consistent with equals, we need to give equal priorities an order instead of returning 0
+			return -1;
+
+		return this.priority - other.priority;
 	}
 
 }

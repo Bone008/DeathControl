@@ -19,7 +19,7 @@ public class RegionCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
-		return true;
+		return false;
 	}
 
 }

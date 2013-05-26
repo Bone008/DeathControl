@@ -2,10 +2,8 @@ package bone008.bukkit.deathcontrol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,37 +11,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import bone008.bukkit.deathcontrol.config.CauseData.HandlingMethod;
-import bone008.bukkit.deathcontrol.config.CauseSettings;
 import bone008.bukkit.deathcontrol.hooks.HooksManager;
-import bone008.bukkit.deathcontrol.util.EconomyUtil;
-import bone008.bukkit.deathcontrol.util.ExperienceUtil;
-import bone008.bukkit.deathcontrol.util.Message;
-import bone008.bukkit.deathcontrol.util.MessageUtil;
+import bone008.bukkit.deathcontrol.newconfig.HandlingDescriptor;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class BukkitDeathHandler implements Listener {
 
-	private final Random rand = new Random();
-
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onRespawn(final PlayerRespawnEvent event) {
-		final String playerName = event.getPlayer().getName();
+	public void onRespawn(PlayerRespawnEvent event) {
+		final Player player = event.getPlayer();
 
 		// delay this for the next tick to make sure the player fully respawned to get the correct location
 		// don't use getRespawnLocation(), because it might still be changed by another plugin - this way is safer
-		// this also allows the plugin to correctly view and handle other plugins actions on the player (e.g. Essentials giving back exp automatically)
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
+		// this also allows the plugin to correctly view and handle other plugins' actions on the player (e.g. Essentials giving back exp automatically)
+		new BukkitRunnable() {
 			@Override
 			public void run() {
-				DeathManager m = DeathControl.instance.getManager(playerName);
-				if (m != null) {
-					m.respawned();
-				}
+				DeathContextImpl context = DeathControl.instance.getActiveDeath(player);
+				if (context != null)
+					context.executeAgents();
 			}
-		});
+		}.runTask(DeathControl.instance);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -51,13 +41,16 @@ public class BukkitDeathHandler implements Listener {
 	public void onDeath(final PlayerDeathEvent event) {
 		Player ply = event.getEntity();
 
-		DeathControl.instance.expireManager(ply.getName());
+		if (DeathControl.instance.getActiveDeath(ply) != null)
+			DeathControl.instance.getActiveDeath(ply).cancel();
 
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
 
 		EntityDamageEvent damageEvent = ply.getLastDamageCause();
 		DeathCause deathCause = DeathCause.getDeathCause(damageEvent);
+
+		DeathContextImpl context = new DeathContextImpl(event, deathCause);
 
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
@@ -73,13 +66,7 @@ public class BukkitDeathHandler implements Listener {
 			return;
 		}
 
-		CauseSettings causeSettings = DeathControl.instance.config.getSettings(deathCause);
-		if (causeSettings == null) {
-			DeathControl.instance.log(Level.FINE, log1.append("; No handling configured!").toString());
-			return;
-		}
-
-
+		// TODO figure out when to cancel with keepInventory gamerule enabled
 		if (BukkitRuleNotifHandler.isProblematicRuleEnabled(ply.getWorld())) {
 			DeathControl.instance.log(Level.SEVERE, "The vanilla gamerule keepInventory is enabled in world " + ply.getWorld().getName() + "!");
 			DeathControl.instance.log(Level.SEVERE, "You have to disable that rule to make the plugin work properly.");
@@ -88,180 +75,54 @@ public class BukkitDeathHandler implements Listener {
 		}
 
 
-		final int totalExp = ExperienceUtil.getCurrentExp(ply);
+		List<String> executed = new ArrayList<String>();
 
-		List<ItemStack> desiredDrops = new ArrayList<ItemStack>();
-		List<StoredItemStack> keptItems = null;
-		int keptExp = 0;
-		int droppedExp = 0;
-
-		StoredHunger keptHunger = null;
-
-		if (causeSettings.keepInventory()) {
-			keptItems = calculateItems(ply.getInventory(), causeSettings, desiredDrops);
-			if (keptItems.isEmpty())
-				keptItems = null;
-		}
-
-		if (causeSettings.keepExperience()) {
-			keptExp = (int) Math.round(((100 - causeSettings.getLossExp()) / 100) * totalExp);
-			droppedExp = event.getDroppedExp();
-
-			// fix for Essentials: we take control over respawned exp ...
-			event.setKeepLevel(false);
-			event.setNewExp(0);
-			event.setNewLevel(0);
-			event.setNewTotalExp(0);
-		}
-
-		if (causeSettings.keepHunger()) {
-			keptHunger = new StoredHunger(ply);
-		}
-
-		// no actions are to be taken --> we can cancel here
-		if (keptItems == null && keptExp <= 0 && keptHunger == null)
-			return;
-
-		double cost = 0;
-		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_FREE)) {
-			cost = EconomyUtil.calcCost(ply, causeSettings);
-			if (!EconomyUtil.canAfford(ply, cost)) {
-				MessageUtil.sendMessage(ply, Message.DEATH_NO_MONEY);
-				DeathControl.instance.log(Level.FINE, log1.append("; Not enough money!").toString());
-				return;
+		for (HandlingDescriptor handling : DeathControl.instance.config.getHandlings()) {
+			if (handling.areConditionsMet(context)) {
+				handling.assignAgents(context);
+				context.setDisconnectTimeout(handling.getTimeoutOnDisconnect());
+				executed.add(handling.getName());
+				break;
 			}
 		}
 
-		if (keptItems != null) {
-			// replace the natural drops with our filtered ones
-			event.getDrops().clear();
-			event.getDrops().addAll(desiredDrops);
+		if (!context.hasAgents()) {
+			DeathControl.instance.log(Level.FINE, log1.append("; No actions to be executed!").toString());
+			return;
 		}
 
-		if (causeSettings.keepExperience()) { // keep this down here so it stays after the money check
-			event.setDroppedExp(0);
-		}
+		DeathControl.instance.addActiveDeath(ply, context);
 
-		// hunger doesn't need any cleanup on death
+		System.out.println("dropped before: " + event.getDroppedExp());
+		context.preprocessAgents(); // TODO process preprocess results
+		System.out.println("dropped after: " + event.getDroppedExp());
 
+		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 
-		HandlingMethod method = causeSettings.getMethod();
-		int timeout = causeSettings.getTimeout();
-
-		final DeathManager dm = new DeathManager(ply, keptItems, keptExp, droppedExp, keptHunger, method, cost, causeSettings.getTimeoutOnQuit());
-		DeathControl.instance.addManager(ply.getName(), dm);
-
-		if (method == HandlingMethod.COMMAND && timeout > 0) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DeathControl.instance, new Runnable() {
-				@Override
-				public void run() {
-					dm.expire(true);
-				}
-			}, timeout * 20L);
-		}
 
 		log2.append("Handling death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
 		log2.append("| Death cause: ").append(deathCause.toHumanString()).append('\n');
-		log2.append("| Kept items: ");
-		if (keptItems == null)
-			log2.append("none");
-		else if (event.getDrops().isEmpty())
-			log2.append("all");
-		else
-			log2.append("some");
-		log2.append('\n');
-		if (keptExp > 0)
-			log2.append("| Kept experience: ").append(keptExp).append(" of ").append(totalExp).append('\n');
-		if (keptHunger != null)
-			log2.append("| Kept hunger: ").append(keptHunger.toHumanString()).append('\n');
-		log2.append("| Method: ").append(method).append("\n");
-		if (method == HandlingMethod.COMMAND)
-			log2.append("| Expires in ").append(causeSettings.getTimeout()).append(" seconds!\n");
+		log2.append("| Executed handlings: " + Util.joinCollection(", ", executed));
 
 		// message the console
-		if (DeathControl.instance.config.loggingLevel <= Level.FINEST.intValue())
+		if (DeathControl.instance.config.getLoggingLevel() <= Level.FINEST.intValue())
 			DeathControl.instance.log(Level.FINE, log2.toString().trim());
-		else if (DeathControl.instance.config.loggingLevel <= Level.INFO.intValue())
+		else if (DeathControl.instance.config.getLoggingLevel() <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 
-		// message the player
-		MessageUtil.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
-		if (method == HandlingMethod.COMMAND) {
-			MessageUtil.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
-			if (causeSettings.getTimeout() > 0)
-				MessageUtil.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
-		}
-
-		if (cost > 0) {
-			Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
-			MessageUtil.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtil.formatMoney(cost));
-		}
-	}
-
-	/**
-	 * Calculates a list of {@link ItemStack}s that the player keeps. Considers lists and loss-percentage.
-	 * 
-	 * @param playerInv the inventory of the dying player
-	 * @param settings the cause settings associated with the death cause
-	 * @param desiredDrops ItemStacks that should be lost are added to this list
-	 * @return a list of ItemStacks that should be kept
-	 */
-	private List<StoredItemStack> calculateItems(PlayerInventory playerInv, CauseSettings settings, List<ItemStack> desiredDrops) {
-		// the actual size of the inventory including armor
-		final int invSize = playerInv.getSize() + playerInv.getArmorContents().length;
-
-		final double loss = settings.getLoss() / 100;
-
-		List<StoredItemStack> ret = new ArrayList<StoredItemStack>(invSize);
-
-		// save the items that may be kept due to whitelist/blacklist limits in "temp"
-		for (int slot = 0; slot < invSize; slot++) {
-			ItemStack item = playerInv.getItem(slot);
-
-			if (item == null) // skip empty slots
-				continue;
-
-			if (!settings.isValidItem(item)) {
-				desiredDrops.add(item.clone());
-				continue;
-			}
-
-			ItemStack keptItem = item.clone();
-			applyLoss(keptItem, loss);
-
-			if (keptItem.getAmount() > 0)
-				ret.add(new StoredItemStack(slot, keptItem));
-
-			if (keptItem.getAmount() < item.getAmount()) {
-				ItemStack droppedItem = item.clone();
-				droppedItem.setAmount(item.getAmount() - keptItem.getAmount());
-				desiredDrops.add(droppedItem);
-			}
-		}
-
-		return ret;
-	}
-
-	/**
-	 * Applies a given loss-percentage to an ItemStack.
-	 * 
-	 * @param item The ItemStack to modify.
-	 * @param loss The loss-percentage (between 0.0 and 1.0) to apply.
-	 */
-	private void applyLoss(ItemStack item, double loss) {
-		if (loss <= 0.0)
-			return;
-
-		double newAmount = ((double) item.getAmount()) * (1.0 - loss);
-		int intAmount = (int) newAmount;
-
-		// got a floating result --> apply random
-		if (newAmount > intAmount && rand.nextDouble() < newAmount - intAmount) {
-			intAmount++;
-		}
-
-		item.setAmount(intAmount);
+		//		// message the player
+		//		MessageUtil.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
+		//		if (method == HandlingMethod.COMMAND) {
+		//			MessageUtil.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
+		//			if (causeSettings.getTimeout() > 0)
+		//				MessageUtil.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
+		//		}
+		//
+		//		if (cost > 0) {
+		//			Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
+		//			MessageUtil.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtil.formatMoney(cost));
+		//		}
 	}
 
 }
