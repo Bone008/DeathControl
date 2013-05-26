@@ -30,7 +30,7 @@ import bone008.bukkit.deathcontrol.config.DeathLists;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
 
 public class DeathControl extends JavaPlugin {
-	public static final long HELP_SIZE = 227;
+
 	public static final DeathPermission PERMISSION_USE = new DeathPermission("deathcontrol.use", false);
 	public static final DeathPermission PERMISSION_FREE = new DeathPermission("deathcontrol.free", true);
 	public static final DeathPermission PERMISSION_CROSSWORLD = new DeathPermission("deathcontrol.crossworld", true);
@@ -39,8 +39,6 @@ public class DeathControl extends JavaPlugin {
 	public static final DeathPermission PERMISSION_ADMIN = new DeathPermission("deathcontrol.admin", true);
 
 	public static DeathControl instance;
-
-	private File helpFile = null;
 	private File messagesFile = null;
 
 	public DeathConfiguration config;
@@ -69,7 +67,6 @@ public class DeathControl extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		helpFile = new File(getDataFolder(), "help.txt");
 		messagesFile = new File(getDataFolder(), "messages.yml");
 		pdfFile = getDescription();
 		prefix = "[" + pdfFile.getName() + "] ";
@@ -116,11 +113,6 @@ public class DeathControl extends JavaPlugin {
 		cfg.options().copyDefaults(true);
 		cfg.options().copyHeader(true);
 		cfg.set("show-messages", null); // remove deprecated option
-
-		// only update the help file if there currently is one, as it is deprecated.
-		if (helpFile.exists() && helpFile.isFile()) {
-			writeDefault("help.txt", "help.txt", checkHelpUpdate());
-		}
 
 		// parse the config & lists files		
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
@@ -232,17 +224,6 @@ public class DeathControl extends JavaPlugin {
 			writeDefault("messages.yml", "messages.yml", true);
 
 		}
-	}
-
-	/**
-	 * Checks if the help file is outdated by comparing its length with the internal resource.
-	 * 
-	 * @return true, if help.txt needs to be updated, otherwise false
-	 */
-	private boolean checkHelpUpdate() {
-		if (!helpFile.exists() || !helpFile.isFile())
-			return true;
-		return helpFile.length() != HELP_SIZE;
 	}
 
 	public void addManager(String name, DeathManager m) {

@@ -1,5 +1,0 @@
-Information about the config files are now located here:
-http://dev.bukkit.org/server-mods/deathcontrol/pages/configuration/
-http://dev.bukkit.org/server-mods/deathcontrol/pages/lists/
-
-You can delete this file if you want.
