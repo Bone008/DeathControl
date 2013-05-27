@@ -6,6 +6,7 @@ import java.util.Map;
 
 import bone008.bukkit.deathcontrol.newconfig.actions.KeepExperienceAction;
 import bone008.bukkit.deathcontrol.newconfig.actions.MessageAction;
+import bone008.bukkit.deathcontrol.newconfig.actions.WaitAction;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 
 public abstract class ActionDescriptor {
@@ -34,6 +35,17 @@ public abstract class ActionDescriptor {
 	static {
 		registerAction("keep-experience", KeepExperienceAction.class);
 		registerAction("message", MessageAction.class);
+		registerAction("wait", WaitAction.class);
+	}
+
+	private boolean required = false;
+
+	public final void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	public final boolean isRequired() {
+		return required;
 	}
 
 	public abstract ActionAgent createAgent(DeathContext context);

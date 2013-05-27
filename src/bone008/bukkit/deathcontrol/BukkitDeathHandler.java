@@ -93,9 +93,7 @@ public class BukkitDeathHandler implements Listener {
 
 		DeathControl.instance.addActiveDeath(ply, context);
 
-		System.out.println("dropped before: " + event.getDroppedExp());
-		context.preprocessAgents(); // TODO process preprocess results
-		System.out.println("dropped after: " + event.getDroppedExp());
+		context.preprocessAgents();
 
 		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 

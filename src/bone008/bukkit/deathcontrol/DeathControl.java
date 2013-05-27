@@ -20,6 +20,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import bone008.bukkit.deathcontrol.commandhandler.CommandHandler;
+import bone008.bukkit.deathcontrol.commands.BackCommand;
 import bone008.bukkit.deathcontrol.commands.DropCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
@@ -86,7 +87,7 @@ public class DeathControl extends JavaPlugin {
 		CommandHandler deathCmd = new CommandHandler();
 
 		deathCmd.addSubCommand("help", new HelpCommand(), "?");
-		//		deathCmd.addSubCommand("back", new BackCommand(), "restore");
+		deathCmd.addSubCommand("back", new BackCommand(), "restore");
 		deathCmd.addSubCommand("drop", new DropCommand(), "expire");
 		deathCmd.addSubCommand("reload", new ReloadCommand());
 		//		deathCmd.addSubCommand("info", new InfoCommand(), "status");

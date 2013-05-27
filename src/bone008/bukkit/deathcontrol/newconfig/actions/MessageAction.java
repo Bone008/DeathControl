@@ -4,12 +4,14 @@ import java.util.List;
 
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
 import bone008.bukkit.deathcontrol.newconfig.ActionDescriptor;
+import bone008.bukkit.deathcontrol.newconfig.ActionResult;
 import bone008.bukkit.deathcontrol.newconfig.DeathContext;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class MessageAction extends ActionDescriptor {
 
-	private String message;
+	private final String message;
 
 	public MessageAction(List<String> args) {
 		message = Util.joinCollection(" ", args);
@@ -17,6 +19,20 @@ public class MessageAction extends ActionDescriptor {
 
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
-		return new MessageActionAgent(context, message);
+		return new ActionAgent(context, this) {
+			@Override
+			public void preprocess() {
+			}
+
+			@Override
+			public ActionResult execute() {
+				MessageUtil.sendMessage(context.getVictim(), message);
+				return null;
+			}
+
+			@Override
+			public void cancel() {
+			}
+		};
 	}
 }

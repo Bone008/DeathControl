@@ -77,11 +77,19 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 			String opName = ParserUtil.parseOperationName(current);
 			List<String> opArgs = ParserUtil.parseOperationArgs(current);
 
+			boolean required = opName.equalsIgnoreCase("required");
+			if (required) {
+				// shift
+				opName = opArgs.remove(0);
+			}
+
 			ActionDescriptor descriptor = ActionDescriptor.createDescriptor(opName, opArgs, log);
 			if (descriptor == null) {
 				log.addWarning("Action %d: action \"%s\" not found!", i, opName);
 				continue;
 			}
+
+			descriptor.setRequired(required);
 
 			this.actions.add(descriptor);
 		}

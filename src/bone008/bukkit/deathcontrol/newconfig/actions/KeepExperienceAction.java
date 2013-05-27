@@ -9,11 +9,11 @@ import bone008.bukkit.deathcontrol.util.ParserUtil;
 
 public class KeepExperienceAction extends ActionDescriptor {
 
-	private double keepPct;
-	private boolean dropLeftovers;
+	double keepPct;
+	boolean dropLeftovers;
 
 	public KeepExperienceAction(List<String> args) {
-		keepPct = 0;
+		keepPct = 1.0;
 
 		if (args.size() > 0) {
 			keepPct = ParserUtil.parsePercentage(args.get(0));
@@ -26,6 +26,6 @@ public class KeepExperienceAction extends ActionDescriptor {
 
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
-		return new KeepExperienceActionAgent(context, keepPct, dropLeftovers);
+		return new KeepExperienceActionAgent(context, this);
 	};
 }

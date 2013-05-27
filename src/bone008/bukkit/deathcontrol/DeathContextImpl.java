@@ -1,14 +1,15 @@
 package bone008.bukkit.deathcontrol;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import bone008.bukkit.deathcontrol.AgentSet.AgentIterator;
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
+import bone008.bukkit.deathcontrol.newconfig.ActionResult;
 import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 public class DeathContextImpl implements DeathContext {
@@ -20,7 +21,10 @@ public class DeathContextImpl implements DeathContext {
 
 	// for processing
 	private int disconnectTimeout = -1;
-	private List<ActionAgent> agents = new ArrayList<ActionAgent>();
+	private AgentSet agents = new AgentSet();
+	private AgentIterator executionIterator = null;
+
+	private boolean tempBlocked = false;
 
 	public DeathContextImpl(PlayerDeathEvent event, DeathCause deathCause) {
 		this.deathEvent = event;
@@ -50,32 +54,89 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void preprocessAgents() {
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " preprocessed!");
+		Bukkit.broadcastMessage("Context for " + victim.getName() + " preprocessing!");
 
 		for (ActionAgent agent : agents)
 			agent.preprocess();
 	}
 
 	public void executeAgents() {
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " executed!");
+		Bukkit.broadcastMessage("Context for " + victim.getName() + " executing!");
 
-		for (ActionAgent agent : agents)
-			agent.execute();
-
-		DeathControl.instance.clearActiveDeath(victim);
-	}
-
-	public void cancel() {
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " cancelled!");
-
-		for (ActionAgent agent : agents)
-			agent.cancel();
-
-		DeathControl.instance.clearActiveDeath(victim);
+		executionIterator = agents.iteratorExecution();
+		continueExecution(null);
 	}
 
 	public boolean isCancelled() {
 		return DeathControl.instance.getActiveDeath(victim) != this;
+	}
+
+	@Override
+	public boolean continueExecution(ActionResult reason) {
+		if (tempBlocked)
+			throw new IllegalStateException("can't continue execution from within an agent");
+
+		if (isCancelled())
+			return false;
+
+		if (executionIterator == null)
+			throw new IllegalStateException("can't continue without having started");
+
+		if (!executionIterator.unblockExecution(reason))
+			return false;
+
+		while (executionIterator.canContinue()) {
+			ActionAgent agent = executionIterator.next();
+
+			tempBlocked = true;
+			ActionResult result = agent.execute();
+			tempBlocked = false;
+
+			if (result == null)
+				result = ActionResult.STANDARD;
+
+			switch (result) {
+			case STANDARD:
+				break; // do nothing
+			case FAILED:
+				if (agent.getDescriptor().isRequired()) {
+					cancel();
+					return true; // cancel while loop
+				}
+				break;
+			default:
+				executionIterator.blockExecution(result);
+				break;
+			}
+		}
+
+		if (!executionIterator.hasNext())
+			cancel(); // no agents remaining, but we need to clean up behind ourselves
+
+		return true;
+	}
+
+	@Override
+	public void cancel() {
+		if (tempBlocked)
+			throw new IllegalStateException("can't cancel from within an agent");
+
+		if (isCancelled())
+			return;
+
+		DeathControl.instance.clearActiveDeath(victim);
+
+		Bukkit.broadcastMessage("Context for " + victim.getName() + " cancelling!");
+
+		// cancel all remaining agents, falling back to the beginning if not yet started
+		Iterator<ActionAgent> agentIt;
+		if (executionIterator == null)
+			agentIt = agents.iterator();
+		else
+			agentIt = executionIterator;
+
+		while (agentIt.hasNext())
+			agentIt.next().cancel();
 	}
 
 	@Override

@@ -16,4 +16,8 @@ public interface DeathContext {
 
 	public PlayerDeathEvent getDeathEvent();
 
+	public boolean continueExecution(ActionResult reason);
+
+	public void cancel();
+
 }
