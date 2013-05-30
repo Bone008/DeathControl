@@ -87,6 +87,40 @@ public class ParserUtil {
 	}
 
 	/**
+	 * Parses a positive double value from a string.
+	 * 
+	 * @param input the input to parse
+	 * @return the value as a double, or -1 if it couldn't be parsed or was negative
+	 */
+	public static double parseDouble(String input) {
+		try {
+			double d = Double.parseDouble(input);
+			if (d < 0)
+				d = -1;
+			return d;
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
+	/**
+	 * Parses a positive int value from a string.
+	 * 
+	 * @param input the input to parse
+	 * @return the value as a int, or -1 if it couldn't be parsed or was negative
+	 */
+	public static int parseInt(String input) {
+		try {
+			int d = Integer.parseInt(input);
+			if (d < 0)
+				d = -1;
+			return d;
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
+	/**
 	 * Extracts the name of an operation in space-separated format.
 	 * 
 	 * @param input the complete operation, may have trailing spaces

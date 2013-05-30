@@ -2,6 +2,7 @@ package bone008.bukkit.deathcontrol.newconfig.conditions;
 
 import java.util.List;
 
+import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
 import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
@@ -10,9 +11,9 @@ public class RegionCondition extends ConditionDescriptor {
 
 	private String regionName;
 
-	public RegionCondition(List<String> args) {
+	public RegionCondition(List<String> args) throws DescriptorFormatException {
 		if (args.isEmpty())
-			throw new RuntimeException("no region given");
+			throw new DescriptorFormatException("no region given");
 
 		regionName = args.get(0);
 	}

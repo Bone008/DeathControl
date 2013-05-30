@@ -93,7 +93,15 @@ public class BukkitDeathHandler implements Listener {
 
 		DeathControl.instance.addActiveDeath(ply, context);
 
+		// call all the preprocessors and let them do their magic
 		context.preprocessAgents();
+
+		// replace drops with the processed ones from the context
+		event.getDrops().clear();
+		for (StoredItemStack dropped : context.getItemDrops())
+			event.getDrops().add(dropped.itemStack);
+
+
 
 		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import bone008.bukkit.deathcontrol.DeathControl;
+import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
 import bone008.bukkit.deathcontrol.newconfig.ActionDescriptor;
 import bone008.bukkit.deathcontrol.newconfig.ActionResult;
@@ -16,9 +17,9 @@ public class WaitAction extends ActionDescriptor {
 	private final boolean isCommand;
 	private final int time;
 
-	public WaitAction(List<String> args) {
+	public WaitAction(List<String> args) throws DescriptorFormatException {
 		if (args.isEmpty())
-			throw new RuntimeException("no time given");
+			throw new DescriptorFormatException("no wait time given");
 
 		isCommand = args.get(0).equalsIgnoreCase("command");
 
@@ -28,7 +29,7 @@ public class WaitAction extends ActionDescriptor {
 			time = ParserUtil.parseTime(args.get(isCommand ? 1 : 0), -1);
 
 		if (!isCommand && time < 0)
-			throw new RuntimeException("can't wait indefinitely");
+			throw new DescriptorFormatException("can't wait indefinitely");
 	}
 
 	@Override

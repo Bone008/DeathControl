@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 public final class Util {
 	private Util() {
 	}
+
+	private static final Random rand = new Random();
 
 	public static void dropItem(Location l, ItemStack i, boolean naturally) {
 		if (l == null || i == null || i.getTypeId() < 1 || i.getAmount() < 1)
@@ -196,6 +199,13 @@ public final class Util {
 	 */
 	public static String pluralNum(int num, String word, String wordPlural) {
 		return num + " " + (num == 1 ? word : wordPlural);
+	}
+
+	/**
+	 * Returns a cached {@link Random} instance.
+	 */
+	public static Random getRandom() {
+		return rand;
 	}
 
 }

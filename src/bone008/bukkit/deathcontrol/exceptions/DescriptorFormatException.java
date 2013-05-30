@@ -1,9 +1,9 @@
 package bone008.bukkit.deathcontrol.exceptions;
 
-public class ConditionFormatException extends FormatException {
+public class DescriptorFormatException extends FormatException {
 	private static final long serialVersionUID = 1L;
 
-	public ConditionFormatException(String msg) {
+	public DescriptorFormatException(String msg) {
 		super(msg);
 	}
 }

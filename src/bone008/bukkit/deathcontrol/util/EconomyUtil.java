@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import bone008.bukkit.deathcontrol.DeathControl;
-import bone008.bukkit.deathcontrol.config.CauseSettings;
 
 import com.nijikokun.register.payment.Method;
 import com.nijikokun.register.payment.Method.MethodAccount;
@@ -50,12 +49,11 @@ public final class EconomyUtil {
 		}
 	}
 
-	public static double calcCost(Player ply, CauseSettings causeSettings) {
-		if (ply == null || causeSettings == null)
+	public static double calcCost(Player ply, double percentage) {
+		if (ply == null)
 			throw new IllegalArgumentException("null argument");
-
-		if (!causeSettings.hasPotentialCost())
-			return 0;
+		if (percentage < 0 || percentage > 1)
+			throw new IllegalArgumentException("percentage out of range");
 
 		double currBalance;
 		Method m = getRegisterMethod();
@@ -70,7 +68,7 @@ public final class EconomyUtil {
 			logNotice(ply.getName());
 			return 0;
 		}
-		return causeSettings.getCost(currBalance);
+		return currBalance * percentage;
 	}
 
 	/**

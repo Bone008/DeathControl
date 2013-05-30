@@ -3,6 +3,8 @@ package bone008.bukkit.deathcontrol.exceptions;
 /**
  * Exception that is thrown when an invalid list is specified in the config file.
  */
+@Deprecated
+// TODO remove unused ListNotFoundException
 public class ListNotFoundException extends Exception {
 
 	private static final long serialVersionUID = 1L;

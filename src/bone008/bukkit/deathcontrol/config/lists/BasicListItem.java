@@ -1,8 +1,13 @@
 package bone008.bukkit.deathcontrol.config.lists;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import bone008.bukkit.deathcontrol.exceptions.FormatException;
+import bone008.bukkit.deathcontrol.util.Util;
 
 
 public class BasicListItem extends ListItem {
@@ -42,6 +47,33 @@ public class BasicListItem extends ListItem {
 		return Material.getMaterial(id).toString() + ChatColor.ITALIC + '#' + id + (hasData ? ":" + data : "");
 	}
 
+
+	public static BasicListItem parse(String input) throws FormatException {
+		List<String> chunks = Util.tokenize(input, ":", true);
+		if (chunks.size() > 2 || chunks.size() < 1)
+			throw new FormatException("invalid formatting of item '" + input + "'");
+
+		Material mat = null;
+		try {
+			mat = Material.getMaterial(Integer.parseInt(chunks.get(0)));
+		} catch (NumberFormatException e) {
+			mat = Material.matchMaterial(chunks.get(0));
+		}
+		if (mat == null)
+			throw new FormatException("could not find material '" + chunks.get(0) + "'");
+
+
+		Byte data = null;
+		try {
+			if (chunks.size() == 2)
+				data = Byte.parseByte(chunks.get(1));
+
+			BasicListItem item = new BasicListItem(mat, data);
+			return item;
+		} catch (NumberFormatException e) {
+			throw new FormatException("data value '" + chunks.get(1) + "' must be a number!");
+		}
+	}
 
 	public static int compare(BasicListItem o1, BasicListItem o2) {
 		if (o1.id == o2.id) {

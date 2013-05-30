@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.Material;
-
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
+import bone008.bukkit.deathcontrol.exceptions.FormatException;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class ListsParser {
@@ -85,42 +84,18 @@ public class ListsParser {
 			return;
 		}
 
+		// special list item
 		if (currentLine.startsWith("{")) {
 			parseSpecialItem();
 			return;
 		}
 
 		// regular list item
-
-		List<String> chunks = Util.tokenize(currentLine, ":", true);
-		if (chunks.size() > 2 || chunks.size() < 1) {
-			logLineWarning("invalid formatting of item '" + currentLine + "'");
-			return;
-		}
-
-		Material mat = null;
 		try {
-			mat = Material.getMaterial(Integer.parseInt(chunks.get(0)));
-		} catch (NumberFormatException e) {
-			mat = Material.matchMaterial(chunks.get(0));
-		}
-		if (mat == null)
-			logLineWarning("could not find material '" + chunks.get(0) + "'");
-
-		else {
-
-			Byte data = null;
-			try {
-				if (chunks.size() == 2)
-					data = Byte.parseByte(chunks.get(1));
-
-				BasicListItem item = new BasicListItem(mat, data);
-				currentList.add(item);
-
-			} catch (NumberFormatException e) {
-				logLineWarning("data value '" + chunks.get(1) + "' must be a number!");
-			}
-
+			BasicListItem item = BasicListItem.parse(currentLine);
+			currentList.add(item);
+		} catch (FormatException e) {
+			logLineWarning(e.getMessage());
 		}
 	}
 

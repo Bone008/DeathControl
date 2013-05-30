@@ -1,11 +1,15 @@
 package bone008.bukkit.deathcontrol;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.AgentSet.AgentIterator;
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
@@ -18,6 +22,7 @@ public class DeathContextImpl implements DeathContext {
 	private Player victim;
 	private Location deathLocation;
 	private DeathCause deathCause;
+	private List<StoredItemStack> itemDrops;
 
 	// for processing
 	private int disconnectTimeout = -1;
@@ -31,6 +36,17 @@ public class DeathContextImpl implements DeathContext {
 		this.victim = event.getEntity();
 		this.deathLocation = victim.getLocation();
 		this.deathCause = deathCause;
+
+		// build an independant list item drops
+		itemDrops = new ArrayList<StoredItemStack>();
+
+		PlayerInventory playerInv = victim.getInventory();
+		int invSize = playerInv.getSize() + playerInv.getArmorContents().length;
+		for (int slot = 0; slot < invSize; slot++) {
+			ItemStack item = playerInv.getItem(slot);
+			if (item != null)
+				itemDrops.add(new StoredItemStack(slot, item.clone()));
+		}
 	}
 
 	public void assignAgent(ActionAgent agent) {
@@ -147,6 +163,11 @@ public class DeathContextImpl implements DeathContext {
 	@Override
 	public Player getVictim() {
 		return victim;
+	}
+
+	@Override
+	public List<StoredItemStack> getItemDrops() {
+		return itemDrops;
 	}
 
 	@Override

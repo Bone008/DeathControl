@@ -84,10 +84,8 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 			}
 
 			ActionDescriptor descriptor = ActionDescriptor.createDescriptor(opName, opArgs, log);
-			if (descriptor == null) {
-				log.addWarning("Action %d: action \"%s\" not found!", i, opName);
+			if (descriptor == null)
 				continue;
-			}
 
 			descriptor.setRequired(required);
 

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.ChatColor;
-
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
 import bone008.bukkit.deathcontrol.newconfig.ActionResult;
 
@@ -61,12 +59,10 @@ public class AgentSet implements Iterable<ActionAgent> {
 		}
 
 		public void blockExecution(ActionResult reason) {
-			System.out.println(ChatColor.AQUA + "BLOCKING: " + reason + "; currently " + blockedReason);
 			blockedReason = reason;
 		}
 
 		public boolean unblockExecution(ActionResult reason) {
-			System.out.println(ChatColor.AQUA + "UNBLOCKING: " + reason + "; currently " + blockedReason);
 			if (blockedReason == reason) {
 				blockedReason = null;
 				return true;
