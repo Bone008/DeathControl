@@ -1,17 +1,25 @@
 package bone008.bukkit.deathcontrol.newconfig.actions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.bukkit.inventory.ItemStack;
 
 import bone008.bukkit.deathcontrol.StoredItemStack;
 import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
 import bone008.bukkit.deathcontrol.newconfig.ActionResult;
 import bone008.bukkit.deathcontrol.newconfig.DeathContext;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class ChargeItemActionAgent extends ActionAgent {
 
 	private final ChargeItemAction action;
+
+	private ActionResult result = null;
+	private List<ItemStack> destroyedStacks = new ArrayList<ItemStack>();
 
 	public ChargeItemActionAgent(DeathContext context, ChargeItemAction action) {
 		super(context, action);
@@ -20,11 +28,6 @@ public class ChargeItemActionAgent extends ActionAgent {
 
 	@Override
 	public void preprocess() {
-	}
-
-	@Override
-	public ActionResult execute() {
-
 		// Cache the stacks to alter first.
 		// This way, when it fails subtracting the whole amount from mulitple stacks, nothing will be changed
 		// and the items are not left in an inconsistent state.
@@ -45,8 +48,10 @@ public class ChargeItemActionAgent extends ActionAgent {
 		}
 
 		// not enough items available to pay everything
-		if (amountLeft > 0)
-			return ActionResult.FAILED;
+		if (amountLeft > 0) {
+			result = ActionResult.FAILED;
+			return;
+		}
 
 		for (Entry<StoredItemStack, Integer> e : subtractStacks.entrySet()) {
 			StoredItemStack stack = e.getKey();
@@ -56,13 +61,23 @@ public class ChargeItemActionAgent extends ActionAgent {
 				context.getItemDrops().remove(stack);
 			else
 				stack.itemStack.setAmount(stack.itemStack.getAmount() - amount);
-		}
 
-		return null;
+			// keep track of the subtracted one in case we are cancelled later
+			ItemStack destroyed = stack.itemStack.clone();
+			destroyed.setAmount(amount);
+			destroyedStacks.add(destroyed);
+		}
+	}
+
+	@Override
+	public ActionResult execute() {
+		return result; // our real work is done when preprocessing
 	}
 
 	@Override
 	public void cancel() {
+		// drop the stacks which we previously prevented from dropping
+		Util.dropItems(context.getDeathLocation(), destroyedStacks, true);
 	}
 
 }

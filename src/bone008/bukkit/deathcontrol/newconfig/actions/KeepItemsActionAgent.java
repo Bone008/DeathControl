@@ -70,8 +70,6 @@ public class KeepItemsActionAgent extends ActionAgent {
 
 		PlayerInventory inv = context.getVictim().getInventory();
 
-		System.out.println("give back " + keptItems.size());
-
 		for (StoredItemStack stored : keptItems) {
 			if (inv.getItem(stored.slot) == null) // slot is empty
 				inv.setItem(stored.slot, stored.itemStack);

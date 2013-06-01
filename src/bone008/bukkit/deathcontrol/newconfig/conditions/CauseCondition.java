@@ -3,6 +3,8 @@ package bone008.bukkit.deathcontrol.newconfig.conditions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.event.entity.EntityDamageEvent;
+
 import bone008.bukkit.deathcontrol.DeathCause;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
@@ -10,12 +12,14 @@ import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 public class CauseCondition extends ConditionDescriptor {
 
-	private List<DeathCause> causes;
+	private List<DeathCause> causes = new ArrayList<DeathCause>();
 
 	public CauseCondition(List<String> args) throws DescriptorFormatException {
-		this.causes = new ArrayList<DeathCause>();
+		if (args.isEmpty())
+			throw new DescriptorFormatException("no causes given");
+
 		for (String arg : args) {
-			DeathCause cause = DeathCause.parseCause(arg, null);
+			DeathCause cause = DeathCause.parseCause(arg);
 			if (cause == null)
 				throw new DescriptorFormatException("invalid death cause: " + arg);
 
@@ -26,12 +30,13 @@ public class CauseCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
+		EntityDamageEvent lastDamage = context.getVictim().getLastDamageCause();
+
 		for (DeathCause cause : causes) {
-			if (context.getDeathCause() == cause)
+			if (cause.appliesTo(lastDamage))
 				return true;
 		}
 
 		return false;
 	}
-
 }

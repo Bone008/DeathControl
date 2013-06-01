@@ -39,7 +39,7 @@ public class BasicListItem extends ListItem {
 
 	@Override
 	public String toString() {
-		return "ListItem@" + id + ":" + data + "/" + hasData;
+		return "BasicListItem@" + id + ":" + data + "/" + hasData;
 	}
 
 	@Override
@@ -49,29 +49,29 @@ public class BasicListItem extends ListItem {
 
 
 	public static BasicListItem parse(String input) throws FormatException {
-		List<String> chunks = Util.tokenize(input, ":", true);
-		if (chunks.size() > 2 || chunks.size() < 1)
+		List<String> tokens = Util.tokenize(input, ":", true);
+		if (tokens.size() > 2 || tokens.size() < 1)
 			throw new FormatException("invalid formatting of item '" + input + "'");
 
 		Material mat = null;
 		try {
-			mat = Material.getMaterial(Integer.parseInt(chunks.get(0)));
+			mat = Material.getMaterial(Integer.parseInt(tokens.get(0)));
 		} catch (NumberFormatException e) {
-			mat = Material.matchMaterial(chunks.get(0));
+			mat = Material.matchMaterial(tokens.get(0).replace('-', '_'));
 		}
 		if (mat == null)
-			throw new FormatException("could not find material '" + chunks.get(0) + "'");
+			throw new FormatException("could not find material '" + tokens.get(0) + "'");
 
 
 		Byte data = null;
 		try {
-			if (chunks.size() == 2)
-				data = Byte.parseByte(chunks.get(1));
+			if (tokens.size() == 2)
+				data = Byte.parseByte(tokens.get(1));
 
 			BasicListItem item = new BasicListItem(mat, data);
 			return item;
 		} catch (NumberFormatException e) {
-			throw new FormatException("data value '" + chunks.get(1) + "' must be a number!");
+			throw new FormatException("data value '" + tokens.get(1) + "' must be a number!");
 		}
 	}
 

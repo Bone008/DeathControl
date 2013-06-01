@@ -1,15 +1,25 @@
 package bone008.bukkit.deathcontrol.newconfig.conditions;
 
 import java.util.List;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.plugin.Plugin;
+
+import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
 import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
-// test class for conditions
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 public class RegionCondition extends ConditionDescriptor {
 
-	private String regionName;
+	private String regionName; // TODO test region condition
 
 	public RegionCondition(List<String> args) throws DescriptorFormatException {
 		if (args.isEmpty())
@@ -20,7 +30,25 @@ public class RegionCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
-		return false;
+		Plugin wgPlugin = Bukkit.getPluginManager().getPlugin("WorldGuard");
+
+		if (wgPlugin == null) {
+			DeathControl.instance.log(Level.WARNING, "Region condition: WorldGuard is not installed on the server!");
+			return false;
+		}
+		else {
+			Location deathLoc = context.getDeathLocation();
+			RegionManager regionManager = ((WorldGuardPlugin) wgPlugin).getRegionManager(deathLoc.getWorld());
+
+			ProtectedRegion region = regionManager.getRegion(regionName);
+			if (region == null) {
+				DeathControl.instance.log(Level.FINE, "Region condition: WorldGuard region " + regionName + " unexistant in world " + deathLoc.getWorld().getName() + "!");
+				// not existant in this world
+				return false;
+			}
+
+			return region.contains(new Vector(deathLoc.getX(), deathLoc.getY(), deathLoc.getZ()));
+		}
 	}
 
 }

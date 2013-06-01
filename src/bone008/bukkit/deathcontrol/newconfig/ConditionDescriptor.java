@@ -7,7 +7,10 @@ import java.util.Map;
 
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.newconfig.conditions.CauseCondition;
+import bone008.bukkit.deathcontrol.newconfig.conditions.PermissionCondition;
 import bone008.bukkit.deathcontrol.newconfig.conditions.RegionCondition;
+import bone008.bukkit.deathcontrol.newconfig.conditions.TypeCondition;
+import bone008.bukkit.deathcontrol.newconfig.conditions.WorldCondition;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 
 public abstract class ConditionDescriptor {
@@ -30,7 +33,9 @@ public abstract class ConditionDescriptor {
 		}
 
 		try {
-			return registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+			ConditionDescriptor condition = registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+			condition.name = name;
+			return condition;
 		} catch (InvocationTargetException e) {
 			if (e.getCause() instanceof DescriptorFormatException) {
 				log.addWarning("Condition \"%s\": %s", name, e.getCause().getMessage());
@@ -47,9 +52,18 @@ public abstract class ConditionDescriptor {
 
 	static {
 		registerCondition("cause", CauseCondition.class);
+		registerCondition("world", WorldCondition.class);
+		registerCondition("permission", PermissionCondition.class);
+		registerCondition("killer-type", TypeCondition.class);
 		registerCondition("region", RegionCondition.class);
 	}
 
+	private String name = "";
+
 	public abstract boolean matches(DeathContext context);
+
+	public final String getName() {
+		return name;
+	}
 
 }

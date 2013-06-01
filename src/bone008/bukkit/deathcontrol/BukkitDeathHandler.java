@@ -1,14 +1,15 @@
 package bone008.bukkit.deathcontrol;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,14 +48,21 @@ public class BukkitDeathHandler implements Listener {
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
 
-		EntityDamageEvent damageEvent = ply.getLastDamageCause();
-		DeathCause deathCause = DeathCause.getDeathCause(damageEvent);
+		// create DeathContext as a key part of death handling
+		DeathContextImpl context = new DeathContextImpl(event);
 
-		DeathContextImpl context = new DeathContextImpl(event, deathCause);
 
+		// build list of death causes for logging purposes
+		Set<String> deathCauses = new HashSet<String>();
+		for (DeathCause dc : DeathCause.values()) {
+			if (dc.appliesTo(ply.getLastDamageCause()))
+				deathCauses.add(dc.toHumanString());
+		}
+
+		// short and detailed logs
 		StringBuilder log1 = new StringBuilder(), log2 = new StringBuilder();
 
-		log1.append(ply.getName()).append(" died (cause: ").append(deathCause.toHumanString()).append(")");
+		log1.append(ply.getName()).append(" died (").append(Util.pluralNum(deathCauses.size(), "cause")).append(": ").append(Util.joinCollection(", ", deathCauses)).append(")");
 
 		if (HooksManager.shouldCancelDeathHandling(ply)) {
 			DeathControl.instance.log(Level.FINE, log1.append("; Other plugin has control of player!").toString());
@@ -82,7 +90,10 @@ public class BukkitDeathHandler implements Listener {
 				handling.assignAgents(context);
 				context.setDisconnectTimeout(handling.getTimeoutOnDisconnect());
 				executed.add(handling.getName());
-				break;
+
+				// if configured, don't allow any other handlings to execute
+				if (handling.isLastHandling())
+					break;
 			}
 		}
 
@@ -102,13 +113,14 @@ public class BukkitDeathHandler implements Listener {
 			event.getDrops().add(dropped.itemStack);
 
 
-
+		// short log
 		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 
-
+		// detailed log
 		log2.append("Handling death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
-		log2.append("| Death cause: ").append(deathCause.toHumanString()).append('\n');
+		for (String cause : deathCauses)
+			log2.append("| Death cause: ").append(cause).append('\n');
 		log2.append("| Executed handlings: " + Util.joinCollection(", ", executed));
 
 		// message the console
@@ -116,19 +128,6 @@ public class BukkitDeathHandler implements Listener {
 			DeathControl.instance.log(Level.FINE, log2.toString().trim());
 		else if (DeathControl.instance.config.getLoggingLevel() <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
-
-		//		// message the player
-		//		MessageUtil.sendMessage(ply, Message.DEATH_KEPT, "%cause-reason%", Message.translatePath(deathCause.toMsgPath()));
-		//		if (method == HandlingMethod.COMMAND) {
-		//			MessageUtil.sendMessage(ply, Message.DEATH_COMMAND_INDICATOR);
-		//			if (causeSettings.getTimeout() > 0)
-		//				MessageUtil.sendMessage(ply, Message.DEATH_TIMEOUT_INDICATOR, "%timeout%", String.valueOf(causeSettings.getTimeout()));
-		//		}
-		//
-		//		if (cost > 0) {
-		//			Message theMsg = (method == HandlingMethod.COMMAND ? Message.DEATH_COST_INDICATOR_COMMAND : Message.DEATH_COST_INDICATOR_DIRECT);
-		//			MessageUtil.sendMessage(ply, theMsg, "%raw-cost%", String.valueOf(cost), "%formatted-cost%", EconomyUtil.formatMoney(cost));
-		//		}
 	}
 
 }

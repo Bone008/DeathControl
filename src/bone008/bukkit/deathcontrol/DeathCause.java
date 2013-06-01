@@ -1,129 +1,131 @@
 package bone008.bukkit.deathcontrol;
 
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Wolf;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import bone008.bukkit.deathcontrol.config.DeathConfiguration;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public enum DeathCause {
 	CONTACT("cactus"),
-	SUFFOCATION("suffocation"),
+	DROWNING("drowning"),
+	EXPLOSION("explosion"),
 	FALL("fall"),
-	VOID("void"),
-	SUICIDE("suicide"),
-	STARVATION("starvation"),
+	FALLING_BLOCK("fallingblock"),
+	FIRE("fire"),
+	FIRE_TICK("firetick"),
+	LAVA("lava"),
 	LIGHTNING("lightning"),
 	MAGIC("magic"),
-	POISON("poison"),
-	DROWNING("drowning"),
-	LAVA("lava"),
-	FIRE("fire"),
-	FIRE_TICK(FIRE, "tick"),
-	EXPLOSION("explosion"),
 	MOB("mob"),
-	MOB_CREEPER(MOB, "creeper"),
-	MOB_WOLF(MOB, "wolf"),
-	PLAYER("player"),
+	MONSTER("monster"),
+	PLAYER("pvp"),
+	POISON("poison"),
+	STARVATION("starvation"),
+	SUFFOCATION("suffocation"),
+	SUICIDE("suicide"),
+	THORNS("thorns"),
+	VOID("void"),
+	WITHER("wither"),
+
 	UNKNOWN("unknown");
 
 	private final String name;
-	private final String meta;
-	public final DeathCause parent;
 
 	private DeathCause(String name) {
 		this.name = name;
-		this.meta = null;
-		this.parent = null;
 	}
 
-	private DeathCause(DeathCause parent, String meta) {
-		if (parent == null)
-			throw new IllegalArgumentException();
-		this.name = parent.name;
-		this.meta = meta;
-		this.parent = parent;
+	/**
+	 * Checks whether this death cause is applicable for the given damage event.<br>
+	 * Considers the {@link DamageCause} as well as other information associated with the event.
+	 * 
+	 * @param event an {@link EntityDamageEvent} to check
+	 * 
+	 * @return true if this cause matches the event, false otherwise
+	 */
+	public boolean appliesTo(EntityDamageEvent event) {
+		DamageCause cause = event.getCause();
+
+		switch (this) {
+		case CONTACT:
+		case DROWNING:
+		case FALL:
+		case FALLING_BLOCK:
+		case FIRE_TICK:
+		case LAVA:
+		case LIGHTNING:
+		case MAGIC:
+		case POISON:
+		case STARVATION:
+		case SUFFOCATION:
+		case SUICIDE:
+		case THORNS:
+		case VOID:
+		case WITHER:
+			// direct equivalent in the DamageCause enum
+			return cause == DamageCause.valueOf(name());
+
+			// special death causes with more complex logic here
+
+		case EXPLOSION:
+			return cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION;
+
+		case FIRE:
+			return cause == DamageCause.FIRE || cause == DamageCause.FIRE_TICK;
+
+		case MOB: {
+			Entity attacker = Util.getAttackerFromEvent(event);
+			return attacker instanceof LivingEntity && !(attacker instanceof HumanEntity);
+		}
+
+		case MONSTER: {
+			Entity attacker = Util.getAttackerFromEvent(event);
+			return attacker instanceof Monster && !(attacker instanceof HumanEntity);
+		}
+
+		case PLAYER:
+			return Util.getPlayerAttackerFromEvent(event) != null;
+
+		case UNKNOWN:
+			// check if anything else matches
+			for (DeathCause dc : values()) {
+				if (dc == UNKNOWN)
+					continue;
+				if (dc.appliesTo(event))
+					return false;
+			}
+			return true;
+
+		default:
+			throw new Error("unimplemented death cause: " + this);
+		}
+	}
+
+	public String toHumanString() {
+		return name;
 	}
 
 	public String toMsgPath() {
 		return "cause-reasons." + toHumanString();
 	}
 
-	public String toHumanString() {
-		String str;
-		if (meta == null)
-			str = name;
-		else
-			str = name + DeathConfiguration.SEPARATOR + meta;
-		return str.toUpperCase();
-	}
-
 	/**
 	 * Gets a DeathCause parsed from the given parameters.
 	 * 
-	 * @param n the main name of the cause
-	 * @param m the meta for the cause, or null if there is none
+	 * @param name the main name of the cause
+	 * 
 	 * @return the parsed DeathCause, or null if it wasn't found
 	 */
-	public static DeathCause parseCause(String n, String m) {
-		String m_ = (m == null ? "" : m);
-
-		for (DeathCause c : values()) {
-			String c_m = (c.meta == null ? "" : c.meta);
-			if (c.name.equalsIgnoreCase(n) && m_.equalsIgnoreCase(c_m))
-				return c;
+	public static DeathCause parseCause(String name) {
+		for (DeathCause dc : values()) {
+			if (dc.name.equalsIgnoreCase(name))
+				return dc;
 		}
 		return null;
-	}
-
-	/**
-	 * Retrieves a DeathCause from an EntityDamageEvent.
-	 * 
-	 * @param event the event to use
-	 * @return the DeathCause that fits the DamageCause of the event
-	 */
-	public static DeathCause getDeathCause(EntityDamageEvent event) {
-		if (event != null) {
-			DamageCause cause = event.getCause();
-
-			if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
-				if (event instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) event).getDamager() instanceof Creeper)
-					return DeathCause.MOB_CREEPER;
-				return DeathCause.EXPLOSION;
-			}
-			if ((cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE) && (event instanceof EntityDamageByEntityEvent)) {
-				EntityDamageByEntityEvent eEvent = (EntityDamageByEntityEvent) event;
-				Entity damager = eEvent.getDamager();
-				if (damager instanceof Projectile)
-					damager = ((Projectile) damager).getShooter();
-
-				if (damager instanceof Player)
-					return DeathCause.PLAYER;
-				if (damager instanceof Wolf)
-					return DeathCause.MOB_WOLF;
-				if (damager instanceof LivingEntity)
-					return DeathCause.MOB;
-				return DeathCause.UNKNOWN;
-			}
-
-			// if no special case matched, check for a direct match
-			try {
-				DeathCause directMatch = DeathCause.valueOf(cause.toString());
-				return directMatch;
-			}
-			// exception thrown when not found => ignore
-			catch (IllegalArgumentException e) {
-			}
-		}
-
-		// if no valid cause was detected
-		return DeathCause.UNKNOWN;
 	}
 
 }

@@ -10,7 +10,12 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 public final class Util {
@@ -18,6 +23,41 @@ public final class Util {
 	}
 
 	private static final Random rand = new Random();
+
+	/**
+	 * Returns the player attacker from a damage event, or null if there was none.
+	 * Considers projectile damages and tries to pull the shooter out of the projectile.
+	 * 
+	 * @param event an EntityDamageEvent
+	 * @return the player who caused the damage, or null if the damage wasn't caused by one
+	 */
+	public static Player getPlayerAttackerFromEvent(EntityDamageEvent event) {
+		Entity attacker = getAttackerFromEvent(event);
+
+		if (attacker instanceof Player)
+			return (Player) attacker;
+
+		return null;
+	}
+
+	/**
+	 * Returns the entity attacker from a damage event, or null if there was none.
+	 * Considers projectile damages and tries to pull the shooter out of the projectile.
+	 * 
+	 * @param event an EntityDamageEvent
+	 * @return the entity which caused the damage, or null if the damage wasn't caused by one
+	 */
+	public static Entity getAttackerFromEvent(EntityDamageEvent event) {
+		if (!(event instanceof EntityDamageByEntityEvent)) // implicit null-check
+			return null;
+
+		Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
+
+		if (damager instanceof Projectile)
+			damager = ((Projectile) damager).getShooter();
+
+		return damager;
+	}
 
 	public static void dropItem(Location l, ItemStack i, boolean naturally) {
 		if (l == null || i == null || i.getTypeId() < 1 || i.getAmount() < 1)

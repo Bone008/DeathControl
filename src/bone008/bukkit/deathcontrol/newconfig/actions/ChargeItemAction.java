@@ -13,7 +13,7 @@ import bone008.bukkit.deathcontrol.util.ParserUtil;
 public class ChargeItemAction extends ActionDescriptor {
 
 	BasicListItem item;
-	int amount;
+	int amount = 1;
 
 	public ChargeItemAction(List<String> args) throws DescriptorFormatException {
 		if (args.size() > 2)

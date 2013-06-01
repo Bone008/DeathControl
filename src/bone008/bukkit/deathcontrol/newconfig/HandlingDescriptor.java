@@ -3,10 +3,12 @@ package bone008.bukkit.deathcontrol.newconfig;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 
 import bone008.bukkit.deathcontrol.DeathContextImpl;
+import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
 
@@ -24,7 +26,7 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 	public HandlingDescriptor(String name, ConfigurationSection config, ErrorObserver log) {
 		this.name = name;
 		this.priority = config.getInt("priority-order", 0);
-		this.lastHandling = !config.getBoolean("allow-others", true);
+		this.lastHandling = !config.getBoolean("allow-others", false);
 		this.timeoutOnDisconnect = ParserUtil.parseTime(config.getString("timeout-on-disconnect"), 30);
 
 		Iterator<String> it;
@@ -52,10 +54,8 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 				opName = opName.substring(1);
 
 			ConditionDescriptor descriptor = ConditionDescriptor.createDescriptor(opName, opArgs, log);
-			if (descriptor == null) {
-				log.addWarning("Condition %d: condition \"%s\" not found!", i, opName);
+			if (descriptor == null)
 				continue;
-			}
 
 			this.conditions.add(descriptor);
 			this.expectedConditionResults.add(!inverted);
@@ -77,7 +77,7 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 			String opName = ParserUtil.parseOperationName(current);
 			List<String> opArgs = ParserUtil.parseOperationArgs(current);
 
-			boolean required = opName.equalsIgnoreCase("required");
+			boolean required = opName.equalsIgnoreCase("require") || opName.equalsIgnoreCase("required");
 			if (required) {
 				// shift
 				opName = opArgs.remove(0);
@@ -94,10 +94,16 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 	}
 
 	public boolean areConditionsMet(DeathContext context) {
+		DeathControl.instance.log(Level.FINEST, "Condition check for " + context.getVictim().getName() + " ...");
+
 		for (int i = 0; i < conditions.size(); i++) {
 			ConditionDescriptor condition = conditions.get(i);
-			if (condition.matches(context) != expectedConditionResults.get(i))
+			if (condition.matches(context) != expectedConditionResults.get(i)) { // FIXME catch exceptions of conditions
+				DeathControl.instance.log(Level.FINEST, "    " + condition.getName() + " failed");
 				return false;
+			}
+			else
+				DeathControl.instance.log(Level.FINEST, "    " + condition.getName() + " matched");
 		}
 
 		return true;

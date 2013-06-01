@@ -23,7 +23,7 @@ public class ChargeAction extends ActionDescriptor {
 
 			if (arg.startsWith("min=")) {
 				capMin = ParserUtil.parseDouble(arg.substring(4));
-				if (capMin < 0 || capMin < capMax)
+				if (capMin < 0 || capMin > capMax)
 					throw new DescriptorFormatException("invalid minimum cap: " + arg.substring(4));
 
 				it.remove();
@@ -41,7 +41,7 @@ public class ChargeAction extends ActionDescriptor {
 			throw new DescriptorFormatException("no cost given!");
 
 		double pctMoney = ParserUtil.parsePercentage(args.get(0));
-		if (pctMoney != -1) {
+		if (pctMoney != -1 && pctMoney <= 1.0) {
 			isPercentage = true;
 			money = pctMoney;
 		}

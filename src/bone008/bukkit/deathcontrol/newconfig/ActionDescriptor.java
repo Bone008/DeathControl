@@ -29,7 +29,9 @@ public abstract class ActionDescriptor {
 		}
 
 		try {
-			return registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+			ActionDescriptor action = registeredTypes.get(name.toLowerCase()).getConstructor(List.class).newInstance(args);
+			action.name = name;
+			return action;
 		} catch (InvocationTargetException e) {
 			if (e.getCause() instanceof DescriptorFormatException) {
 				log.addWarning("Action \"%s\": %s", name, e.getCause().getMessage());
@@ -53,6 +55,7 @@ public abstract class ActionDescriptor {
 		registerAction("wait", WaitAction.class);
 	}
 
+	private String name = "";
 	private boolean required = false;
 
 	public final void setRequired(boolean required) {
@@ -61,6 +64,10 @@ public abstract class ActionDescriptor {
 
 	public final boolean isRequired() {
 		return required;
+	}
+
+	public final String getName() {
+		return name;
 	}
 
 	public abstract ActionAgent createAgent(DeathContext context);

@@ -3,8 +3,10 @@ package bone008.bukkit.deathcontrol;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -21,7 +23,6 @@ public class DeathContextImpl implements DeathContext {
 	private PlayerDeathEvent deathEvent;
 	private Player victim;
 	private Location deathLocation;
-	private DeathCause deathCause;
 	private List<StoredItemStack> itemDrops;
 
 	// for processing
@@ -31,11 +32,10 @@ public class DeathContextImpl implements DeathContext {
 
 	private boolean tempBlocked = false;
 
-	public DeathContextImpl(PlayerDeathEvent event, DeathCause deathCause) {
+	public DeathContextImpl(PlayerDeathEvent event) {
 		this.deathEvent = event;
 		this.victim = event.getEntity();
 		this.deathLocation = victim.getLocation();
-		this.deathCause = deathCause;
 
 		// build an independant list item drops
 		itemDrops = new ArrayList<StoredItemStack>();
@@ -54,11 +54,8 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void setDisconnectTimeout(int timeout) {
-		// 1. don't set to infinite timeout (can't override any other setting)
-		// 2. always set when currently at infinite timeout
-		// 3. otherwise only set when lower new timeout
-		if (timeout > -1 && (disconnectTimeout == -1 || timeout < disconnectTimeout))
-			disconnectTimeout = timeout;
+		// always set to the new timeout, that means another handling took priority over the old one
+		disconnectTimeout = timeout; // TODO test disconnect-timeouts
 	}
 
 	public int getDisconnectTimeout() {
@@ -70,14 +67,14 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void preprocessAgents() {
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " preprocessing!");
+		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " preprocessing!");
 
 		for (ActionAgent agent : agents)
 			agent.preprocess();
 	}
 
 	public void executeAgents() {
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " executing!");
+		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " executing!");
 
 		executionIterator = agents.iteratorExecution();
 		continueExecution(null);
@@ -105,11 +102,13 @@ public class DeathContextImpl implements DeathContext {
 			ActionAgent agent = executionIterator.next();
 
 			tempBlocked = true;
-			ActionResult result = agent.execute();
+			ActionResult result = agent.execute(); // FIXME catch exceptions of agents
 			tempBlocked = false;
 
 			if (result == null)
 				result = ActionResult.STANDARD;
+
+			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  " + agent.getDescriptor().getName() + " -> " + result);
 
 			switch (result) {
 			case STANDARD:
@@ -142,7 +141,7 @@ public class DeathContextImpl implements DeathContext {
 
 		DeathControl.instance.clearActiveDeath(victim);
 
-		Bukkit.broadcastMessage("Context for " + victim.getName() + " cancelling!");
+		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " cancelling!");
 
 		// cancel all remaining agents, falling back to the beginning if not yet started
 		Iterator<ActionAgent> agentIt;
@@ -168,11 +167,6 @@ public class DeathContextImpl implements DeathContext {
 	@Override
 	public List<StoredItemStack> getItemDrops() {
 		return itemDrops;
-	}
-
-	@Override
-	public DeathCause getDeathCause() {
-		return deathCause;
 	}
 
 	@Override

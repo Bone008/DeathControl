@@ -117,7 +117,7 @@ public class DeathControl extends JavaPlugin {
 		// parse the config & lists files		
 		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new NewConfiguration(cfg);
-		saveConfig();
+		//saveConfig(); TODO reenable saveConfig()
 
 		messagesData = YamlConfiguration.loadConfiguration(messagesFile);
 		checkMessagesIntegrity();
