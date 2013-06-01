@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol.newconfig.conditions;
+package bone008.bukkit.deathcontrol.config.conditions;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -12,9 +12,9 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
-import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 public class TypeCondition extends ConditionDescriptor {
 

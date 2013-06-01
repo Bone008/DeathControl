@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
-import bone008.bukkit.deathcontrol.newconfig.ActionResult;
+import bone008.bukkit.deathcontrol.config.ActionAgent;
+import bone008.bukkit.deathcontrol.config.ActionResult;
 
 public class AgentSet implements Iterable<ActionAgent> {
 

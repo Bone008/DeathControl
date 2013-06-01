@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol.newconfig.conditions;
+package bone008.bukkit.deathcontrol.config.conditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import bone008.bukkit.deathcontrol.DeathCause;
+import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
-import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 public class CauseCondition extends ConditionDescriptor {
 

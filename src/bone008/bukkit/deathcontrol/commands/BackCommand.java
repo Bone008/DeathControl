@@ -6,8 +6,8 @@ import bone008.bukkit.deathcontrol.DeathContextImpl;
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
+import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
-import bone008.bukkit.deathcontrol.newconfig.ActionResult;
 import bone008.bukkit.deathcontrol.util.Message;
 
 public class BackCommand extends SubCommand {

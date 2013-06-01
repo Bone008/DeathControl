@@ -14,9 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import bone008.bukkit.deathcontrol.AgentSet.AgentIterator;
-import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
-import bone008.bukkit.deathcontrol.newconfig.ActionResult;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
+import bone008.bukkit.deathcontrol.config.ActionAgent;
+import bone008.bukkit.deathcontrol.config.ActionResult;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 
 public class DeathContextImpl implements DeathContext {
 

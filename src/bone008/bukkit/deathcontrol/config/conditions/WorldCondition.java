@@ -1,10 +1,10 @@
-package bone008.bukkit.deathcontrol.newconfig.conditions;
+package bone008.bukkit.deathcontrol.config.conditions;
 
 import java.util.List;
 
+import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
-import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 public class WorldCondition extends ConditionDescriptor {
 

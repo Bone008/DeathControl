@@ -1,16 +1,16 @@
-package bone008.bukkit.deathcontrol.newconfig;
+package bone008.bukkit.deathcontrol.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bone008.bukkit.deathcontrol.config.conditions.CauseCondition;
+import bone008.bukkit.deathcontrol.config.conditions.PermissionCondition;
+import bone008.bukkit.deathcontrol.config.conditions.RegionCondition;
+import bone008.bukkit.deathcontrol.config.conditions.TypeCondition;
+import bone008.bukkit.deathcontrol.config.conditions.WorldCondition;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
-import bone008.bukkit.deathcontrol.newconfig.conditions.CauseCondition;
-import bone008.bukkit.deathcontrol.newconfig.conditions.PermissionCondition;
-import bone008.bukkit.deathcontrol.newconfig.conditions.RegionCondition;
-import bone008.bukkit.deathcontrol.newconfig.conditions.TypeCondition;
-import bone008.bukkit.deathcontrol.newconfig.conditions.WorldCondition;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
 
 public abstract class ConditionDescriptor {

@@ -1,13 +1,13 @@
-package bone008.bukkit.deathcontrol.newconfig.actions;
+package bone008.bukkit.deathcontrol.config.actions;
 
 import java.util.List;
 
 import org.bukkit.ChatColor;
 
-import bone008.bukkit.deathcontrol.newconfig.ActionAgent;
-import bone008.bukkit.deathcontrol.newconfig.ActionDescriptor;
-import bone008.bukkit.deathcontrol.newconfig.ActionResult;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
+import bone008.bukkit.deathcontrol.config.ActionAgent;
+import bone008.bukkit.deathcontrol.config.ActionDescriptor;
+import bone008.bukkit.deathcontrol.config.ActionResult;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 

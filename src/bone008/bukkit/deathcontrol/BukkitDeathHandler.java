@@ -14,8 +14,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import bone008.bukkit.deathcontrol.config.HandlingDescriptor;
 import bone008.bukkit.deathcontrol.hooks.HooksManager;
-import bone008.bukkit.deathcontrol.newconfig.HandlingDescriptor;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class BukkitDeathHandler implements Listener {

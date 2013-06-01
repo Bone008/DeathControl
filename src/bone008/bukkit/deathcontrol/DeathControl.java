@@ -24,10 +24,10 @@ import bone008.bukkit.deathcontrol.commands.BackCommand;
 import bone008.bukkit.deathcontrol.commands.DropCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
-import bone008.bukkit.deathcontrol.config.DeathLists;
+import bone008.bukkit.deathcontrol.config.DeathContext;
+import bone008.bukkit.deathcontrol.config.ItemLists;
+import bone008.bukkit.deathcontrol.config.NewConfiguration;
 import bone008.bukkit.deathcontrol.exceptions.ResourceNotFoundError;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
-import bone008.bukkit.deathcontrol.newconfig.NewConfiguration;
 import bone008.bukkit.deathcontrol.util.DPermission;
 import bone008.bukkit.deathcontrol.util.EconomyUtil;
 
@@ -44,7 +44,7 @@ public class DeathControl extends JavaPlugin {
 	private File messagesFile = null;
 
 	public NewConfiguration config;
-	public DeathLists deathLists;
+	public ItemLists itemLists;
 	public YamlConfiguration messagesData;
 	public PluginDescriptionFile pdfFile;
 
@@ -115,7 +115,7 @@ public class DeathControl extends JavaPlugin {
 		cfg.set("show-messages", null); // remove deprecated option
 
 		// parse the config & lists files		
-		deathLists = new DeathLists(this, new File(getDataFolder(), "lists.txt"));
+		itemLists = new ItemLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new NewConfiguration(cfg);
 		//saveConfig(); TODO reenable saveConfig()
 

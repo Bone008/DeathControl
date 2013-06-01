@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol.newconfig;
+package bone008.bukkit.deathcontrol.config;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package bone008.bukkit.deathcontrol.newconfig.conditions;
+package bone008.bukkit.deathcontrol.config.conditions;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -8,9 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
 import bone008.bukkit.deathcontrol.DeathControl;
+import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
+import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
-import bone008.bukkit.deathcontrol.newconfig.ConditionDescriptor;
-import bone008.bukkit.deathcontrol.newconfig.DeathContext;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
