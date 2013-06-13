@@ -1,8 +1,7 @@
 package bone008.bukkit.deathcontrol;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -17,13 +16,19 @@ import bone008.bukkit.deathcontrol.AgentSet.AgentIterator;
 import bone008.bukkit.deathcontrol.config.ActionAgent;
 import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.config.DeathContext;
+import bone008.bukkit.deathcontrol.util.EconomyUtil;
+import bone008.bukkit.deathcontrol.util.Message;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class DeathContextImpl implements DeathContext {
 
 	private PlayerDeathEvent deathEvent;
 	private Player victim;
 	private Location deathLocation;
+	private List<DeathCause> matchedDeathCauses;
 	private List<StoredItemStack> itemDrops;
+
+	private Map<String, Object> variables = new HashMap<String, Object>();
 
 	// for processing
 	private int disconnectTimeout = -1;
@@ -37,6 +42,12 @@ public class DeathContextImpl implements DeathContext {
 		this.victim = event.getEntity();
 		this.deathLocation = victim.getLocation();
 
+		this.matchedDeathCauses = new ArrayList<DeathCause>();
+		for (DeathCause dc : DeathCause.values()) {
+			if (dc.appliesTo(victim.getLastDamageCause()))
+				matchedDeathCauses.add(dc);
+		}
+
 		// build an independant list item drops
 		itemDrops = new ArrayList<StoredItemStack>();
 
@@ -47,6 +58,21 @@ public class DeathContextImpl implements DeathContext {
 			if (item != null)
 				itemDrops.add(new StoredItemStack(slot, item.clone()));
 		}
+
+		Player playerKiller = Util.getPlayerAttackerFromEvent(victim.getLastDamageCause());
+
+		// initialize standard variables
+		setVariable("death-cause", matchedDeathCauses.get(0).toHumanString());
+		setVariable("death-cause-formatted", Message.translatePath(matchedDeathCauses.get(0).toMsgPath()));
+		setVariable("victim-name", victim.getDisplayName());
+		setVariable("world", deathLocation.getWorld().getName());
+		setVariable("killer-name", (playerKiller != null ? playerKiller.getDisplayName() : ""));
+
+		// defaults for variables set by agents
+		setVariable("money-paid", EconomyUtil.formatMoney(0));
+		setVariable("money-paid-raw", 0);
+		setVariable("items-kept-percent", "0%");
+		setVariable("items-dropped-percent", "100%");
 	}
 
 	public void assignAgent(ActionAgent agent) {
@@ -172,6 +198,36 @@ public class DeathContextImpl implements DeathContext {
 	@Override
 	public PlayerDeathEvent getDeathEvent() {
 		return deathEvent;
+	}
+
+	@Override
+	public Object getVariable(String name) {
+		return variables.get(name.toLowerCase());
+	}
+
+	@Override
+	public void setVariable(String name, Object value) {
+		if (value == null)
+			variables.remove(name.toLowerCase());
+		else
+			variables.put(name.toLowerCase(), value);
+	}
+
+	@Override
+	public String replaceVariables(CharSequence input) {
+		if (input == null)
+			return null;
+
+		String replaced = input.toString();
+
+		for (Entry<String, Object> var : variables.entrySet()) {
+			String name = var.getKey();
+			String value = var.getValue().toString(); // let the object itself handle string serialization
+
+			replaced = replaced.replace("%" + name + "%", value);
+		}
+
+		return replaced;
 	}
 
 }

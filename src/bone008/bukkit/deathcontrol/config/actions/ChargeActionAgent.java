@@ -32,6 +32,8 @@ public class ChargeActionAgent extends ActionAgent {
 			cost = action.money;
 		}
 
+		context.setVariable("money-paid", EconomyUtil.formatMoney(cost));
+		context.setVariable("money-paid-raw", cost);
 		return (EconomyUtil.payCost(context.getVictim(), cost) ? ActionResult.STANDARD : ActionResult.FAILED);
 	}
 

@@ -28,7 +28,7 @@ public final class Util {
 	 * Returns the player attacker from a damage event, or null if there was none.
 	 * Considers projectile damages and tries to pull the shooter out of the projectile.
 	 * 
-	 * @param event an EntityDamageEvent
+	 * @param event an EntityDamageEvent, may be null
 	 * @return the player who caused the damage, or null if the damage wasn't caused by one
 	 */
 	public static Player getPlayerAttackerFromEvent(EntityDamageEvent event) {
@@ -44,7 +44,7 @@ public final class Util {
 	 * Returns the entity attacker from a damage event, or null if there was none.
 	 * Considers projectile damages and tries to pull the shooter out of the projectile.
 	 * 
-	 * @param event an EntityDamageEvent
+	 * @param event an EntityDamageEvent, may be null
 	 * @return the entity which caused the damage, or null if the damage wasn't caused by one
 	 */
 	public static Entity getAttackerFromEvent(EntityDamageEvent event) {

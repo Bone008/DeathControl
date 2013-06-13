@@ -129,5 +129,4 @@ public class BukkitDeathHandler implements Listener {
 		else if (DeathControl.instance.config.getLoggingLevel() <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
 	}
-
 }

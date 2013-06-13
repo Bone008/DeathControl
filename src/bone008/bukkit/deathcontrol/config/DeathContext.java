@@ -18,6 +18,12 @@ public interface DeathContext {
 
 	public PlayerDeathEvent getDeathEvent();
 
+	public String replaceVariables(CharSequence input);
+
+	public Object getVariable(String name);
+
+	public void setVariable(String name, Object value);
+
 	public boolean continueExecution(ActionResult reason);
 
 	public void cancel();

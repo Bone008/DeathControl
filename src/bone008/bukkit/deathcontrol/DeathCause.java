@@ -10,6 +10,11 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public enum DeathCause {
+	// Order of declaration does matter:
+	// Causes defined later in the list are considered more generic.
+	// If multiple causes apply to a death, the one with the lowest ordinal is the primary cause.
+	// This is only relevant for overlapping causes.
+
 	CONTACT("cactus"),
 	DROWNING("drowning"),
 	EXPLOSION("explosion"),
@@ -84,7 +89,7 @@ public enum DeathCause {
 
 		case MONSTER: {
 			Entity attacker = Util.getAttackerFromEvent(event);
-			return attacker instanceof Monster && !(attacker instanceof HumanEntity);
+			return attacker instanceof Monster;
 		}
 
 		case PLAYER:

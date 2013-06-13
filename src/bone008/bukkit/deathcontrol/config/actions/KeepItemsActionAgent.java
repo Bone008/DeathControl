@@ -49,6 +49,25 @@ public class KeepItemsActionAgent extends ActionAgent {
 			}
 			// do nothing if kept amount is 0
 		}
+
+		// count the items
+		int keptAmount = 0, droppedAmount = 0;
+		for (StoredItemStack kept : keptItems)
+			keptAmount += kept.itemStack.getAmount();
+		for (StoredItemStack dropped : context.getItemDrops())
+			droppedAmount += dropped.itemStack.getAmount();
+		int totalAmount = keptAmount + droppedAmount;
+
+		// set context variables
+		if (totalAmount == 0) {
+			// avoid division by 0
+			context.setVariable("items-kept-percent", "0%");
+			context.setVariable("items-dropped-percent", "0%");
+		}
+		else {
+			context.setVariable("items-kept-percent", String.format("%.0f%%", keptAmount * 100.0 / totalAmount));
+			context.setVariable("items-dropped-percent", String.format("%.0f%%", droppedAmount * 100.0 / totalAmount));
+		}
 	}
 
 	private int calcLossAmount(int oldAmount) {

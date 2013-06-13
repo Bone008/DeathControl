@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
 import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
+import bone008.bukkit.deathcontrol.util.Util;
 
 public class TypeCondition extends ConditionDescriptor {
 
@@ -86,13 +87,13 @@ public class TypeCondition extends ConditionDescriptor {
 
 			switch (special) {
 			case MONSTER:
-				match = dmgBEEvent != null && dmgBEEvent.getDamager() instanceof Monster;
+				match = Util.getAttackerFromEvent(dmgBEEvent) instanceof Monster; // assume that a potential projectile itself can't be a monster
 				break;
 			case PROJECTILE:
-				match = dmgBEEvent != null && dmgBEEvent.getDamager() instanceof Projectile;
+				match = dmgBEEvent != null && dmgBEEvent.getDamager() instanceof Projectile; // check the real damager, not the shooter
 				break;
 			case TAMED_WOLF:
-				match = dmgBEEvent != null && dmgBEEvent.getDamager() instanceof Wolf && ((Wolf) dmgBEEvent.getDamager()).isTamed();
+				match = dmgBEEvent != null && dmgBEEvent.getDamager() instanceof Wolf && ((Wolf) dmgBEEvent.getDamager()).isTamed(); // wolves don't shoot projectiles
 				break;
 			default:
 				throw new IllegalStateException("unknown special enum member: " + special);

@@ -11,11 +11,11 @@ import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
-public class MessageAction extends ActionDescriptor {
+public class BroadcastAction extends ActionDescriptor {
 
 	private final String message;
 
-	public MessageAction(List<String> args) {
+	public BroadcastAction(List<String> args) {
 		message = ChatColor.translateAlternateColorCodes('&', Util.joinCollection(" ", args));
 	}
 
@@ -28,7 +28,7 @@ public class MessageAction extends ActionDescriptor {
 
 			@Override
 			public ActionResult execute() {
-				MessageUtil.sendMessage(context.getVictim(), context.replaceVariables(message));
+				MessageUtil.broadcast(context.replaceVariables(message));
 				return null;
 			}
 

@@ -37,7 +37,7 @@ public enum Message {
 	}
 
 	public static String translatePath(String path) {
-		return DeathControl.instance.messagesData.getString(path);
+		return DeathControl.instance.messagesData.getString(path, path);
 	}
 
 }

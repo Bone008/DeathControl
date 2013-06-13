@@ -52,6 +52,7 @@ public abstract class ActionDescriptor {
 		registerAction("charge", ChargeAction.class);
 		registerAction("charge-item", ChargeItemAction.class);
 		registerAction("message", MessageAction.class);
+		registerAction("broadcast", BroadcastAction.class);
 		registerAction("wait", WaitAction.class);
 	}
 
