@@ -50,7 +50,7 @@ public abstract class ActionDescriptor {
 		registerAction("keep-items", KeepItemsAction.class);
 		registerAction("keep-experience", KeepExperienceAction.class);
 		registerAction("charge", ChargeAction.class);
-		registerAction("charge-item", ChargeItemAction.class);
+		registerAction("destroy-item", DestroyItemAction.class);
 		registerAction("message", MessageAction.class);
 		registerAction("broadcast", BroadcastAction.class);
 		registerAction("wait", WaitAction.class);

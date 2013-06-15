@@ -14,14 +14,14 @@ import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.util.Util;
 
-public class ChargeItemActionAgent extends ActionAgent {
+public class DestroyItemActionAgent extends ActionAgent {
 
-	private final ChargeItemAction action;
+	private final DestroyItemAction action;
 
 	private ActionResult result = null;
 	private List<ItemStack> destroyedStacks = new ArrayList<ItemStack>();
 
-	public ChargeItemActionAgent(DeathContext context, ChargeItemAction action) {
+	public DestroyItemActionAgent(DeathContext context, DestroyItemAction action) {
 		super(context, action);
 		this.action = action;
 	}

@@ -10,12 +10,12 @@ import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.exceptions.FormatException;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
 
-public class ChargeItemAction extends ActionDescriptor {
+public class DestroyItemAction extends ActionDescriptor {
 
 	BasicListItem item;
 	int amount = 1;
 
-	public ChargeItemAction(List<String> args) throws DescriptorFormatException {
+	public DestroyItemAction(List<String> args) throws DescriptorFormatException {
 		if (args.size() > 2)
 			throw new DescriptorFormatException("too many arguments");
 		if (args.size() == 0)
@@ -36,6 +36,6 @@ public class ChargeItemAction extends ActionDescriptor {
 
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
-		return new ChargeItemActionAgent(context, this);
+		return new DestroyItemActionAgent(context, this);
 	};
 }
