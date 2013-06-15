@@ -1,9 +1,9 @@
-package bone008.bukkit.deathcontrol.config.lists;
+package bone008.bukkit.deathcontrol;
 
 import java.util.Arrays;
 import java.util.List;
 
-enum Operator {
+public enum Operator {
 	LESS("<"),
 	LEQUAL("<="),
 	GEQUAL(">="),

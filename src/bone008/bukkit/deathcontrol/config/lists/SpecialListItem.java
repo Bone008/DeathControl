@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import bone008.bukkit.deathcontrol.Operator;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
 import bone008.bukkit.deathcontrol.util.Util;
 

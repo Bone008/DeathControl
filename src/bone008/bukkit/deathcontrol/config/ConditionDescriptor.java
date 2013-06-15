@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import bone008.bukkit.deathcontrol.config.conditions.CauseCondition;
+import bone008.bukkit.deathcontrol.config.conditions.FoodLevelCondition;
 import bone008.bukkit.deathcontrol.config.conditions.PermissionCondition;
 import bone008.bukkit.deathcontrol.config.conditions.RegionCondition;
 import bone008.bukkit.deathcontrol.config.conditions.TypeCondition;
@@ -54,6 +55,7 @@ public abstract class ConditionDescriptor {
 		registerCondition("cause", CauseCondition.class);
 		registerCondition("world", WorldCondition.class);
 		registerCondition("permission", PermissionCondition.class);
+		registerCondition("food-level", FoodLevelCondition.class);
 		registerCondition("killer-type", TypeCondition.class);
 		registerCondition("region", RegionCondition.class);
 	}

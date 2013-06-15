@@ -10,6 +10,7 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import bone008.bukkit.deathcontrol.Operator;
 import bone008.bukkit.deathcontrol.exceptions.ConditionFormatException;
 
 public class ValueItemType {

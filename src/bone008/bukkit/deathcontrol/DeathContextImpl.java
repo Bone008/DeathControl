@@ -73,6 +73,7 @@ public class DeathContextImpl implements DeathContext {
 		setVariable("money-paid-raw", 0);
 		setVariable("items-kept-percent", "0%");
 		setVariable("items-dropped-percent", "100%");
+		setVariable("items-destroyed-percent", "0%");
 	}
 
 	public void assignAgent(ActionAgent agent) {
