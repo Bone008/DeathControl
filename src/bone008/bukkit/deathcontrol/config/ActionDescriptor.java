@@ -54,6 +54,7 @@ public abstract class ActionDescriptor {
 		registerAction("destroy-items", DestroyItemsAction.class);
 		registerAction("message", MessageAction.class);
 		registerAction("broadcast", BroadcastAction.class);
+		registerAction("command", CommandAction.class);
 		registerAction("wait", WaitAction.class);
 	}
 
