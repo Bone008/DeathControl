@@ -9,7 +9,6 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -113,50 +112,6 @@ public final class Util {
 			output.append(prefix).append(lines[i]);
 		}
 		return output;
-	}
-
-	// TODO remove old "getConfigXXX" utility methods 
-
-	/**
-	 * Gets a list from the given {@code ConfigurationSection} with a special type given through the formal type parameter.
-	 * 
-	 * @param <T> The type which the list is expected to be. <u>Note: Must be explicitly declared in the method call!</u>
-	 * @param sec The ConfigurationSection to use
-	 * @param node The node to use
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> List<T> getConfigList(ConfigurationSection sec, String node) {
-		return (List<T>) sec.getList(node);
-	}
-
-	public static int getConfigInt(ConfigurationSection sec, String node, int def) {
-		Object o = sec.get(node, def);
-		if (o == null)
-			return def;
-		try {
-			return Integer.valueOf(o.toString());
-		} catch (NumberFormatException ex) {
-			return 0;
-		}
-	}
-
-	public static double getConfigDouble(ConfigurationSection sec, String node, double def) {
-		Object o = sec.get(node, def);
-		if (o == null)
-			return def;
-		try {
-			return Double.valueOf(o.toString());
-		} catch (NumberFormatException ex) {
-			return 0;
-		}
-	}
-
-	public static String getConfigString(ConfigurationSection sec, String node, String def) {
-		Object o = sec.get(node, def);
-		if (o == null)
-			return def;
-		return o.toString();
 	}
 
 	/**
