@@ -6,15 +6,15 @@ import bone008.bukkit.deathcontrol.config.ActionAgent;
 import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 
-public class KeepItemsAction extends AbstractItemsAction {
+public class DestroyItemsAction extends AbstractItemsAction {
 
-	public KeepItemsAction(List<String> args) throws DescriptorFormatException {
+	public DestroyItemsAction(List<String> args) throws DescriptorFormatException {
 		super(args);
 	}
 
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
-		return new KeepItemsActionAgent(context, this);
+		return new DestroyItemsActionAgent(context, this);
 	}
 
 }

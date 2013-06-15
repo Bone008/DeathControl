@@ -2,7 +2,6 @@ package bone008.bukkit.deathcontrol.config.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
@@ -27,28 +26,8 @@ public class KeepItemsActionAgent extends ActionAgent {
 
 	@Override
 	public void preprocess() {
-		Iterator<StoredItemStack> it = context.getItemDrops().iterator();
-
-		while (it.hasNext()) {
-			StoredItemStack item = it.next();
-
-			if (!action.isValidItem(item.itemStack))
-				continue;
-
-			int keptAmount = calcLossAmount(item.itemStack.getAmount());
-			if (keptAmount == item.itemStack.getAmount()) {
-				keptItems.add(item);
-				it.remove();
-			}
-			else if (keptAmount > 0) {
-				StoredItemStack kept = item.clone();
-				kept.itemStack.setAmount(keptAmount);
-				keptItems.add(kept);
-
-				item.itemStack.setAmount(item.itemStack.getAmount() - keptAmount);
-			}
-			// do nothing if kept amount is 0
-		}
+		// do the actual calculations from the action
+		action.applyActionToStacks(context.getItemDrops(), keptItems);
 
 		// count the items
 		int keptAmount = 0, droppedAmount = 0;
@@ -70,20 +49,10 @@ public class KeepItemsActionAgent extends ActionAgent {
 		}
 	}
 
-	private int calcLossAmount(int oldAmount) {
-		double newAmount = ((double) oldAmount) * action.keepPct;
-		int intAmount = (int) newAmount;
-
-		// got a floating result --> apply random
-		if (newAmount > intAmount && Util.getRandom().nextDouble() < newAmount - intAmount) {
-			intAmount++;
-		}
-
-		return intAmount;
-	}
-
 	@Override
 	public ActionResult execute() {
+		// here we do the restoring part
+
 		if (keptItems.isEmpty()) // nothing to keep
 			return ActionResult.FAILED;
 
