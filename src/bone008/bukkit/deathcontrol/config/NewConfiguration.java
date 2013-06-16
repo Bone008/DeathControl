@@ -1,6 +1,10 @@
 package bone008.bukkit.deathcontrol.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.Configuration;

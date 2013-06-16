@@ -1,6 +1,10 @@
 package bone008.bukkit.deathcontrol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -67,6 +71,7 @@ public class DeathContextImpl implements DeathContext {
 		setVariable("victim-name", victim.getDisplayName());
 		setVariable("world", deathLocation.getWorld().getName());
 		setVariable("killer-name", (playerKiller != null ? playerKiller.getDisplayName() : ""));
+		setVariable("death-message", deathEvent.getDeathMessage());
 
 		// defaults for variables set by agents
 		setVariable("money-paid", EconomyUtil.formatMoney(0));

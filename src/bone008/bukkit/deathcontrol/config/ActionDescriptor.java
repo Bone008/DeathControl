@@ -56,6 +56,7 @@ public abstract class ActionDescriptor {
 		registerAction("broadcast", BroadcastAction.class);
 		registerAction("command", CommandAction.class);
 		registerAction("wait", WaitAction.class);
+		registerAction("clear-death-message", ClearDeathMessageAction.class);
 	}
 
 	private String name = "";
