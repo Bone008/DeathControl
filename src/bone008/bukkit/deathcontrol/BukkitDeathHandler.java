@@ -16,6 +16,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import bone008.bukkit.deathcontrol.config.HandlingDescriptor;
 import bone008.bukkit.deathcontrol.hooks.HooksManager;
+import bone008.bukkit.deathcontrol.util.Message;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class BukkitDeathHandler implements Listener {
@@ -31,8 +33,16 @@ public class BukkitDeathHandler implements Listener {
 			@Override
 			public void run() {
 				DeathContextImpl context = DeathControl.instance.getActiveDeath(player);
-				if (context != null)
-					context.executeAgents();
+				if (context != null) {
+					// check for cross world respawn
+					if (!DeathControl.instance.config.allowsCrossworld() && !DeathControl.instance.hasPermission(player, DeathControl.PERMISSION_CROSSWORLD) && !player.getWorld().equals(context.getDeathLocation().getWorld())) {
+						MessageUtil.sendMessage(player, Message.NOTIF_NOCROSSWORLD);
+						context.cancel();
+					}
+					else {
+						context.executeAgents();
+					}
+				}
 			}
 		}.runTask(DeathControl.instance);
 	}

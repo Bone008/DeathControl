@@ -4,32 +4,9 @@
 # Documentation about this file can be found here:
 # http://dev.bukkit.org/server-mods/deathcontrol/pages/configuration/messages-yml/
 
-death:
-  not-enough-money: |
-    &cYou couldn't keep your items
-    &cbecause you didn't have enough money!
-  items-kept: |
-    &eYou keep your items
-    &ebecause %cause-reason%.
-  command-indicator: |
-    &eYou can get them back with &a/death back&e.
-  timeout-indicator: |
-    &cThis will expire in %timeout% seconds!
-  cost-indicator-direct: |
-    &6This costs you &f%formatted-cost%&6!
-  cost-indicator-command: |
-    &6This will cost you &f%formatted-cost%&6!
-
 notification:
-  expiration: |
-    &4Time is up.
-    &4Your items are dropped at your death location.
-  restoration: |
-    You've got your items back!
   no-cross-world: |
     &4You are in a different world, your items were dropped!
-  no-money: |
-    &cYou don't have enough money to get back your items!
 
 command:
   no-restorable-items: |
@@ -50,23 +27,26 @@ command:
     invalid-player-arg: |
       &cThe given player is not online or does not exist!
 
+
 cause-reasons:
-  CACTUS: you died of a cactus
-  SUFFOCATION: you suffocated
-  FALL: you died of falling
-  VOID: you died in the void
-  SUICIDE: you committed suicide
-  STARVATION: you starved
-  LIGHTNING: you were struck by lightning
-  MAGIC: you were killed by magic
-  POISON: you were killed by poison
-  DROWNING: you drowned
-  LAVA: you died of lava
-  FIRE: you died of fire
-  FIRE|TICK: you died of fire
-  EXPLOSION: you exploded
-  MOB: you were killed by a mob
-  MOB|CREEPER: you fell victim to a creeper
-  MOB|WOLF: you were killed by a wolf
-  PLAYER: you were killed by a player
-  UNKNOWN: you don't know why you died
+  cactus: you died of a cactus
+  drowning: you drowned
+  explosion: you exploded
+  fall: you died of falling
+  fallingblock: you died of a falling block
+  fire: you died of fire
+  firetick: you died of fire
+  lava: you died of lava
+  lightning: you were struck by lightning
+  magic: you were killed by magic
+  mob: you were killed by a mob
+  monster: you were killed by a monster
+  player: you were killed by a player
+  poison: you were killed by poison
+  starvation: you starved
+  suffocation: you suffocated
+  suicide: you committed suicide
+  thorns: you committed suicide
+  void: you died in the void
+  wither: you withered away
+  unknown: you don't know why you died
