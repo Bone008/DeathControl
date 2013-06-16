@@ -23,7 +23,14 @@ public class CommandAction extends ActionDescriptor {
 		if (args.size() < 2)
 			throw new DescriptorFormatException("not enough arguments");
 
-		asConsole = args.remove(0).equalsIgnoreCase("console");
+		String senderStr = args.remove(0);
+		if (senderStr.equalsIgnoreCase("console"))
+			asConsole = true;
+		else if (senderStr.equalsIgnoreCase("victim"))
+			asConsole = false;
+		else
+			throw new DescriptorFormatException("invalid command sender: only \"victim\" or \"console\" is allowed!");
+
 		commandString = Util.joinCollection(" ", args);
 	}
 
@@ -42,12 +49,15 @@ public class CommandAction extends ActionDescriptor {
 				else
 					sender = context.getVictim();
 
+				String cmd = context.replaceVariables(commandString);
+				context.setVariable("last-command", cmd);
+
 				try {
-					boolean result = Bukkit.getServer().dispatchCommand(sender, commandString);
+					boolean result = Bukkit.getServer().dispatchCommand(sender, cmd);
 					return (result ? ActionResult.STANDARD : ActionResult.FAILED);
 				} catch (org.bukkit.command.CommandException e) {
 					// Bukkit throws this when the command handler threw an exception; this should not crash our action flow
-					DeathControl.instance.getLogger().log(Level.SEVERE, "Executing the command \"" + commandString + "\" threw an exception!", e);
+					DeathControl.instance.getLogger().log(Level.SEVERE, "Executing the command \"" + cmd + "\" threw an exception!", e);
 					return ActionResult.FAILED;
 				}
 			}

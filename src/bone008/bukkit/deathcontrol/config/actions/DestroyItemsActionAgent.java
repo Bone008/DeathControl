@@ -27,11 +27,20 @@ public class DestroyItemsActionAgent extends ActionAgent {
 		List<StoredItemStack> destroyed = new ArrayList<StoredItemStack>();
 		action.applyActionToStacks(context.getItemDrops(), destroyed);
 
-		// we don't need to store the slot
+		// we don't need to store the slot, so convert to a List<ItemStack>
 		for (StoredItemStack stored : destroyed)
 			destroyedStacks.add(stored.itemStack);
 
-		// TODO set context variables for destroyed items
+		// count the items
+		int destroyedAmount = 0, droppedAmount = 0;
+		for (ItemStack d : destroyedStacks)
+			destroyedAmount += d.getAmount();
+		for (StoredItemStack dropped : context.getItemDrops())
+			droppedAmount += dropped.itemStack.getAmount();
+		int totalAmount = destroyedAmount + droppedAmount;
+
+		// set context variable
+		context.setVariable("items-destroyed-percent", String.format("%.0f%%", (totalAmount == 0 ? 0 : droppedAmount * 100.0 / totalAmount)));
 	}
 
 	@Override
