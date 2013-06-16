@@ -98,12 +98,19 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 
 		for (int i = 0; i < conditions.size(); i++) {
 			ConditionDescriptor condition = conditions.get(i);
-			if (condition.matches(context) != expectedConditionResults.get(i)) { // FIXME catch exceptions of conditions
-				DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" failed");
+
+			try {
+				boolean matched = condition.matches(context);
+				if (matched != expectedConditionResults.get(i)) {
+					DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" failed");
+					return false;
+				}
+				else
+					DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" matched");
+			} catch (Throwable e) {
+				DeathControl.instance.getLogger().log(Level.SEVERE, "Condition check \"" + condition.getName() + "\" threw an exception!", e);
 				return false;
 			}
-			else
-				DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" matched");
 		}
 
 		return true;

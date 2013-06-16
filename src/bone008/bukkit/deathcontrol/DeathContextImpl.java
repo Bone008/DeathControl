@@ -102,8 +102,13 @@ public class DeathContextImpl implements DeathContext {
 	public void preprocessAgents() {
 		DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Preprocessing " + Util.pluralNum(agents.size(), "action") + " ...");
 
-		for (ActionAgent agent : agents)
-			agent.preprocess();
+		for (ActionAgent agent : agents) {
+			try {
+				agent.preprocess();
+			} catch (Throwable e) {
+				DeathControl.instance.getLogger().log(Level.SEVERE, "Preprocessing action \"" + agent.getDescriptor().getName() + "\" caused an exception!", e);
+			}
+		}
 	}
 
 	public void executeAgents() {
@@ -133,10 +138,17 @@ public class DeathContextImpl implements DeathContext {
 
 		while (executionIterator.canContinue()) {
 			ActionAgent agent = executionIterator.next();
+			ActionResult result;
 
-			tempBlocked = true;
-			ActionResult result = agent.execute(); // FIXME catch exceptions of agents
-			tempBlocked = false;
+			try {
+				tempBlocked = true;
+				result = agent.execute();
+			} catch (Throwable e) {
+				DeathControl.instance.getLogger().log(Level.SEVERE, "Executing action \"" + agent.getDescriptor().getName() + "\" caused an exception!", e);
+				continue;
+			} finally {
+				tempBlocked = false;
+			}
 
 			if (result == null)
 				result = ActionResult.STANDARD;
@@ -186,8 +198,14 @@ public class DeathContextImpl implements DeathContext {
 		else
 			agentIt = executionIterator;
 
-		while (agentIt.hasNext())
-			agentIt.next().cancel();
+		while (agentIt.hasNext()) {
+			ActionAgent agent = agentIt.next();
+			try {
+				agent.cancel();
+			} catch (Throwable e) {
+				DeathControl.instance.getLogger().log(Level.SEVERE, "Cancelling action \"" + agent.getDescriptor().getName() + "\" caused an exception!", e);
+			}
+		}
 	}
 
 	@Override

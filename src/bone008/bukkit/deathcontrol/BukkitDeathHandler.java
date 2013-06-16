@@ -86,7 +86,7 @@ public class BukkitDeathHandler implements Listener {
 
 		// TODO figure out when to cancel with keepInventory gamerule enabled
 		if (BukkitRuleNotifHandler.isProblematicRuleEnabled(ply.getWorld())) {
-			DeathControl.instance.log(Level.SEVERE, "The vanilla gamerule keepInventory is enabled in world " + ply.getWorld().getName() + "!");
+			DeathControl.instance.log(Level.SEVERE, "The vanilla gamerule keepInventory is enabled in world \"" + ply.getWorld().getName() + "\"!");
 			DeathControl.instance.log(Level.SEVERE, "You have to disable that rule to make the plugin work properly.");
 			DeathControl.instance.log(Level.SEVERE, "Handling of " + ply.getName() + "'s death was cancelled.");
 			return;
@@ -131,10 +131,11 @@ public class BukkitDeathHandler implements Listener {
 		log2.append("| Player: ").append(ply.getName()).append('\n');
 		for (String cause : deathCauses)
 			log2.append("| Death cause: ").append(cause).append('\n');
-		log2.append("| Executed handlings: " + Util.joinCollection(", ", executed));
+		log2.append("| Executed handlings: " + Util.joinCollection(", ", executed)).append('\n');
+		log2.append("| Disconnect timeout: " + context.getDisconnectTimeout());
 
 		// message the console
-		if (DeathControl.instance.config.getLoggingLevel() <= Level.FINEST.intValue())
+		if (DeathControl.instance.config.getLoggingLevel() <= Level.FINE.intValue())
 			DeathControl.instance.log(Level.FINE, log2.toString().trim());
 		else if (DeathControl.instance.config.getLoggingLevel() <= Level.INFO.intValue())
 			DeathControl.instance.log(Level.INFO, log1.toString().trim());
