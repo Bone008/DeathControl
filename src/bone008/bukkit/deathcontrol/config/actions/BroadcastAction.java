@@ -2,13 +2,13 @@ package bone008.bukkit.deathcontrol.config.actions;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import bone008.bukkit.deathcontrol.config.ActionAgent;
 import bone008.bukkit.deathcontrol.config.ActionDescriptor;
 import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.config.DeathContext;
-import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class BroadcastAction extends ActionDescriptor {
@@ -28,7 +28,7 @@ public class BroadcastAction extends ActionDescriptor {
 
 			@Override
 			public ActionResult execute() {
-				MessageUtil.broadcast(context.replaceVariables(message));
+				Bukkit.broadcastMessage(context.replaceVariables(message));
 				return null;
 			}
 
