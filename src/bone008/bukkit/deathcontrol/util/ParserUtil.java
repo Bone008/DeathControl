@@ -27,7 +27,9 @@ public class ParserUtil {
 			return Level.WARNING.intValue();
 		if (name.equalsIgnoreCase("standard") || name.equalsIgnoreCase("info") || name.equalsIgnoreCase("standart")) // for the common typo ;)
 			return Level.INFO.intValue();
-		if (name.equalsIgnoreCase("detailed") || name.equalsIgnoreCase("detail") || name.equalsIgnoreCase("debug"))
+		if (name.equalsIgnoreCase("detailed") || name.equalsIgnoreCase("detail"))
+			return Level.FINE.intValue();
+		if (name.equalsIgnoreCase("debug"))
 			return Level.FINEST.intValue();
 		return -1;
 	}
