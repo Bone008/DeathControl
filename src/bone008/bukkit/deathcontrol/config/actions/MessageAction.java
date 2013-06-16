@@ -8,7 +8,6 @@ import bone008.bukkit.deathcontrol.config.ActionAgent;
 import bone008.bukkit.deathcontrol.config.ActionDescriptor;
 import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.config.DeathContext;
-import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class MessageAction extends ActionDescriptor {
@@ -28,7 +27,7 @@ public class MessageAction extends ActionDescriptor {
 
 			@Override
 			public ActionResult execute() {
-				MessageUtil.sendMessage(context.getVictim(), context.replaceVariables(message));
+				context.getVictim().sendMessage(context.replaceVariables(message));
 				return null;
 			}
 

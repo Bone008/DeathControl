@@ -60,7 +60,7 @@ public final class MessageUtil {
 		Bukkit.broadcastMessage(getPluginPrefix(false) + msg);
 	}
 
-	private static String getPluginPrefix(boolean error) {
+	public static String getPluginPrefix(boolean error) {
 		return ChatColor.GRAY + "[" + DeathControl.instance.pdfFile.getName() + "] " + (error ? ChatColor.RED : ChatColor.WHITE);
 	}
 

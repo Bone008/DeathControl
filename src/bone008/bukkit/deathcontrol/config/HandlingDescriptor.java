@@ -94,16 +94,16 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 	}
 
 	public boolean areConditionsMet(DeathContext context) {
-		DeathControl.instance.log(Level.FINEST, "Condition check for " + context.getVictim().getName() + " ...");
+		DeathControl.instance.log(Level.FINEST, "@" + context.getVictim().getName() + ":  \"" + name + "\" is checking conditions ...");
 
 		for (int i = 0; i < conditions.size(); i++) {
 			ConditionDescriptor condition = conditions.get(i);
 			if (condition.matches(context) != expectedConditionResults.get(i)) { // FIXME catch exceptions of conditions
-				DeathControl.instance.log(Level.FINEST, "    " + condition.getName() + " failed");
+				DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" failed");
 				return false;
 			}
 			else
-				DeathControl.instance.log(Level.FINEST, "    " + condition.getName() + " matched");
+				DeathControl.instance.log(Level.FINEST, "    \"" + condition.getName() + "\" matched");
 		}
 
 		return true;

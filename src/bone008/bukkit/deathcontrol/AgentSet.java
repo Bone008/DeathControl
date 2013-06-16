@@ -25,6 +25,10 @@ public class AgentSet implements Iterable<ActionAgent> {
 		return list.isEmpty();
 	}
 
+	public int size() {
+		return list.size();
+	}
+
 	@Override
 	public Iterator<ActionAgent> iterator() {
 		return list.iterator();

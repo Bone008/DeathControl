@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -22,6 +20,7 @@ import bone008.bukkit.deathcontrol.config.ActionResult;
 import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.util.EconomyUtil;
 import bone008.bukkit.deathcontrol.util.Message;
+import bone008.bukkit.deathcontrol.util.MessageUtil;
 import bone008.bukkit.deathcontrol.util.Util;
 
 public class DeathContextImpl implements DeathContext {
@@ -66,6 +65,7 @@ public class DeathContextImpl implements DeathContext {
 		Player playerKiller = Util.getPlayerAttackerFromEvent(victim.getLastDamageCause());
 
 		// initialize standard variables
+		setVariable("plugin-prefix", MessageUtil.getPluginPrefix(false));
 		setVariable("death-cause", matchedDeathCauses.get(0).toHumanString());
 		setVariable("death-cause-formatted", Message.translatePath(matchedDeathCauses.get(0).toMsgPath()));
 		setVariable("victim-name", victim.getDisplayName());
@@ -100,14 +100,14 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void preprocessAgents() {
-		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " preprocessing!");
+		DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Preprocessing " + Util.pluralNum(agents.size(), "action") + " ...");
 
 		for (ActionAgent agent : agents)
 			agent.preprocess();
 	}
 
 	public void executeAgents() {
-		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " executing!");
+		DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Starting execution of " + Util.pluralNum(agents.size(), "action") + " ...");
 
 		executionIterator = agents.iteratorExecution();
 		continueExecution(null);
@@ -141,13 +141,14 @@ public class DeathContextImpl implements DeathContext {
 			if (result == null)
 				result = ActionResult.STANDARD;
 
-			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  " + agent.getDescriptor().getName() + " -> " + result);
+			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":    " + agent.getDescriptor().getName() + " -> " + result);
 
 			switch (result) {
 			case STANDARD:
 				break; // do nothing
 			case FAILED:
 				if (agent.getDescriptor().isRequired()) {
+					DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Cancelled because of action \"" + agent.getDescriptor().getName() + "\"!");
 					cancel();
 					return true; // cancel while loop
 				}
@@ -158,8 +159,10 @@ public class DeathContextImpl implements DeathContext {
 			}
 		}
 
-		if (!executionIterator.hasNext())
+		if (!executionIterator.hasNext()) {
+			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  All actions executed!");
 			cancel(); // no agents remaining, but we need to clean up behind ourselves
+		}
 
 		return true;
 	}
@@ -174,7 +177,7 @@ public class DeathContextImpl implements DeathContext {
 
 		DeathControl.instance.clearActiveDeath(victim);
 
-		Bukkit.broadcastMessage(ChatColor.GRAY + "||| Context for " + victim.getName() + " cancelling!");
+		// TODO implement cancel message
 
 		// cancel all remaining agents, falling back to the beginning if not yet started
 		Iterator<ActionAgent> agentIt;
