@@ -53,7 +53,7 @@ public class BukkitDeathHandler implements Listener {
 		Player ply = event.getEntity();
 
 		if (DeathControl.instance.getActiveDeath(ply) != null)
-			DeathControl.instance.getActiveDeath(ply).cancel();
+			DeathControl.instance.getActiveDeath(ply).cancelManually();
 
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
@@ -99,6 +99,7 @@ public class BukkitDeathHandler implements Listener {
 			if (handling.areConditionsMet(context)) {
 				handling.assignAgents(context);
 				context.setDisconnectTimeout(handling.getTimeoutOnDisconnect());
+				context.setCancelMessage(handling.getCancelMessage());
 				executed.add(handling.getName());
 
 				// if configured, don't allow any other handlings to execute
@@ -127,7 +128,7 @@ public class BukkitDeathHandler implements Listener {
 		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 
 		// detailed log
-		log2.append("Handling death:\n");
+		log2.append("Handled death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
 		for (String cause : deathCauses)
 			log2.append("| Death cause: ").append(cause).append('\n');

@@ -18,6 +18,7 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 	private final int priority;
 	private final boolean lastHandling;
 	private final int timeoutOnDisconnect;
+	private final String cancelMessage;
 
 	private final List<ConditionDescriptor> conditions;
 	private final List<Boolean> expectedConditionResults;
@@ -28,6 +29,7 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 		this.priority = config.getInt("priority-order", 0);
 		this.lastHandling = !config.getBoolean("allow-others", false);
 		this.timeoutOnDisconnect = ParserUtil.parseTime(config.getString("timeout-on-disconnect"), 30);
+		this.cancelMessage = config.getString("cancel-message", null);
 
 		Iterator<String> it;
 		int i;
@@ -135,6 +137,10 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 
 	public int getTimeoutOnDisconnect() {
 		return timeoutOnDisconnect;
+	}
+
+	public String getCancelMessage() {
+		return cancelMessage;
 	}
 
 	@Override

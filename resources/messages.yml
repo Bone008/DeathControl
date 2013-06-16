@@ -9,12 +9,10 @@ notification:
     &4You are in a different world, your items were dropped!
 
 command:
-  no-restorable-items: |
-    &cYou don't have any items to get back!
-  no-droppable-items: |
-    &cYou don't have any stored items to drop!
-  items-were-dropped: |
-    Your items were dropped at your death location.
+  nothing-stored: |
+    &cYou don't have anything stored!
+  cancelled: |
+    Your stored death was cancelled!
   context:
     no-permission: |
       &cYou don't have permission to do that!

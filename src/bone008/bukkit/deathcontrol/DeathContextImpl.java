@@ -35,6 +35,7 @@ public class DeathContextImpl implements DeathContext {
 
 	// for processing
 	private int disconnectTimeout = -1;
+	private String cancelMessage = null;
 	private AgentSet agents = new AgentSet();
 	private AgentIterator executionIterator = null;
 
@@ -93,6 +94,16 @@ public class DeathContextImpl implements DeathContext {
 
 	public int getDisconnectTimeout() {
 		return disconnectTimeout;
+	}
+
+	public void setCancelMessage(String cancelMessage) {
+		// don't overwrite with a null value
+		if (cancelMessage != null)
+			this.cancelMessage = cancelMessage;
+	}
+
+	public String getCancelMessage() {
+		return cancelMessage;
 	}
 
 	public boolean hasAgents() {
@@ -181,6 +192,16 @@ public class DeathContextImpl implements DeathContext {
 
 	@Override
 	public void cancel() {
+		// don't show the cancel message when we finished successfully
+		doCancel(executionIterator == null || executionIterator.hasNext());
+	}
+
+	public void cancelManually() {
+		doCancel(false);
+		MessageUtil.sendMessage(victim, Message.CMD_CANCELLED);
+	}
+
+	private void doCancel(boolean withMessage) {
 		if (tempBlocked)
 			throw new IllegalStateException("can't cancel from within an agent");
 
@@ -189,7 +210,9 @@ public class DeathContextImpl implements DeathContext {
 
 		DeathControl.instance.clearActiveDeath(victim);
 
-		// TODO implement cancel message
+		if (withMessage && cancelMessage != null) {
+			victim.sendMessage(cancelMessage);
+		}
 
 		// cancel all remaining agents, falling back to the beginning if not yet started
 		Iterator<ActionAgent> agentIt;

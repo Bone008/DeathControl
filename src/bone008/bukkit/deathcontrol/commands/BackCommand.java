@@ -26,7 +26,7 @@ public class BackCommand extends SubCommand {
 				return;
 		}
 
-		throw new CommandException(Message.CMD_NO_RESTORABLE_ITEMS);
+		throw new CommandException(Message.CMD_NOTHING_STORED);
 	}
 
 }

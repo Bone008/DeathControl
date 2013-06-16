@@ -21,7 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import bone008.bukkit.deathcontrol.commandhandler.CommandHandler;
 import bone008.bukkit.deathcontrol.commands.BackCommand;
-import bone008.bukkit.deathcontrol.commands.DropCommand;
+import bone008.bukkit.deathcontrol.commands.CancelCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathContext;
@@ -88,7 +88,7 @@ public class DeathControl extends JavaPlugin {
 
 		deathCmd.addSubCommand("help", new HelpCommand(), "?");
 		deathCmd.addSubCommand("back", new BackCommand(), "restore");
-		deathCmd.addSubCommand("drop", new DropCommand(), "expire");
+		deathCmd.addSubCommand("cancel", new CancelCommand(), "drop", "expire");
 		deathCmd.addSubCommand("reload", new ReloadCommand());
 		//		deathCmd.addSubCommand("info", new InfoCommand(), "status");
 
@@ -222,7 +222,8 @@ public class DeathControl extends JavaPlugin {
 
 			// now write the new default
 			writeDefault("messages.yml", "messages.yml", true);
-
+			// reload the fresh data
+			messagesData = YamlConfiguration.loadConfiguration(messagesFile);
 		}
 	}
 

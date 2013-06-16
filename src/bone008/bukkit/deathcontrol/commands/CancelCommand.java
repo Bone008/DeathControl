@@ -8,11 +8,10 @@ import bone008.bukkit.deathcontrol.commandhandler.CommandContext;
 import bone008.bukkit.deathcontrol.commandhandler.SubCommand;
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
 import bone008.bukkit.deathcontrol.util.Message;
-import bone008.bukkit.deathcontrol.util.MessageUtil;
 
-public class DropCommand extends SubCommand {
+public class CancelCommand extends SubCommand {
 
-	public DropCommand() {
+	public CancelCommand() {
 		this.description = "Drops saved items to the ground.";
 	}
 
@@ -22,11 +21,10 @@ public class DropCommand extends SubCommand {
 
 		DeathContextImpl deathContext = DeathControl.instance.getActiveDeath(player);
 		if (deathContext != null) {
-			deathContext.cancel();
-			MessageUtil.sendMessage(player, Message.CMD_ITEMS_WERE_DROPPED);
+			deathContext.cancelManually();
 		}
 		else {
-			throw new CommandException(Message.CMD_NO_DROPPABLE_ITEMS);
+			throw new CommandException(Message.CMD_NOTHING_STORED);
 		}
 	}
 
