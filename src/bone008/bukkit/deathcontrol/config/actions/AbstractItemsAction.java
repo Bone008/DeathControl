@@ -24,34 +24,40 @@ public abstract class AbstractItemsAction extends ActionDescriptor {
 	private boolean filterInverted = false;
 	private double affectedPct = 1.0;
 
-	public AbstractItemsAction(List<String> args) throws DescriptorFormatException {
+	protected void parseFilter(List<String> args, boolean allowPercentage) throws DescriptorFormatException {
 		String itemsInput = null;
 
-		switch (args.size()) {
-		case 2:
-			if (tryParsePct(args.get(1)))
-				itemsInput = args.get(0);
-			else if (tryParsePct(args.get(0)))
-				itemsInput = args.get(1);
-			else
-				throw new DescriptorFormatException("invalid percentage: " + args.get(1)); // official position is 2nd argument
+		if (allowPercentage) {
+			switch (args.size()) {
+			case 2:
+				if (tryParsePct(args.get(1)))
+					itemsInput = args.get(0);
+				else if (tryParsePct(args.get(0)))
+					itemsInput = args.get(1);
+				else
+					throw new DescriptorFormatException("invalid percentage: " + args.get(1)); // official position is 2nd argument
 
-			break;
+				break;
 
-		case 1:
-			if (!tryParsePct(args.get(0))) { // not a percentage argument
-				affectedPct = 1.0; // reset to 100%
-				itemsInput = args.get(0); // treat it as a list
+			case 1:
+				if (!tryParsePct(args.get(0))) { // not a percentage argument
+					affectedPct = 1.0; // reset to 100%
+					itemsInput = args.get(0); // treat it as a list
+				}
+				// otherwise we're done
+				break;
+
+			case 0:
+				break;
+
+			default:
+				throw new DescriptorFormatException("too many arguments");
 			}
-			// otherwise we're done
-			break;
-
-		case 0:
-			break;
-
-		default:
-			throw new DescriptorFormatException("too many arguments");
 		}
+		else if (!args.isEmpty()) {
+			itemsInput = args.get(0);
+		}
+
 
 		if (itemsInput != null) {
 			if (itemsInput.startsWith("!")) {
@@ -83,6 +89,12 @@ public abstract class AbstractItemsAction extends ActionDescriptor {
 		return true;
 	}
 
+	/**
+	 * Checks if the item stack matches the given filter. Considers inverted filters, ignores {@link #affectedPct}.
+	 * 
+	 * @param itemStack the stack to check
+	 * @return true if it's valid according to the filter (or if there is no filter), false otherwise
+	 */
 	public boolean isValidItem(ItemStack itemStack) {
 		if (itemsFilter == null)
 			return true; // no filter
@@ -99,7 +111,11 @@ public abstract class AbstractItemsAction extends ActionDescriptor {
 	}
 
 	public int calculateAffectedAmount(int oldAmount) {
-		double newAmount = ((double) oldAmount) * affectedPct;
+		return calculatePercentageAmount(oldAmount, affectedPct);
+	}
+
+	public int calculatePercentageAmount(int oldAmount, double percentage) {
+		double newAmount = ((double) oldAmount) * percentage;
 		int intAmount = (int) newAmount;
 
 		// got a floating result --> apply random

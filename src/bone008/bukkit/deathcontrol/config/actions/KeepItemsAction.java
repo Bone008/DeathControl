@@ -9,7 +9,7 @@ import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 public class KeepItemsAction extends AbstractItemsAction {
 
 	public KeepItemsAction(List<String> args) throws DescriptorFormatException {
-		super(args);
+		parseFilter(args, true);
 	}
 
 	@Override
