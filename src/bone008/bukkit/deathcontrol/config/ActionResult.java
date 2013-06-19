@@ -4,5 +4,6 @@ public enum ActionResult {
 	STANDARD,
 	BLOCK_COMMAND,
 	BLOCK_TIMER,
+	PLAYER_OFFLINE,
 	FAILED;
 }

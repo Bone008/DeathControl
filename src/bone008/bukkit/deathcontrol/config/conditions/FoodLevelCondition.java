@@ -28,7 +28,7 @@ public class FoodLevelCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
-		return operator.invokeInt(context.getVictim().getFoodLevel(), number);
+		return operator.invokeInt(context.getVictim().getPlayer().getFoodLevel(), number);
 	}
 
 }

@@ -19,7 +19,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class RegionCondition extends ConditionDescriptor {
 
-	private String regionName; // TODO test region condition
+	private String regionName;
 
 	public RegionCondition(List<String> args) throws DescriptorFormatException {
 		if (args.isEmpty())

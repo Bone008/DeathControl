@@ -20,7 +20,7 @@ public class BackCommand extends SubCommand {
 	public void execute(CommandContext context) throws CommandException {
 		Player player = context.getPlayerSender();
 
-		DeathContextImpl deathContext = DeathControl.instance.getActiveDeath(player);
+		DeathContextImpl deathContext = DeathControl.instance.getActiveDeath(player.getName());
 		if (deathContext != null) {
 			if (deathContext.continueExecution(ActionResult.BLOCK_COMMAND))
 				return;

@@ -59,7 +59,7 @@ public class TypeCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
-		EntityDamageEvent dmgEvent = context.getVictim().getLastDamageCause();
+		EntityDamageEvent dmgEvent = context.getVictim().getPlayer().getLastDamageCause();
 		EntityDamageByEntityEvent dmgBEEvent = (dmgEvent instanceof EntityDamageByEntityEvent ? (EntityDamageByEntityEvent) dmgEvent : null);
 
 

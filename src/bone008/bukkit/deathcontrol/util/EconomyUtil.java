@@ -50,7 +50,11 @@ public final class EconomyUtil {
 	}
 
 	public static double calcCost(Player ply, double percentage) {
-		if (ply == null)
+		return calcCost(ply.getName(), percentage);
+	}
+
+	public static double calcCost(String plyName, double percentage) {
+		if (plyName == null)
 			throw new IllegalArgumentException("null argument");
 		if (percentage < 0 || percentage > 1)
 			throw new IllegalArgumentException("percentage out of range");
@@ -58,64 +62,77 @@ public final class EconomyUtil {
 		double currBalance;
 		Method m = getRegisterMethod();
 		if (m != null) {
-			MethodAccount acc = m.getAccount(ply.getName());
+			MethodAccount acc = m.getAccount(plyName);
 			currBalance = acc.balance();
 		}
 		else if (vaultEconomy != null) {
-			currBalance = vaultEconomy.getBalance(ply.getName());
+			currBalance = vaultEconomy.getBalance(plyName);
 		}
 		else {
-			logNotice(ply.getName());
+			logNotice(plyName);
 			return 0;
 		}
 		return currBalance * percentage;
 	}
 
 	/**
-	 * Checks if <i>ply</i> has enough money to pay the cost specified in <i>causeSettings</i>.<br>
+	 * Checks if the given player has enough money to pay the given cost.<br>
 	 * Prints a warning if no way to manage economy was found.
 	 * 
 	 * @return true if the player has enough money or no economy management plugin was found, otherwise false
 	 */
 	public static boolean canAfford(Player ply, double cost) {
-		if (ply == null)
-			throw new IllegalArgumentException("player cannot be null");
+		return canAfford(ply.getName(), cost);
+	}
+
+	/**
+	 * Checks if the given player has enough money to pay the given cost.<br>
+	 * Prints a warning if no way to manage economy was found.
+	 * 
+	 * @return true if the player has enough money or no economy management plugin was found, otherwise false
+	 */
+	public static boolean canAfford(String plyName, double cost) {
+		if (plyName == null)
+			throw new IllegalArgumentException("null argument");
 		if (cost <= 0)
 			return true;
 
 		Method m = getRegisterMethod();
 		if (m != null) {
-			MethodAccount acc = m.getAccount(ply.getName());
+			MethodAccount acc = m.getAccount(plyName);
 			return acc.hasEnough(cost);
 		}
 		else if (vaultEconomy != null) {
-			return vaultEconomy.has(ply.getName(), cost);
+			return vaultEconomy.has(plyName, cost);
 		}
 		else {
-			logNotice(ply.getName());
+			logNotice(plyName);
 			return true;
 		}
-
 	}
 
 	public static boolean payCost(Player ply, double cost) {
-		if (ply == null)
-			throw new IllegalArgumentException("player cannot be null");
+		return payCost(ply.getName(), cost);
+	}
+
+	public static boolean payCost(String plyName, double cost) {
+		if (plyName == null)
+			throw new IllegalArgumentException("null argument");
 		if (cost <= 0)
 			return true;
 
 		Method m = getRegisterMethod();
 		if (m != null) {
-			MethodAccount acc = m.getAccount(ply.getName());
+			MethodAccount acc = m.getAccount(plyName);
 			if (!acc.hasEnough(cost))
 				return false;
 			return acc.subtract(cost);
 		}
 		else if (vaultEconomy != null) {
-			return vaultEconomy.withdrawPlayer(ply.getName(), cost).transactionSuccess();
+			return vaultEconomy.withdrawPlayer(plyName, cost).transactionSuccess();
 		}
 		else {
-			logNotice(ply.getName());
+			logNotice(plyName);
 			return true;
 		}
 	}

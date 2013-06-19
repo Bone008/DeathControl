@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.ServerOperator;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -227,19 +226,19 @@ public class DeathControl extends JavaPlugin {
 		}
 	}
 
-	public void addActiveDeath(Player player, DeathContextImpl context) {
-		activeDeaths.put(player.getName(), context);
+	public void addActiveDeath(String playerName, DeathContextImpl context) {
+		activeDeaths.put(playerName.toLowerCase(), context);
 	}
 
-	public DeathContextImpl getActiveDeath(Player player) {
-		return activeDeaths.get(player.getName());
+	public DeathContextImpl getActiveDeath(String playerName) {
+		return activeDeaths.get(playerName.toLowerCase());
 	}
 
 	/**
 	 * Removes the {@link DeathContext} from the collection, but doesn't cancel it properly. Calling cancel calls this.
 	 */
-	public void clearActiveDeath(Player player) {
-		activeDeaths.remove(player.getName());
+	public void clearActiveDeath(String playerName) {
+		activeDeaths.remove(playerName.toLowerCase());
 	}
 
 	public boolean hasPermission(Permissible who, DPermission perm) {

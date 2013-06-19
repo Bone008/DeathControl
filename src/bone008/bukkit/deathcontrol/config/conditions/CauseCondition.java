@@ -30,7 +30,7 @@ public class CauseCondition extends ConditionDescriptor {
 
 	@Override
 	public boolean matches(DeathContext context) {
-		EntityDamageEvent lastDamage = context.getVictim().getLastDamageCause();
+		EntityDamageEvent lastDamage = context.getVictim().getPlayer().getLastDamageCause();
 
 		for (DeathCause cause : causes) {
 			if (cause.appliesTo(lastDamage))

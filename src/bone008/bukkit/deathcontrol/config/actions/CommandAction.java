@@ -46,8 +46,10 @@ public class CommandAction extends ActionDescriptor {
 				CommandSender sender;
 				if (asConsole)
 					sender = Bukkit.getConsoleSender();
+				else if (context.getVictim().isOnline())
+					sender = context.getVictim().getPlayer();
 				else
-					sender = context.getVictim();
+					return ActionResult.PLAYER_OFFLINE;
 
 				String cmd = context.replaceVariables(commandString);
 				context.setVariable("last-command", cmd);

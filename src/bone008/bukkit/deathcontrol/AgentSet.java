@@ -38,6 +38,10 @@ public class AgentSet implements Iterable<ActionAgent> {
 		return new AgentIterator();
 	}
 
+	public void seal() {
+		sealed = true;
+	}
+
 	public class AgentIterator implements Iterator<ActionAgent> {
 
 		private ActionResult blockedReason = null;

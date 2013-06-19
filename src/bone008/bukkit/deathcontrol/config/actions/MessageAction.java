@@ -3,6 +3,7 @@ package bone008.bukkit.deathcontrol.config.actions;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import bone008.bukkit.deathcontrol.config.ActionAgent;
 import bone008.bukkit.deathcontrol.config.ActionDescriptor;
@@ -27,7 +28,11 @@ public class MessageAction extends ActionDescriptor {
 
 			@Override
 			public ActionResult execute() {
-				context.getVictim().sendMessage(context.replaceVariables(message));
+				Player victimPlayer = context.getVictim().getPlayer();
+				if (victimPlayer == null)
+					return ActionResult.PLAYER_OFFLINE;
+
+				context.getVictim().getPlayer().sendMessage(context.replaceVariables(message));
 				return null;
 			}
 

@@ -34,12 +34,12 @@ public class PermissionCondition extends ConditionDescriptor {
 	public boolean matches(DeathContext context) {
 		if (isKiller) {
 			// don't use getKiller() here to stay consistent with the rest of the plugin
-			Player killer = Util.getPlayerAttackerFromEvent(context.getVictim().getLastDamageCause());
+			Player killer = Util.getPlayerAttackerFromEvent(context.getVictim().getPlayer().getLastDamageCause());
 
 			return killer != null && killer.hasPermission(permNode);
 		}
 		else {
-			return context.getVictim().hasPermission(permNode);
+			return context.getVictim().getPlayer().hasPermission(permNode);
 		}
 	}
 

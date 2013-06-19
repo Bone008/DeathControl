@@ -19,7 +19,7 @@ public class CancelCommand extends SubCommand {
 	public void execute(CommandContext context) throws CommandException {
 		Player player = context.getPlayerSender();
 
-		DeathContextImpl deathContext = DeathControl.instance.getActiveDeath(player);
+		DeathContextImpl deathContext = DeathControl.instance.getActiveDeath(player.getName());
 		if (deathContext != null) {
 			deathContext.cancelManually();
 		}

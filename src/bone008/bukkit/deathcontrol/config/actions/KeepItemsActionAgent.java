@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -56,7 +57,14 @@ public class KeepItemsActionAgent extends ActionAgent {
 		if (keptItems.isEmpty()) // nothing to keep
 			return ActionResult.FAILED;
 
-		PlayerInventory inv = context.getVictim().getInventory();
+		Player victimPlayer = context.getVictim().getPlayer();
+
+		if (victimPlayer == null) {
+			cancel();
+			return ActionResult.PLAYER_OFFLINE;
+		}
+
+		PlayerInventory inv = victimPlayer.getInventory();
 
 		for (StoredItemStack stored : keptItems) {
 			if (inv.getItem(stored.slot) == null) // slot is empty
@@ -65,7 +73,7 @@ public class KeepItemsActionAgent extends ActionAgent {
 			else { // slot is occupied --> add it regularly and drop if necessary
 				HashMap<Integer, ItemStack> leftovers = inv.addItem(stored.itemStack);
 				if (leftovers.size() > 0)
-					Util.dropItems(context.getVictim().getLocation(), leftovers, false);
+					Util.dropItems(victimPlayer.getLocation(), leftovers, false);
 			}
 		}
 

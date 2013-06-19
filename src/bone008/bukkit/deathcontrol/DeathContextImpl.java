@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +28,7 @@ import bone008.bukkit.deathcontrol.util.Util;
 public class DeathContextImpl implements DeathContext {
 
 	private PlayerDeathEvent deathEvent;
-	private Player victim;
+	private String victimName; // we can't even store an OfflinePlayer, because Bukkit doesn't allow us to create one while the player is still online
 	private Location deathLocation;
 	private List<DeathCause> matchedDeathCauses;
 	private List<StoredItemStack> itemDrops;
@@ -42,20 +44,22 @@ public class DeathContextImpl implements DeathContext {
 	private boolean tempBlocked = false;
 
 	public DeathContextImpl(PlayerDeathEvent event) {
+		Player victimp = event.getEntity();
+
 		this.deathEvent = event;
-		this.victim = event.getEntity();
-		this.deathLocation = victim.getLocation();
+		this.victimName = victimp.getName();
+		this.deathLocation = victimp.getLocation();
 
 		this.matchedDeathCauses = new ArrayList<DeathCause>();
 		for (DeathCause dc : DeathCause.values()) {
-			if (dc.appliesTo(victim.getLastDamageCause()))
+			if (dc.appliesTo(victimp.getLastDamageCause()))
 				matchedDeathCauses.add(dc);
 		}
 
 		// build an independant list item drops
 		itemDrops = new ArrayList<StoredItemStack>();
 
-		PlayerInventory playerInv = victim.getInventory();
+		PlayerInventory playerInv = victimp.getInventory();
 		int invSize = playerInv.getSize() + playerInv.getArmorContents().length;
 		for (int slot = 0; slot < invSize; slot++) {
 			ItemStack item = playerInv.getItem(slot);
@@ -63,13 +67,13 @@ public class DeathContextImpl implements DeathContext {
 				itemDrops.add(new StoredItemStack(slot, item.clone()));
 		}
 
-		Player playerKiller = Util.getPlayerAttackerFromEvent(victim.getLastDamageCause());
+		Player playerKiller = Util.getPlayerAttackerFromEvent(victimp.getLastDamageCause());
 
 		// initialize standard variables
 		setVariable("plugin-prefix", MessageUtil.getPluginPrefix(false));
 		setVariable("death-cause", matchedDeathCauses.get(0).toHumanString());
 		setVariable("death-cause-formatted", Message.translatePath(matchedDeathCauses.get(0).toMsgPath()));
-		setVariable("victim-name", victim.getDisplayName());
+		setVariable("victim-name", victimp.getDisplayName());
 		setVariable("world", deathLocation.getWorld().getName());
 		setVariable("killer-name", (playerKiller != null ? playerKiller.getDisplayName() : ""));
 		setVariable("death-message", deathEvent.getDeathMessage());
@@ -112,7 +116,7 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void preprocessAgents() {
-		DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Preprocessing " + Util.pluralNum(agents.size(), "action") + " ...");
+		DeathControl.instance.log(Level.FINEST, "@" + victimName + ":  Preprocessing " + Util.pluralNum(agents.size(), "action") + " ...");
 
 		for (ActionAgent agent : agents) {
 			try {
@@ -124,14 +128,15 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public void executeAgents() {
-		DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Starting execution of " + Util.pluralNum(agents.size(), "action") + " ...");
+		DeathControl.instance.log(Level.FINEST, "@" + victimName + ":  Starting execution of " + Util.pluralNum(agents.size(), "action") + " ...");
 
+		agents.seal();
 		executionIterator = agents.iteratorExecution();
 		continueExecution(null);
 	}
 
 	public boolean isCancelled() {
-		return DeathControl.instance.getActiveDeath(victim) != this;
+		return DeathControl.instance.getActiveDeath(victimName) != this;
 	}
 
 	@Override
@@ -165,14 +170,17 @@ public class DeathContextImpl implements DeathContext {
 			if (result == null)
 				result = ActionResult.STANDARD;
 
-			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":    " + agent.getDescriptor().getName() + " -> " + result);
+			DeathControl.instance.log(Level.FINEST, "@" + victimName + ":    " + agent.getDescriptor().getName() + " -> " + result);
 
 			switch (result) {
 			case STANDARD:
 				break; // do nothing
+			case PLAYER_OFFLINE:
+				DeathControl.instance.log(Level.FINE, "@" + victimName + ":  Player was offline for action \"" + agent.getDescriptor().getName() + "\"!");
+				// fall-through --> cancel if required
 			case FAILED:
 				if (agent.getDescriptor().isRequired()) {
-					DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  Cancelled because of action \"" + agent.getDescriptor().getName() + "\"!");
+					DeathControl.instance.log(Level.FINEST, "@" + victimName + ":  Cancelled because of action \"" + agent.getDescriptor().getName() + "\"!");
 					cancel();
 					return true; // cancel while loop
 				}
@@ -184,7 +192,7 @@ public class DeathContextImpl implements DeathContext {
 		}
 
 		if (!executionIterator.hasNext()) {
-			DeathControl.instance.log(Level.FINEST, "@" + victim.getName() + ":  All actions executed!");
+			DeathControl.instance.log(Level.FINEST, "@" + victimName + ":  All actions executed!");
 			cancel(); // no agents remaining, but we need to clean up behind ourselves
 		}
 
@@ -199,7 +207,7 @@ public class DeathContextImpl implements DeathContext {
 
 	public void cancelManually() {
 		doCancel(false);
-		MessageUtil.sendMessage(victim, Message.CMD_CANCELLED);
+		MessageUtil.sendMessage(getVictim().getPlayer(), Message.CMD_CANCELLED);
 	}
 
 	private void doCancel(boolean withMessage) {
@@ -209,10 +217,10 @@ public class DeathContextImpl implements DeathContext {
 		if (isCancelled())
 			return;
 
-		DeathControl.instance.clearActiveDeath(victim);
+		DeathControl.instance.clearActiveDeath(victimName);
 
-		if (withMessage && cancelMessage != null) {
-			victim.sendMessage(cancelMessage);
+		if (withMessage && cancelMessage != null && getVictim().isOnline()) {
+			getVictim().getPlayer().sendMessage(cancelMessage);
 		}
 
 		// cancel all remaining agents, falling back to the beginning if not yet started
@@ -238,8 +246,8 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	@Override
-	public Player getVictim() {
-		return victim;
+	public OfflinePlayer getVictim() {
+		return Bukkit.getOfflinePlayer(victimName);
 	}
 
 	@Override

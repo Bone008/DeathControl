@@ -48,11 +48,15 @@ public enum DeathCause {
 	 * Checks whether this death cause is applicable for the given damage event.<br>
 	 * Considers the {@link DamageCause} as well as other information associated with the event.
 	 * 
-	 * @param event an {@link EntityDamageEvent} to check
+	 * @param event an {@link EntityDamageEvent} to check, may be null
 	 * 
 	 * @return true if this cause matches the event, false otherwise
 	 */
 	public boolean appliesTo(EntityDamageEvent event) {
+		if (event == null) {
+			return this == UNKNOWN;
+		}
+
 		DamageCause cause = event.getCause();
 
 		switch (this) {

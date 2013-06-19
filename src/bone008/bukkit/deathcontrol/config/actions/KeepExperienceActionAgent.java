@@ -20,7 +20,7 @@ public class KeepExperienceActionAgent extends ActionAgent {
 
 	@Override
 	public void preprocess() {
-		stored = (int) Math.round(ExperienceUtil.getCurrentExp(context.getVictim()) * action.keepPct);
+		stored = (int) Math.round(ExperienceUtil.getCurrentExp(context.getVictim().getPlayer()) * action.keepPct);
 
 		int dropped = (int) Math.round(context.getDeathEvent().getDroppedExp() * (1 - action.keepPct));
 
@@ -33,7 +33,12 @@ public class KeepExperienceActionAgent extends ActionAgent {
 
 	@Override
 	public ActionResult execute() {
-		ExperienceUtil.changeExp(context.getVictim(), stored);
+		if (!context.getVictim().isOnline()) {
+			cancel();
+			return ActionResult.PLAYER_OFFLINE;
+		}
+
+		ExperienceUtil.changeExp(context.getVictim().getPlayer(), stored);
 		return null;
 	}
 
