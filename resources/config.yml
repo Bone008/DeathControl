@@ -13,6 +13,8 @@ multi-world:
     disabled-worlds: []
 
 handlings:
+    # These are some handlings for demonstration purposes.
+    # Adjust them for your own needs.
     demo:
         priority-order: 1
         timeout-on-disconnect: 15
@@ -24,3 +26,22 @@ handlings:
         - keep-experience
         - message You're %victim-name% and %death-cause-formatted%.
         - message %plugin-prefix%This is an example message adjustable in the config.
+    demo-with-price:
+        priority-order: 1
+        cancel-message: &cYou don't have enough money!
+        conditions:
+        - killer-type zombie
+        actions:
+        - required charge 100
+        - keep-items !armor
+    demo-with-command:
+        priority-order: 2
+        timeout-on-disconnect: -1
+        conditions:
+        - killer-type monster
+        - -permission victim someplugin.testpermission
+        actions:
+        - message Use &9/death back &rto get back your inventory.
+        - wait command 30s
+        - keep-items 75%
+        - keep-experience 75%

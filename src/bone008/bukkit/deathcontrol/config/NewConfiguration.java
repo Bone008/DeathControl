@@ -61,14 +61,18 @@ public class NewConfiguration {
 				ErrorObserver handlingLog = new ErrorObserver();
 				handlingLog.setPrefix("  ");
 
-				handlings.add(new HandlingDescriptor(name, handlingsSec.getConfigurationSection(name), handlingLog));
+				ConfigurationSection hndSec = handlingsSec.getConfigurationSection(name);
+				if (hndSec == null)
+					handlingLog.addWarning("Invalid format!");
+				else
+					handlings.add(new HandlingDescriptor(name, hndSec, handlingLog));
 
 				handlingLog.logTo(errors, "Handling " + name + ":");
 			}
 		}
 
 		errors.log("Errors while parsing configuration:");
-		DeathControl.instance.log(Level.CONFIG, "loaded " + Util.pluralNum(handlings.size(), "valid handling") + "!", true);
+		DeathControl.instance.log(Level.CONFIG, "loaded " + Util.pluralNum(handlings.size(), "handling") + "!", true);
 	}
 
 	public boolean usesBukkitPerms() {

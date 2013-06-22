@@ -109,15 +109,18 @@ public class DeathControl extends JavaPlugin {
 
 		// now load the config, otherwise it would be created before the exists check
 		reloadConfig();
+
+		// check for an outdated config from v1.x and write the default in that case
+		checkConfigIntegrity();
+
 		FileConfiguration cfg = getConfig();
-		cfg.options().copyDefaults(true);
+		cfg.options().copyDefaults(true); // note: currently isn't actually saved because automatic config saving is disabled for now
 		cfg.options().copyHeader(true);
-		cfg.set("show-messages", null); // remove deprecated option
 
 		// parse the config & lists files
 		itemLists = new ItemLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new NewConfiguration(cfg);
-		saveConfig();
+		// saveConfig();
 
 		messagesData = YamlConfiguration.loadConfiguration(messagesFile);
 		checkMessagesIntegrity();
@@ -178,6 +181,34 @@ public class DeathControl extends JavaPlugin {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Checks if config.yml is outdated and updates it if necessary.
+	 */
+	private void checkConfigIntegrity() {
+		System.out.println("checking " + getConfig().isSet("use-bukkit-permissions"));
+		FileConfiguration c = getConfig();
+		// do outdated properties exist or required ones don't exist?
+		if (c.isSet("DeathCauses") || c.isSet("use-bukkit-permissions") || c.isSet("multi-world.limited-worlds") || !c.isSet("handlings") || !c.isSet("multi-world.disabled-worlds") || !c.isSet("disable-permissions")) {
+			log(Level.WARNING, "Your config.yml file is deprecated. It will now be updated.");
+
+			// backup old file
+			File origFile = new File(getDataFolder(), "config.yml");
+			File backupFile = new File(getDataFolder(), "config-old-backup.yml");
+			backupFile.delete();
+
+			if (origFile.renameTo(backupFile)) {
+				log(Level.INFO, "Your old config was saved to \"config-old-backup.yml\"!");
+			}
+			else {
+				log(Level.WARNING, "Unable to backup old config.yml file!");
+			}
+
+			// force the new default to be written
+			writeDefault("config.yml", "config.yml", true);
+			// new config will be read during the rest of loadConfig()
+		}
 	}
 
 	/**
