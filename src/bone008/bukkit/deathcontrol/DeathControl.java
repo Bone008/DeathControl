@@ -71,6 +71,10 @@ public class DeathControl extends JavaPlugin {
 		messagesFile = new File(getDataFolder(), "messages.yml");
 		pdfFile = getDescription();
 
+		if (pdfFile.getVersion().toLowerCase().contains("dev")) {
+			getLogger().warning("Keep in mind you are running a developer version of DeathControl!");
+		}
+
 		// load/generate the configurations and setup permissions if needed
 		loadConfig();
 
@@ -187,7 +191,6 @@ public class DeathControl extends JavaPlugin {
 	 * Checks if config.yml is outdated and updates it if necessary.
 	 */
 	private void checkConfigIntegrity() {
-		System.out.println("checking " + getConfig().isSet("use-bukkit-permissions"));
 		FileConfiguration c = getConfig();
 		// do outdated properties exist or required ones don't exist?
 		if (c.isSet("DeathCauses") || c.isSet("use-bukkit-permissions") || c.isSet("multi-world.limited-worlds") || !c.isSet("handlings") || !c.isSet("multi-world.disabled-worlds") || !c.isSet("disable-permissions")) {
