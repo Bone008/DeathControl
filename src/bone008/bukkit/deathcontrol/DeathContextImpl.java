@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -220,7 +221,7 @@ public class DeathContextImpl implements DeathContext {
 		DeathControl.instance.clearActiveDeath(victimName);
 
 		if (withMessage && cancelMessage != null && getVictim().isOnline()) {
-			getVictim().getPlayer().sendMessage(cancelMessage);
+			getVictim().getPlayer().sendMessage(replaceVariables(ChatColor.translateAlternateColorCodes('&', cancelMessage)));
 		}
 
 		// cancel all remaining agents, falling back to the beginning if not yet started
