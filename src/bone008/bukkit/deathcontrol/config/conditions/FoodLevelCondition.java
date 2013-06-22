@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.conditions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import bone008.bukkit.deathcontrol.Operator;
@@ -29,6 +30,11 @@ public class FoodLevelCondition extends ConditionDescriptor {
 	@Override
 	public boolean matches(DeathContext context) {
 		return operator.invokeInt(context.getVictim().getPlayer().getFoodLevel(), number);
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(operator.getPrimaryIdentifier(), number + "");
 	}
 
 }

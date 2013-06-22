@@ -1,9 +1,11 @@
 package bone008.bukkit.deathcontrol.config;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bone008.bukkit.deathcontrol.config.conditions.CauseCondition;
 import bone008.bukkit.deathcontrol.config.conditions.FoodLevelCondition;
@@ -24,6 +26,10 @@ public abstract class ConditionDescriptor {
 			throw new IllegalArgumentException("condition " + name + " is already registered");
 
 		registeredTypes.put(name, clazz);
+	}
+
+	public static Set<String> getDescriptorNames() {
+		return registeredTypes.keySet();
 	}
 
 	public static ConditionDescriptor createDescriptor(String name, List<String> args, ErrorObserver log) {
@@ -63,6 +69,10 @@ public abstract class ConditionDescriptor {
 	private String name = "";
 
 	public abstract boolean matches(DeathContext context);
+
+	public List<String> toParameters() {
+		return Collections.emptyList();
+	}
 
 	public final String getName() {
 		return name;

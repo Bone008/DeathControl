@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,6 +39,14 @@ public class WaitAction extends ActionDescriptor {
 			return new WaitAgentCmd(context);
 		else
 			return new WaitAgent(context);
+	}
+
+	@Override
+	public List<String> toParameters() {
+		if (isCommand)
+			return Arrays.asList("command", time + "s");
+		else
+			return Arrays.asList(time + "s");
 	}
 
 	private class WaitAgentCmd extends ActionAgent {

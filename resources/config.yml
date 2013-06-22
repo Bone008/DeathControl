@@ -5,26 +5,22 @@
 # http://dev.bukkit.org/server-mods/deathcontrol/pages/configuration/
 
 
-use-bukkit-permissions: true
+disable-permissions: false
 logging-level: standard
 
 multi-world:
     allow-cross-world: true
-    limited-worlds: []
+    disabled-worlds: []
 
-DeathCauses:
-    VOID, LAVA:
-        keep-inventory: true
-        keep-experience: true
-    PLAYER:
-        keep-inventory: true
-        cost: 300
-        method: command
-        timeout: 10
-        loss-percentage: 12.5
-    SUICIDE:
-        keep-inventory: true
-        keep-experience: true
-        keep-hunger: true
-        whitelist:
-        - armor
+handlings:
+    demo:
+        priority-order: 1
+        timeout-on-disconnect: 15
+        conditions:
+        - cause fall suicide
+        - food-level > 0
+        actions:
+        - keep-items
+        - keep-experience
+        - message You're %victim-name% and %death-cause-formatted%.
+        - message %plugin-prefix%This is an example message adjustable in the config.

@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import bone008.bukkit.deathcontrol.config.ActionAgent;
@@ -37,5 +38,10 @@ public class DestroyItemAction extends ActionDescriptor {
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
 		return new DestroyItemActionAgent(context, this);
-	};
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(item.toHumanString().toString(), "" + amount);
+	}
 }

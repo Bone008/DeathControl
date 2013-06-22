@@ -1,9 +1,11 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import bone008.bukkit.deathcontrol.DeathControl;
@@ -68,5 +70,10 @@ public class CommandAction extends ActionDescriptor {
 			public void cancel() {
 			}
 		};
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(ChatColor.ITALIC + (asConsole ? "console" : "victim") + ChatColor.RESET, commandString);
 	}
 }

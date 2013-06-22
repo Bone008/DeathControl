@@ -94,7 +94,7 @@ public class DeathContextImpl implements DeathContext {
 
 	public void setDisconnectTimeout(int timeout) {
 		// always set to the new timeout, that means another handling took priority over the old one
-		disconnectTimeout = timeout; // TODO test disconnect-timeouts
+		disconnectTimeout = timeout; // TODO fix overriding when the new handling didn't actively set any timeout
 	}
 
 	public int getDisconnectTimeout() {

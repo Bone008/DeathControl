@@ -1,9 +1,11 @@
 package bone008.bukkit.deathcontrol.config;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bone008.bukkit.deathcontrol.config.actions.*;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
@@ -19,6 +21,10 @@ public abstract class ActionDescriptor {
 			throw new IllegalArgumentException("action " + name + " is already registered");
 
 		registeredTypes.put(name, clazz);
+	}
+
+	public static Set<String> getDescriptorNames() {
+		return registeredTypes.keySet();
 	}
 
 	public static ActionDescriptor createDescriptor(String name, List<String> args, ErrorObserver log) {
@@ -76,5 +82,9 @@ public abstract class ActionDescriptor {
 	}
 
 	public abstract ActionAgent createAgent(DeathContext context);
+
+	public List<String> toParameters() {
+		return Collections.emptyList();
+	}
 
 }

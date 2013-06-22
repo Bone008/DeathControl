@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import bone008.bukkit.deathcontrol.commandhandler.CommandHandler;
 import bone008.bukkit.deathcontrol.commands.BackCommand;
 import bone008.bukkit.deathcontrol.commands.CancelCommand;
+import bone008.bukkit.deathcontrol.commands.ConfigCommand;
 import bone008.bukkit.deathcontrol.commands.HelpCommand;
 import bone008.bukkit.deathcontrol.commands.ReloadCommand;
 import bone008.bukkit.deathcontrol.config.DeathContext;
@@ -89,7 +90,7 @@ public class DeathControl extends JavaPlugin {
 		deathCmd.addSubCommand("back", new BackCommand(), "restore");
 		deathCmd.addSubCommand("cancel", new CancelCommand(), "drop", "expire");
 		deathCmd.addSubCommand("reload", new ReloadCommand());
-		//		deathCmd.addSubCommand("info", new InfoCommand(), "status");
+		deathCmd.addSubCommand("config", new ConfigCommand(), "info");
 
 		getCommand("death").setExecutor(deathCmd);
 
@@ -113,10 +114,10 @@ public class DeathControl extends JavaPlugin {
 		cfg.options().copyHeader(true);
 		cfg.set("show-messages", null); // remove deprecated option
 
-		// parse the config & lists files		
+		// parse the config & lists files
 		itemLists = new ItemLists(this, new File(getDataFolder(), "lists.txt"));
 		config = new NewConfiguration(cfg);
-		//saveConfig(); TODO reenable saveConfig()
+		saveConfig();
 
 		messagesData = YamlConfiguration.loadConfiguration(messagesFile);
 		checkMessagesIntegrity();

@@ -1,7 +1,9 @@
 package bone008.bukkit.deathcontrol.config.conditions;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
@@ -41,6 +43,11 @@ public class PermissionCondition extends ConditionDescriptor {
 		else {
 			return context.getVictim().getPlayer().hasPermission(permNode);
 		}
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(ChatColor.ITALIC + (isKiller ? "killer" : "victim") + ChatColor.RESET, permNode);
 	}
 
 }

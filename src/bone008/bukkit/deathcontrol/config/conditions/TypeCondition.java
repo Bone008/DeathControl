@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.conditions;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -106,4 +107,17 @@ public class TypeCondition extends ConditionDescriptor {
 		// if nothing at all matched, we don't match
 		return false;
 	}
+
+	@Override
+	public List<String> toParameters() {
+		List<String> ret = new ArrayList<String>();
+
+		for (EntityType t : basicTypes)
+			ret.add(t.toString().toLowerCase().replace('_', '-'));
+		for (SpecialType t : specialTypes)
+			ret.add(t.toString().toLowerCase().replace('_', '-'));
+
+		return ret;
+	}
+
 }

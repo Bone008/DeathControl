@@ -142,6 +142,8 @@ public final class Util {
 	 * @param repl The value to replace {@code obj} with if {@code search} matched
 	 */
 	public static <T> T replaceValue(T obj, T search, T repl) {
+		if (obj == null)
+			return (search == null ? repl : null);
 		if (obj.equals(search))
 			return repl;
 		return obj;

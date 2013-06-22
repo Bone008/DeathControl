@@ -1,6 +1,7 @@
 package bone008.bukkit.deathcontrol.config;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.logging.Level;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.StringUtil;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 import bone008.bukkit.deathcontrol.util.ErrorObserver;
@@ -20,12 +22,12 @@ public class NewConfiguration {
 	private static final boolean default_bukkitPerms = true;
 	private static final String default_loggingLevel = "standard";
 	private static final boolean default_allowCrossworld = true;
-	private static final List<String> default_limitedWorlds = new ArrayList<String>();
+	private static final List<String> default_blacklistedWorlds = new ArrayList<String>();
 
 	private boolean bukkitPerms;
 	private int loggingLevel;
 	private boolean allowCrossworld;
-	private Set<String> limitedWorlds;
+	private Set<String> blacklistedWorlds;
 
 	private Set<HandlingDescriptor> handlings = new TreeSet<HandlingDescriptor>(); // automatically ordered by priority
 
@@ -33,7 +35,7 @@ public class NewConfiguration {
 		ErrorObserver errors = new ErrorObserver();
 		errors.setPrefix("-> ");
 
-		bukkitPerms = config.getBoolean("use-bukkit-permissions", default_bukkitPerms);
+		bukkitPerms = !config.getBoolean("disable-permissions", default_bukkitPerms);
 
 		if (config.get("logging-level") instanceof Number)
 			config.set("logging-level", default_loggingLevel);
@@ -46,10 +48,10 @@ public class NewConfiguration {
 
 		allowCrossworld = config.getBoolean("multi-world.allow-cross-world", default_allowCrossworld);
 
-		List<String> rawLimitedWorlds = config.getStringList("multi-world.limited-worlds");
-		if (rawLimitedWorlds == null || rawLimitedWorlds.isEmpty())
-			rawLimitedWorlds = default_limitedWorlds;
-		limitedWorlds = new HashSet<String>(rawLimitedWorlds);
+		List<String> rawBlacklistedWorlds = config.getStringList("multi-world.blacklisted-worlds");
+		if (rawBlacklistedWorlds == null || rawBlacklistedWorlds.isEmpty())
+			rawBlacklistedWorlds = default_blacklistedWorlds;
+		blacklistedWorlds = new HashSet<String>(rawBlacklistedWorlds);
 
 		// parse causes
 		ConfigurationSection handlingsSec = config.getConfigurationSection("handlings");
@@ -82,13 +84,34 @@ public class NewConfiguration {
 	}
 
 	public boolean isWorldAllowed(String worldName) {
-		if (limitedWorlds == null || limitedWorlds.isEmpty())
+		if (blacklistedWorlds == null || blacklistedWorlds.isEmpty())
 			return true;
-		return limitedWorlds.contains(worldName);
+		return !blacklistedWorlds.contains(worldName);
+	}
+
+	public Collection<String> getBlacklistedWorlds() {
+		return blacklistedWorlds;
+	}
+
+	public HandlingDescriptor getHandling(String name) {
+		for (HandlingDescriptor h : handlings) {
+			if (h.getName().equalsIgnoreCase(name))
+				return h;
+		}
+
+		return null;
 	}
 
 	public Set<HandlingDescriptor> getHandlings() {
 		return handlings;
 	}
 
+	public <T extends Collection<String>> T getPartialHandlingNames(String search, T result) {
+		for (HandlingDescriptor h : handlings) {
+			if (StringUtil.startsWithIgnoreCase(h.getName(), search))
+				result.add(h.getName());
+		}
+
+		return result;
+	}
 }

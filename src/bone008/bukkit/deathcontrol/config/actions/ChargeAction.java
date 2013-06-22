@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,5 +57,22 @@ public class ChargeAction extends ActionDescriptor {
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
 		return new ChargeActionAgent(context, this);
-	};
+	}
+
+	@Override
+	public List<String> toParameters() {
+		List<String> ret = new ArrayList<String>();
+		if (isPercentage) {
+			ret.add(String.format("%.0f%%", money * 100));
+			if (capMin > 0)
+				ret.add(String.format("min=%.2f", capMin));
+			if (capMax < Double.POSITIVE_INFINITY)
+				ret.add(String.format("max=%.2f", capMax));
+		}
+		else {
+			ret.add(String.format("max=%.2f", money));
+		}
+
+		return ret;
+	}
 }

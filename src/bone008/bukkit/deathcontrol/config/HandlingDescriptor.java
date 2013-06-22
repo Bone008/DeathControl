@@ -1,6 +1,7 @@
 package bone008.bukkit.deathcontrol.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -143,6 +144,18 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 		return cancelMessage;
 	}
 
+	public boolean isInverted(int conditionIndex) {
+		return !expectedConditionResults.get(conditionIndex);
+	}
+
+	public List<ConditionDescriptor> getConditions() {
+		return Collections.unmodifiableList(conditions);
+	}
+
+	public List<ActionDescriptor> getActions() {
+		return Collections.unmodifiableList(actions);
+	}
+
 	@Override
 	public int compareTo(HandlingDescriptor other) {
 		if (this.priority == other.priority)
@@ -150,6 +163,11 @@ public class HandlingDescriptor implements Comparable<HandlingDescriptor> {
 			return -1;
 
 		return this.priority - other.priority;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 
 }

@@ -29,4 +29,12 @@ public class DamageItemsAction extends AbstractItemsAction {
 		return new DamageItemsActionAgent(context, this);
 	}
 
+	@Override
+	public List<String> toParameters() {
+		List<String> ret = super.toParameters();
+		ret.add(0, String.format("%.0f%%", damagePct * 100));
+
+		return ret;
+	}
+
 }

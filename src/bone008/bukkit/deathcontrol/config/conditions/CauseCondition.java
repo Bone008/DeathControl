@@ -39,4 +39,13 @@ public class CauseCondition extends ConditionDescriptor {
 
 		return false;
 	}
+
+	@Override
+	public List<String> toParameters() {
+		List<String> ret = new ArrayList<String>(causes.size());
+		for (DeathCause dc : causes)
+			ret.add(dc.toHumanString());
+
+		return ret;
+	}
 }

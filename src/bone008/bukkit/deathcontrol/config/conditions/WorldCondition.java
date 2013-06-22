@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.conditions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import bone008.bukkit.deathcontrol.config.ConditionDescriptor;
@@ -20,6 +21,11 @@ public class WorldCondition extends ConditionDescriptor {
 	@Override
 	public boolean matches(DeathContext context) {
 		return context.getDeathLocation().getWorld().getName().equalsIgnoreCase(worldName);
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(worldName);
 	}
 
 }

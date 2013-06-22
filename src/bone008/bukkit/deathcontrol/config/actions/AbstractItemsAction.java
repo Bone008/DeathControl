@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +21,14 @@ import bone008.bukkit.deathcontrol.util.Util;
  */
 public abstract class AbstractItemsAction extends ActionDescriptor {
 
+	private String filterName = null;
 	private List<ListItem> itemsFilter = null;
 	private boolean filterInverted = false;
 	private double affectedPct = 1.0;
+	private boolean percentageAllowed = false;
 
 	protected void parseFilter(List<String> args, boolean allowPercentage) throws DescriptorFormatException {
+		percentageAllowed = allowPercentage;
 		String itemsInput = null;
 
 		if (allowPercentage) {
@@ -68,6 +72,7 @@ public abstract class AbstractItemsAction extends ActionDescriptor {
 			itemsFilter = DeathControl.instance.itemLists.getList(itemsInput);
 			if (itemsFilter == null)
 				throw new DescriptorFormatException("invalid item list: " + itemsInput);
+			filterName = itemsInput;
 		}
 	}
 
@@ -155,6 +160,17 @@ public abstract class AbstractItemsAction extends ActionDescriptor {
 			}
 			// do nothing if kept amount is 0
 		}
+	}
+
+	@Override
+	public List<String> toParameters() {
+		List<String> ret = new ArrayList<String>();
+		if (filterName != null)
+			ret.add(filterName);
+		if (percentageAllowed)
+			ret.add(String.format("%.0f%%", affectedPct * 100));
+
+		return ret;
 	}
 
 }

@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.conditions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -49,6 +50,11 @@ public class RegionCondition extends ConditionDescriptor {
 
 			return region.contains(new Vector(deathLoc.getX(), deathLoc.getY(), deathLoc.getZ()));
 		}
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(regionName);
 	}
 
 }

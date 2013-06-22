@@ -5,9 +5,9 @@
 # http://dev.bukkit.org/server-mods/deathcontrol/pages/configuration/
 
 
-use-bukkit-permissions: true
+disable-permissions: false
 logging-level: standard
 
 multi-world:
     allow-cross-world: true
-    limited-worlds: []
+    disabled-worlds: []

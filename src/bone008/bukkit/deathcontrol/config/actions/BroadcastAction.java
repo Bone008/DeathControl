@@ -1,5 +1,6 @@
 package bone008.bukkit.deathcontrol.config.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -36,5 +37,10 @@ public class BroadcastAction extends ActionDescriptor {
 			public void cancel() {
 			}
 		};
+	}
+
+	@Override
+	public List<String> toParameters() {
+		return Arrays.asList(message);
 	}
 }

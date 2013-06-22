@@ -3,6 +3,7 @@ package bone008.bukkit.deathcontrol.commandhandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.Conversable;
 import org.bukkit.entity.Player;
 
 import bone008.bukkit.deathcontrol.exceptions.CommandException;
@@ -55,6 +56,18 @@ public class CommandContext {
 	public Player getPlayerSender() throws CommandException {
 		if (sender instanceof Player)
 			return (Player) sender;
+
+		throw new CommandException(MSG_PLAYER_CONTEXT);
+	}
+
+	/**
+	 * Returns the CommandSender associated with this command as a Conversable.
+	 * 
+	 * @throws CommandException when the sender isn't conversable
+	 */
+	public Conversable getConversableSender() throws CommandException {
+		if (sender instanceof Conversable)
+			return (Conversable) sender;
 
 		throw new CommandException(MSG_PLAYER_CONTEXT);
 	}

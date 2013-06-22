@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.ConversationPrefix;
 
 import bone008.bukkit.deathcontrol.DeathControl;
 
@@ -61,7 +63,16 @@ public final class MessageUtil {
 	}
 
 	public static String getPluginPrefix(boolean error) {
-		return ChatColor.GRAY + "[" + DeathControl.instance.pdfFile.getName() + "] " + (error ? ChatColor.RED : ChatColor.WHITE);
+		return ChatColor.GRAY + "[" + DeathControl.instance.pdfFile.getName() + "] " + (error ? ChatColor.RED : ChatColor.RESET);
+	}
+
+	public static ConversationPrefix getPluginConversationPrefix(final boolean error) {
+		return new ConversationPrefix() {
+			@Override
+			public String getPrefix(ConversationContext context) {
+				return getPluginPrefix(error);
+			}
+		};
 	}
 
 	/**

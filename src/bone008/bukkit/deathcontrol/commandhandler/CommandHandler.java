@@ -111,7 +111,7 @@ public class CommandHandler implements TabExecutor {
 				cmd.execute(new CommandContext(sender, mainCmd, mainLabel, this, args));
 			} catch (CommandException e) {
 				if (e.getTranslatableMessage() == null)
-					MessageUtil.sendMessage(sender, e.getMessage());
+					MessageUtil.sendMessage(sender, e.getMessage(), true);
 				else
 					MessageUtil.sendMessage(sender, e.getTranslatableMessage());
 			}
