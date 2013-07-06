@@ -9,12 +9,12 @@ import bone008.bukkit.deathcontrol.config.DeathContext;
 import bone008.bukkit.deathcontrol.exceptions.DescriptorFormatException;
 import bone008.bukkit.deathcontrol.util.ParserUtil;
 
-public class KeepExperienceAction extends ActionDescriptor {
+public class KeepHungerAction extends ActionDescriptor {
 
 	double keepPct;
 	boolean dropLeftovers;
 
-	public KeepExperienceAction(List<String> args) throws DescriptorFormatException {
+	public KeepHungerAction(List<String> args) throws DescriptorFormatException {
 		keepPct = 1.0;
 
 		if (args.size() > 0) {
@@ -22,17 +22,15 @@ public class KeepExperienceAction extends ActionDescriptor {
 			if (keepPct == -1 || keepPct > 1.0)
 				throw new DescriptorFormatException("invalid percentage: " + args.get(0));
 		}
-
-		dropLeftovers = (args.size() > 1 && (args.get(1).equalsIgnoreCase("drop-leftovers") || Boolean.parseBoolean(args.get(1))));
 	}
 
 	@Override
 	public ActionAgent createAgent(DeathContext context) {
-		return new KeepExperienceActionAgent(context, this);
+		return new KeepHungerActionAgent(context, this);
 	}
 
 	@Override
 	public List<String> toParameters() {
-		return Arrays.asList(String.format("%.0f%%", keepPct * 100), (dropLeftovers ? "drop-leftovers" : ""));
+		return Arrays.asList(String.format("%.0f%%", keepPct * 100));
 	}
 }

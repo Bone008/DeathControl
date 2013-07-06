@@ -55,6 +55,7 @@ public abstract class ActionDescriptor {
 	static {
 		registerAction("keep-items", KeepItemsAction.class);
 		registerAction("keep-experience", KeepExperienceAction.class);
+		registerAction("keep-hunger", KeepHungerAction.class);
 		registerAction("charge", ChargeAction.class);
 		registerAction("destroy-item", DestroyItemAction.class);
 		registerAction("destroy-items", DestroyItemsAction.class);

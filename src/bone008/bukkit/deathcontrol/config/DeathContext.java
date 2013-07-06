@@ -21,7 +21,7 @@ public interface DeathContext {
 	 * Returns the victim of the death as an {@link OfflinePlayer}.<br>
 	 * A regular player can be retrieved with {@link OfflinePlayer#getPlayer()}, but the player may be offline.
 	 * <p/>
-	 * Exception: While a {@link ConditionDescriptor} is check for a match and an {@link ActionAgent} is preprocessed, the player is guaranteed to be online.
+	 * Exception: While a {@link ConditionDescriptor} is checking for a match or an {@link ActionAgent} is preprocessed, the player is guaranteed to be online.
 	 * 
 	 * @return the player who died in this context
 	 */
