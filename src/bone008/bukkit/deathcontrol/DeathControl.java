@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -48,7 +49,7 @@ public class DeathControl extends JavaPlugin {
 	public YamlConfiguration messagesData;
 	public PluginDescriptionFile pdfFile;
 
-	private Map<String, DeathContextImpl> activeDeaths = new HashMap<String, DeathContextImpl>();
+	private Map<UUID, DeathContextImpl> activeDeaths = new HashMap<UUID, DeathContextImpl>();
 
 	public DeathControl() {
 		instance = this;
@@ -261,19 +262,19 @@ public class DeathControl extends JavaPlugin {
 		}
 	}
 
-	public void addActiveDeath(String playerName, DeathContextImpl context) {
-		activeDeaths.put(playerName.toLowerCase(), context);
+	public void addActiveDeath(UUID playerUid, DeathContextImpl context) {
+		activeDeaths.put(playerUid, context);
 	}
 
-	public DeathContextImpl getActiveDeath(String playerName) {
-		return activeDeaths.get(playerName.toLowerCase());
+	public DeathContextImpl getActiveDeath(UUID playerUid) {
+		return activeDeaths.get(playerUid);
 	}
 
 	/**
 	 * Removes the {@link DeathContext} from the collection, but doesn't cancel it properly. Calling cancel calls this.
 	 */
-	public void clearActiveDeath(String playerName) {
-		activeDeaths.remove(playerName.toLowerCase());
+	public void clearActiveDeath(UUID playerUid) {
+		activeDeaths.remove(playerUid);
 	}
 
 	public boolean hasPermission(Permissible who, DPermission perm) {

@@ -1,10 +1,6 @@
 package bone008.bukkit.deathcontrol;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -30,6 +26,7 @@ public class DeathContextImpl implements DeathContext {
 
 	private PlayerDeathEvent deathEvent;
 	private String victimName; // we can't even store an OfflinePlayer, because Bukkit doesn't allow us to create one while the player is still online
+	private UUID victimUid;
 	private Location deathLocation;
 	private List<DeathCause> matchedDeathCauses;
 	private List<StoredItemStack> itemDrops;
@@ -49,6 +46,7 @@ public class DeathContextImpl implements DeathContext {
 
 		this.deathEvent = event;
 		this.victimName = victimp.getName();
+		this.victimUid = victimp.getUniqueId();
 		this.deathLocation = victimp.getLocation();
 
 		this.matchedDeathCauses = new ArrayList<DeathCause>();
@@ -137,7 +135,7 @@ public class DeathContextImpl implements DeathContext {
 	}
 
 	public boolean isCancelled() {
-		return DeathControl.instance.getActiveDeath(victimName) != this;
+		return DeathControl.instance.getActiveDeath(victimUid) != this;
 	}
 
 	@Override
@@ -218,7 +216,7 @@ public class DeathContextImpl implements DeathContext {
 		if (isCancelled())
 			return;
 
-		DeathControl.instance.clearActiveDeath(victimName);
+		DeathControl.instance.clearActiveDeath(victimUid);
 
 		if (withMessage && cancelMessage != null && getVictim().isOnline()) {
 			getVictim().getPlayer().sendMessage(replaceVariables(ChatColor.translateAlternateColorCodes('&', cancelMessage)));
@@ -248,7 +246,7 @@ public class DeathContextImpl implements DeathContext {
 
 	@Override
 	public OfflinePlayer getVictim() {
-		return Bukkit.getOfflinePlayer(victimName);
+		return Bukkit.getOfflinePlayer(victimUid);
 	}
 
 	@Override

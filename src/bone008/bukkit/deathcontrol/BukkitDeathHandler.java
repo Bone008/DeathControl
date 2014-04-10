@@ -32,7 +32,7 @@ public class BukkitDeathHandler implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				DeathContextImpl context = DeathControl.instance.getActiveDeath(player.getName());
+				DeathContextImpl context = DeathControl.instance.getActiveDeath(player.getUniqueId());
 				if (context != null) {
 					// check for cross world respawn
 					if (!DeathControl.instance.config.allowsCrossworld() && !DeathControl.instance.hasPermission(player, DeathControl.PERMISSION_CROSSWORLD) && !player.getWorld().equals(context.getDeathLocation().getWorld())) {
@@ -52,8 +52,9 @@ public class BukkitDeathHandler implements Listener {
 	public void onDeath(final PlayerDeathEvent event) {
 		Player ply = event.getEntity();
 
-		if (DeathControl.instance.getActiveDeath(ply.getName()) != null)
-			DeathControl.instance.getActiveDeath(ply.getName()).cancelManually();
+		DeathContextImpl lastActiveContext = DeathControl.instance.getActiveDeath(ply.getUniqueId());
+		if (lastActiveContext != null)
+			lastActiveContext.cancelManually();
 
 		if (!DeathControl.instance.hasPermission(ply, DeathControl.PERMISSION_USE))
 			return;
@@ -113,7 +114,7 @@ public class BukkitDeathHandler implements Listener {
 			return;
 		}
 
-		DeathControl.instance.addActiveDeath(ply.getName(), context);
+		DeathControl.instance.addActiveDeath(ply.getUniqueId(), context);
 
 		// call all the preprocessors and let them do their magic
 		context.preprocessAgents();

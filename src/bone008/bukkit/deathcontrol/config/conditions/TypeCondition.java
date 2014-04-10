@@ -74,8 +74,8 @@ public class TypeCondition extends ConditionDescriptor {
 					return true;
 
 				// check projectile shooter
-				if (damager instanceof Projectile) {
-					damager = ((Projectile) damager).getShooter();
+				if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity) {
+					damager = (Entity) ((Projectile) damager).getShooter();
 					if (damager != null && etype == damager.getType())
 						return true;
 				}

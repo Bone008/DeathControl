@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
@@ -52,14 +53,14 @@ public final class Util {
 
 		Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
 
-		if (damager instanceof Projectile)
-			damager = ((Projectile) damager).getShooter();
+		if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Entity)
+			damager = (Entity) ((Projectile) damager).getShooter();
 
 		return damager;
 	}
 
 	public static void dropItem(Location l, ItemStack i, boolean naturally) {
-		if (l == null || i == null || i.getTypeId() < 1 || i.getAmount() < 1)
+		if (l == null || i == null || i.getType() == Material.AIR || i.getAmount() < 1)
 			return;
 
 		World w = l.getWorld();

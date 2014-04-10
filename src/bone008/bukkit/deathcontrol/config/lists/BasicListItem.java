@@ -12,12 +12,12 @@ import bone008.bukkit.deathcontrol.util.Util;
 
 public class BasicListItem extends ListItem {
 
-	private int id = 0;
+	private Material type;
 	private byte data = 0;
 	private boolean hasData = false;
 
 	public BasicListItem(Material mat, Byte data) {
-		this.id = mat.getId();
+		this.type = mat;
 		if (data != null) {
 			this.data = data;
 			hasData = true;
@@ -26,7 +26,7 @@ public class BasicListItem extends ListItem {
 
 	@Override
 	public boolean matches(ItemStack itemStack) {
-		if (itemStack.getTypeId() == this.id) {
+		if (itemStack.getType() == this.type) {
 			if (this.hasData) {
 				return (this.data == itemStack.getDurability());
 			}
@@ -39,12 +39,12 @@ public class BasicListItem extends ListItem {
 
 	@Override
 	public String toString() {
-		return "BasicListItem@" + id + ":" + data + "/" + hasData;
+		return "BasicListItem@" + type + ":" + data + "/" + hasData;
 	}
 
 	@Override
 	public CharSequence toHumanString() {
-		return Material.getMaterial(id).toString() + ChatColor.ITALIC + '#' + id + (hasData ? ":" + data : "");
+		return type.toString() + ChatColor.ITALIC + '#' + type.getId() + (hasData ? ":" + data : "");
 	}
 
 
@@ -76,7 +76,7 @@ public class BasicListItem extends ListItem {
 	}
 
 	public static int compare(BasicListItem o1, BasicListItem o2) {
-		if (o1.id == o2.id) {
+		if (o1.type == o2.type) {
 			if (o1.hasData) {
 				if (o2.hasData) {
 					return o1.data - o2.data;
@@ -97,12 +97,8 @@ public class BasicListItem extends ListItem {
 				return 0;
 			}
 		}
-		else if (o1.id > o2.id) {
-			return 1;
-		}
 		else {
-			assert o1.id < o2.id;
-			return -1;
+			return o1.type.compareTo(o2.type);
 		}
 
 	}

@@ -1,6 +1,7 @@
 package bone008.bukkit.deathcontrol;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -14,13 +15,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitReconnectHandler implements Listener {
 
-	private HashMap<UUID, QuitHandlerTask> logoffExpireTimers = new HashMap<UUID, QuitHandlerTask>();
+	private Map<UUID, QuitHandlerTask> logoffExpireTimers = new HashMap<UUID, QuitHandlerTask>();
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 
-		DeathContextImpl context = DeathControl.instance.getActiveDeath(player.getName());
+		DeathContextImpl context = DeathControl.instance.getActiveDeath(player.getUniqueId());
 		if (context != null) {
 			QuitHandlerTask task = new QuitHandlerTask(context, player.getUniqueId());
 
@@ -46,7 +47,7 @@ public class BukkitReconnectHandler implements Listener {
 			logoffExpireTimers.remove(player.getUniqueId()).cancel();
 
 			// if player still has an active death
-			if (DeathControl.instance.getActiveDeath(player.getName()) != null)
+			if (DeathControl.instance.getActiveDeath(player.getUniqueId()) != null)
 				DeathControl.instance.log(Level.FINE, player.getName() + " rejoined. Expiration timer stopped.");
 		}
 	}
