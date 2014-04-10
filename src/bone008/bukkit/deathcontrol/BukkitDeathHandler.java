@@ -125,6 +125,13 @@ public class BukkitDeathHandler implements Listener {
 			event.getDrops().add(dropped.itemStack);
 
 
+		// fix for Essentials: we take control over respawned exp ...
+		event.setKeepLevel(false);
+		event.setNewExp(0);
+		event.setNewLevel(0);
+		event.setNewTotalExp(0);
+
+
 		// short log
 		log1.append("; Executed handlings: " + Util.joinCollection(", ", executed));
 
