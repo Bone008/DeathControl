@@ -24,7 +24,7 @@ permissions:
             deathcontrol.info: true
             deathcontrol.admin: true
     deathcontrol.use:
-        default: false
+        default: true
         description: Allows the general use of this plugin.
     deathcontrol.free:
         default: false
