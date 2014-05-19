@@ -16,7 +16,8 @@ public final class HooksManager {
 	// @formatter:off
 	private final static PluginHook[] hooks = {
 		new MobArenaHook(),
-		new BattleArenaHook()
+		new BattleArenaHook(),
+		new PvpArenaHook()
 	};
 	// @formatter:on
 
