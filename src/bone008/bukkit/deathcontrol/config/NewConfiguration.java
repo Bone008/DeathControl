@@ -48,10 +48,19 @@ public class NewConfiguration {
 
 		allowCrossworld = config.getBoolean("multi-world.allow-cross-world", default_allowCrossworld);
 
+		// because of a mismatch between documentation and code, this setting carries both the name "disabled-worlds" and "blacklisted-worlds";
+		// to maximize compatibility, both names are now supported
 		List<String> rawBlacklistedWorlds = config.getStringList("multi-world.blacklisted-worlds");
+		List<String> rawBlacklistedWorlds2 = config.getStringList("multi-world.disabled-worlds");
 		if (rawBlacklistedWorlds == null || rawBlacklistedWorlds.isEmpty())
 			rawBlacklistedWorlds = default_blacklistedWorlds;
-		blacklistedWorlds = new HashSet<String>(rawBlacklistedWorlds);
+		if (rawBlacklistedWorlds2 == null || rawBlacklistedWorlds2.isEmpty())
+			rawBlacklistedWorlds2 = default_blacklistedWorlds;
+
+		blacklistedWorlds = new HashSet<String>();
+		blacklistedWorlds.addAll(rawBlacklistedWorlds);
+		blacklistedWorlds.addAll(rawBlacklistedWorlds2);
+
 
 		// parse causes
 		ConfigurationSection handlingsSec = config.getConfigurationSection("handlings");
