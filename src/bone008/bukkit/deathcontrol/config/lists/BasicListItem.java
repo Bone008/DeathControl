@@ -13,10 +13,10 @@ import bone008.bukkit.deathcontrol.util.Util;
 public class BasicListItem extends ListItem {
 
 	private Material type;
-	private byte data = 0;
+	private int data = 0;
 	private boolean hasData = false;
 
-	public BasicListItem(Material mat, Byte data) {
+	public BasicListItem(Material mat, Integer data) {
 		this.type = mat;
 		if (data != null) {
 			this.data = data;
@@ -63,10 +63,10 @@ public class BasicListItem extends ListItem {
 			throw new FormatException("could not find material '" + tokens.get(0) + "'");
 
 
-		Byte data = null;
+		Integer data = null;
 		try {
 			if (tokens.size() == 2)
-				data = Byte.parseByte(tokens.get(1));
+				data = Integer.parseInt(tokens.get(1));
 
 			BasicListItem item = new BasicListItem(mat, data);
 			return item;
