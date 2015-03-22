@@ -70,7 +70,7 @@ public class ChargeAction extends ActionDescriptor {
 				ret.add(String.format("max=%.2f", capMax));
 		}
 		else {
-			ret.add(String.format("max=%.2f", money));
+			ret.add(String.format("%.2f", money));
 		}
 
 		return ret;
