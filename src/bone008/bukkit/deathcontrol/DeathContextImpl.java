@@ -72,9 +72,11 @@ public class DeathContextImpl implements DeathContext {
 		setVariable("plugin-prefix", MessageUtil.getPluginPrefix(false));
 		setVariable("death-cause", matchedDeathCauses.get(0).toHumanString());
 		setVariable("death-cause-formatted", Message.translatePath(matchedDeathCauses.get(0).toMsgPath()));
-		setVariable("victim-name", victimp.getDisplayName());
+		setVariable("victim-name", victimp.getName());
+		setVariable("victim-display-name", victimp.getDisplayName());
 		setVariable("world", deathLocation.getWorld().getName());
-		setVariable("killer-name", (playerKiller != null ? playerKiller.getDisplayName() : ""));
+		setVariable("killer-name", (playerKiller != null ? playerKiller.getName() : ""));
+		setVariable("killer-display-name", (playerKiller != null ? playerKiller.getDisplayName() : ""));
 		setVariable("death-message", deathEvent.getDeathMessage());
 
 		// defaults for variables set by agents
