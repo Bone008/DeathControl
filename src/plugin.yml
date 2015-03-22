@@ -1,6 +1,6 @@
 name: DeathControl
 main: bone008.bukkit.deathcontrol.DeathControl
-version: 2.1.0
+version: 2.1.1
 author: Bone008
 description: Allows actions to be executed when players die under certain conditions.
 softdepend: [Register, Vault]
