@@ -63,6 +63,7 @@ public class ParserUtil {
 		}
 	}
 
+
 	/**
 	 * Parses a given percentage string, making an educated guess about what format the user intended.
 	 * Only positive numbers are accepted, but they may range above 100%.
@@ -71,8 +72,24 @@ public class ParserUtil {
 	 * @return the interpreted percentage as a number, where 1.0 represents 100%; -1 if it couldn't be parsed
 	 */
 	public static double parsePercentage(String input) {
+		return parsePercentage(input, false);
+	}
+
+	/**
+	 * Parses a given percentage string, making an educated guess about what format the user intended.
+	 * Only positive numbers are accepted, but they may range above 100%.
+	 * 
+	 * @param input the input to parse
+	 * @param forceExplicit if true, only numbers explicitly specified as a percentage with a % sign are treated as a valid percentage
+	 * @return the interpreted percentage as a number, where 1.0 represents 100%; -1 if it couldn't be parsed
+	 */
+	public static double parsePercentage(String input, boolean forceExplicit) {
 		try {
 			int pctIndex = input.indexOf('%');
+
+			if (forceExplicit && pctIndex == -1)
+				return -1;
+
 			double num = Double.parseDouble(pctIndex == -1 ? input : (pctIndex == 0 ? input.substring(1) : input.substring(0, pctIndex)));
 			if (num >= 0) {
 				if (pctIndex > -1)
@@ -87,6 +104,7 @@ public class ParserUtil {
 
 		return -1;
 	}
+
 
 	/**
 	 * Parses a positive double value from a string.

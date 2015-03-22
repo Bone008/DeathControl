@@ -41,7 +41,7 @@ public class ChargeAction extends ActionDescriptor {
 		if (args.size() != 1)
 			throw new DescriptorFormatException("no cost given!");
 
-		double pctMoney = ParserUtil.parsePercentage(args.get(0));
+		double pctMoney = ParserUtil.parsePercentage(args.get(0), true);
 		if (pctMoney != -1 && pctMoney <= 1.0) {
 			isPercentage = true;
 			money = pctMoney;
