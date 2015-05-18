@@ -111,6 +111,7 @@ public class BukkitDeathHandler implements Listener {
 
 		if (!context.hasAgents()) {
 			DeathControl.instance.log(Level.FINE, log1.append("; No actions to be executed!").toString());
+			DeathControl.instance.log(Level.FINE, ply.getName() + " dropped " + event.getDrops()); // Log drops
 			return;
 		}
 
@@ -138,6 +139,7 @@ public class BukkitDeathHandler implements Listener {
 		// detailed log
 		log2.append("Handled death:\n");
 		log2.append("| Player: ").append(ply.getName()).append('\n');
+		log2.append("| Dropped: " + event.getDrops());
 		for (String cause : deathCauses)
 			log2.append("| Death cause: ").append(cause).append('\n');
 		log2.append("| Executed handlings: " + Util.joinCollection(", ", executed)).append('\n');
