@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -226,7 +227,7 @@ public class DeathControl extends JavaPlugin {
 
 		boolean needsUpdate = false, needsBackup = false;
 
-		YamlConfiguration defaultMessages = YamlConfiguration.loadConfiguration(messageDefaultsStream);
+		YamlConfiguration defaultMessages = YamlConfiguration.loadConfiguration(new InputStreamReader(messageDefaultsStream));
 		for (String msgKey : defaultMessages.getKeys(true)) {
 			if (messagesData.isSet(msgKey)) {
 				Object defaultVal = messagesData.get(msgKey);
